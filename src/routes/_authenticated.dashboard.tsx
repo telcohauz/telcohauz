@@ -1,14 +1,15 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useState } from "react";
 import {
   LayoutDashboard, Smartphone, Apple, Network, Cpu, Wrench, Coins,
   ShoppingBag, MessageSquare, Wallet, Users, Code, LifeBuoy, Settings, LogOut,
-  Bell, Search, Menu, X, TrendingUp, Activity, Zap, ArrowUpRight, Megaphone
+  Bell, Search, Menu, X, TrendingUp, Activity, Zap, ArrowUpRight, Megaphone, Shield
 } from "lucide-react";
 import { ServiceCard } from "@/components/ServiceCard";
 import { WhatsAppButton } from "@/components/WhatsAppButton";
+import { useAuth } from "@/hooks/use-auth";
 
-export const Route = createFileRoute("/dashboard")({
+export const Route = createFileRoute("/_authenticated/dashboard")({
   head: () => ({
     meta: [
       { title: "Dashboard — TELCOHAUZ Digital Hub" },
@@ -54,6 +55,12 @@ const recentOrders = [
 
 function Dashboard() {
   const [open, setOpen] = useState(false);
+  const { user, roles, signOut } = useAuth();
+  const nav = useNavigate();
+  const displayName = (user?.user_metadata?.display_name as string) || user?.email?.split("@")[0] || "User";
+  const initial = displayName.charAt(0).toUpperCase();
+  const role = roles[0] ?? "customer";
+  const handleLogout = async () => { await signOut(); nav({ to: "/" }); };
 
   return (
     <div className="min-h-screen">
@@ -98,9 +105,9 @@ function Dashboard() {
               </button>
             ))}
             <div className="mt-auto pt-4">
-              <Link to="/" className="flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium text-muted-foreground hover:bg-sidebar-accent hover:text-foreground">
+              <button onClick={handleLogout} className="flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium text-muted-foreground hover:bg-sidebar-accent hover:text-foreground">
                 <LogOut className="h-4 w-4" /> Logout
-              </Link>
+              </button>
             </div>
           </nav>
         </aside>
@@ -130,8 +137,12 @@ function Dashboard() {
                 <Bell className="h-4 w-4" />
                 <span className="absolute -right-0.5 -top-0.5 h-2 w-2 rounded-full bg-primary animate-pulse" />
               </button>
-              <div className="grid h-9 w-9 place-items-center rounded-full bg-gradient-to-br from-primary to-[oklch(0.55_0.22_270)] text-sm font-bold text-background">
-                A
+              <div className="flex items-center gap-2 rounded-lg glass px-3 py-1.5 text-sm">
+                <Shield className="h-3.5 w-3.5 text-primary" />
+                <span className="text-xs font-semibold uppercase tracking-wider">{role}</span>
+              </div>
+              <div title={displayName} className="grid h-9 w-9 place-items-center rounded-full bg-gradient-to-br from-primary to-[oklch(0.55_0.22_270)] text-sm font-bold text-background">
+                {initial}
               </div>
             </div>
           </div>
