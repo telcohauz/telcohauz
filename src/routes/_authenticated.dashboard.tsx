@@ -8,7 +8,7 @@ import {
 import { ServiceCard } from "@/components/ServiceCard";
 import { WhatsAppButton } from "@/components/WhatsAppButton";
 
-export const Route = createFileRoute("/dashboard")({
+export const Route = createFileRoute("/_authenticated/dashboard")({
   head: () => ({
     meta: [
       { title: "Dashboard — TELCOHAUZ Digital Hub" },
