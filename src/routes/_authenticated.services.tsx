@@ -43,7 +43,7 @@ function ServicesPage() {
     if (!active) return;
     setPlacing(true);
     const { data, error } = await supabase.rpc("place_order", {
-      _service_id: active.id, _imei: imei || null, _notes: notes || null,
+      _service_id: active.id, _imei: imei || undefined, _notes: notes || undefined,
     });
     setPlacing(false);
     if (error) {
