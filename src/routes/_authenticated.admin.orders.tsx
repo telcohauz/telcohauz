@@ -31,7 +31,7 @@ function AdminOrders() {
 
   const update = async (id: string, status: OS, result?: string | null) => {
     setBusy(id);
-    const { error } = await supabase.rpc("admin_update_order", { _order_id: id, _status: status, _result: result ?? null });
+    const { error } = await supabase.rpc("admin_update_order", { _order_id: id, _status: status, _result: result ?? undefined });
     setBusy(null);
     if (error) return toast.error(error.message);
     toast.success(`Order ${status}`);
@@ -41,7 +41,7 @@ function AdminOrders() {
   const refund = async (id: string) => {
     if (!confirm("Refund credits to user wallet?")) return;
     setBusy(id);
-    const { error } = await supabase.rpc("refund_order", { _order_id: id, _note: null });
+    const { error } = await supabase.rpc("refund_order", { _order_id: id, _note: undefined });
     setBusy(null);
     if (error) return toast.error(error.message);
     toast.success("Refunded");

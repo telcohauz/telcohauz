@@ -41,7 +41,7 @@ function AdminTopups() {
 
   const approve = async (id: string) => {
     setBusy(id);
-    const { error } = await supabase.rpc("approve_topup", { _topup_id: id, _note: null });
+    const { error } = await supabase.rpc("approve_topup", { _topup_id: id, _note: undefined });
     setBusy(null);
     if (error) return toast.error(error.message);
     toast.success("Top-up approved & credits added");
@@ -50,7 +50,7 @@ function AdminTopups() {
   const reject = async (id: string) => {
     const note = prompt("Reason for rejection (optional):") ?? null;
     setBusy(id);
-    const { error } = await supabase.rpc("reject_topup", { _topup_id: id, _note: note });
+    const { error } = await supabase.rpc("reject_topup", { _topup_id: id, _note: note ?? undefined });
     setBusy(null);
     if (error) return toast.error(error.message);
     toast.success("Top-up rejected");
