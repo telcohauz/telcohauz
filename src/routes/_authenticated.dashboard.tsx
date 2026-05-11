@@ -105,7 +105,12 @@ function Dashboard() {
                 <button key={n.label} className={cls}><n.icon className="h-4 w-4" />{n.label}</button>
               );
             })}
-            <div className="mt-auto pt-4">
+            <div className="mt-auto pt-4 space-y-1">
+              {roles.includes("admin") && (
+                <Link to="/admin" className="flex items-center gap-3 rounded-lg bg-primary/10 border border-primary/30 px-3 py-2.5 text-sm font-semibold text-primary hover:bg-primary/20">
+                  <Shield className="h-4 w-4" /> Admin Console
+                </Link>
+              )}
               <button onClick={handleLogout} className="flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium text-muted-foreground hover:bg-sidebar-accent hover:text-foreground">
                 <LogOut className="h-4 w-4" /> Logout
               </button>
