@@ -16,7 +16,10 @@ import { Route as LoginRouteImport } from './routes/login'
 import { Route as ForgotPasswordRouteImport } from './routes/forgot-password'
 import { Route as AuthenticatedRouteImport } from './routes/_authenticated'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as AuthenticatedWalletRouteImport } from './routes/_authenticated.wallet'
+import { Route as AuthenticatedServicesRouteImport } from './routes/_authenticated.services'
 import { Route as AuthenticatedDashboardRouteImport } from './routes/_authenticated.dashboard'
+import { Route as AuthenticatedWalletTopupRouteImport } from './routes/_authenticated.wallet.topup'
 
 const VerifyRoute = VerifyRouteImport.update({
   id: '/verify',
@@ -52,11 +55,27 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AuthenticatedWalletRoute = AuthenticatedWalletRouteImport.update({
+  id: '/wallet',
+  path: '/wallet',
+  getParentRoute: () => AuthenticatedRoute,
+} as any)
+const AuthenticatedServicesRoute = AuthenticatedServicesRouteImport.update({
+  id: '/services',
+  path: '/services',
+  getParentRoute: () => AuthenticatedRoute,
+} as any)
 const AuthenticatedDashboardRoute = AuthenticatedDashboardRouteImport.update({
   id: '/dashboard',
   path: '/dashboard',
   getParentRoute: () => AuthenticatedRoute,
 } as any)
+const AuthenticatedWalletTopupRoute =
+  AuthenticatedWalletTopupRouteImport.update({
+    id: '/topup',
+    path: '/topup',
+    getParentRoute: () => AuthenticatedWalletRoute,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -66,6 +85,9 @@ export interface FileRoutesByFullPath {
   '/reset-password': typeof ResetPasswordRoute
   '/verify': typeof VerifyRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
+  '/services': typeof AuthenticatedServicesRoute
+  '/wallet': typeof AuthenticatedWalletRouteWithChildren
+  '/wallet/topup': typeof AuthenticatedWalletTopupRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -75,6 +97,9 @@ export interface FileRoutesByTo {
   '/reset-password': typeof ResetPasswordRoute
   '/verify': typeof VerifyRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
+  '/services': typeof AuthenticatedServicesRoute
+  '/wallet': typeof AuthenticatedWalletRouteWithChildren
+  '/wallet/topup': typeof AuthenticatedWalletTopupRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -86,6 +111,9 @@ export interface FileRoutesById {
   '/reset-password': typeof ResetPasswordRoute
   '/verify': typeof VerifyRoute
   '/_authenticated/dashboard': typeof AuthenticatedDashboardRoute
+  '/_authenticated/services': typeof AuthenticatedServicesRoute
+  '/_authenticated/wallet': typeof AuthenticatedWalletRouteWithChildren
+  '/_authenticated/wallet/topup': typeof AuthenticatedWalletTopupRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -97,6 +125,9 @@ export interface FileRouteTypes {
     | '/reset-password'
     | '/verify'
     | '/dashboard'
+    | '/services'
+    | '/wallet'
+    | '/wallet/topup'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -106,6 +137,9 @@ export interface FileRouteTypes {
     | '/reset-password'
     | '/verify'
     | '/dashboard'
+    | '/services'
+    | '/wallet'
+    | '/wallet/topup'
   id:
     | '__root__'
     | '/'
@@ -116,6 +150,9 @@ export interface FileRouteTypes {
     | '/reset-password'
     | '/verify'
     | '/_authenticated/dashboard'
+    | '/_authenticated/services'
+    | '/_authenticated/wallet'
+    | '/_authenticated/wallet/topup'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -179,6 +216,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/_authenticated/wallet': {
+      id: '/_authenticated/wallet'
+      path: '/wallet'
+      fullPath: '/wallet'
+      preLoaderRoute: typeof AuthenticatedWalletRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
+    '/_authenticated/services': {
+      id: '/_authenticated/services'
+      path: '/services'
+      fullPath: '/services'
+      preLoaderRoute: typeof AuthenticatedServicesRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
     '/_authenticated/dashboard': {
       id: '/_authenticated/dashboard'
       path: '/dashboard'
@@ -186,15 +237,37 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedDashboardRouteImport
       parentRoute: typeof AuthenticatedRoute
     }
+    '/_authenticated/wallet/topup': {
+      id: '/_authenticated/wallet/topup'
+      path: '/topup'
+      fullPath: '/wallet/topup'
+      preLoaderRoute: typeof AuthenticatedWalletTopupRouteImport
+      parentRoute: typeof AuthenticatedWalletRoute
+    }
   }
 }
 
+interface AuthenticatedWalletRouteChildren {
+  AuthenticatedWalletTopupRoute: typeof AuthenticatedWalletTopupRoute
+}
+
+const AuthenticatedWalletRouteChildren: AuthenticatedWalletRouteChildren = {
+  AuthenticatedWalletTopupRoute: AuthenticatedWalletTopupRoute,
+}
+
+const AuthenticatedWalletRouteWithChildren =
+  AuthenticatedWalletRoute._addFileChildren(AuthenticatedWalletRouteChildren)
+
 interface AuthenticatedRouteChildren {
   AuthenticatedDashboardRoute: typeof AuthenticatedDashboardRoute
+  AuthenticatedServicesRoute: typeof AuthenticatedServicesRoute
+  AuthenticatedWalletRoute: typeof AuthenticatedWalletRouteWithChildren
 }
 
 const AuthenticatedRouteChildren: AuthenticatedRouteChildren = {
   AuthenticatedDashboardRoute: AuthenticatedDashboardRoute,
+  AuthenticatedServicesRoute: AuthenticatedServicesRoute,
+  AuthenticatedWalletRoute: AuthenticatedWalletRouteWithChildren,
 }
 
 const AuthenticatedRouteWithChildren = AuthenticatedRoute._addFileChildren(
