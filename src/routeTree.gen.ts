@@ -19,7 +19,15 @@ import { Route as IndexRouteImport } from './routes/index'
 import { Route as AuthenticatedWalletRouteImport } from './routes/_authenticated.wallet'
 import { Route as AuthenticatedServicesRouteImport } from './routes/_authenticated.services'
 import { Route as AuthenticatedDashboardRouteImport } from './routes/_authenticated.dashboard'
+import { Route as AuthenticatedAdminRouteImport } from './routes/_authenticated.admin'
+import { Route as AuthenticatedAdminIndexRouteImport } from './routes/_authenticated.admin.index'
 import { Route as AuthenticatedWalletTopupRouteImport } from './routes/_authenticated.wallet.topup'
+import { Route as AuthenticatedAdminUsersRouteImport } from './routes/_authenticated.admin.users'
+import { Route as AuthenticatedAdminTopupsRouteImport } from './routes/_authenticated.admin.topups'
+import { Route as AuthenticatedAdminSettingsRouteImport } from './routes/_authenticated.admin.settings'
+import { Route as AuthenticatedAdminServicesRouteImport } from './routes/_authenticated.admin.services'
+import { Route as AuthenticatedAdminPackagesRouteImport } from './routes/_authenticated.admin.packages'
+import { Route as AuthenticatedAdminOrdersRouteImport } from './routes/_authenticated.admin.orders'
 
 const VerifyRoute = VerifyRouteImport.update({
   id: '/verify',
@@ -70,11 +78,56 @@ const AuthenticatedDashboardRoute = AuthenticatedDashboardRouteImport.update({
   path: '/dashboard',
   getParentRoute: () => AuthenticatedRoute,
 } as any)
+const AuthenticatedAdminRoute = AuthenticatedAdminRouteImport.update({
+  id: '/admin',
+  path: '/admin',
+  getParentRoute: () => AuthenticatedRoute,
+} as any)
+const AuthenticatedAdminIndexRoute = AuthenticatedAdminIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => AuthenticatedAdminRoute,
+} as any)
 const AuthenticatedWalletTopupRoute =
   AuthenticatedWalletTopupRouteImport.update({
     id: '/topup',
     path: '/topup',
     getParentRoute: () => AuthenticatedWalletRoute,
+  } as any)
+const AuthenticatedAdminUsersRoute = AuthenticatedAdminUsersRouteImport.update({
+  id: '/users',
+  path: '/users',
+  getParentRoute: () => AuthenticatedAdminRoute,
+} as any)
+const AuthenticatedAdminTopupsRoute =
+  AuthenticatedAdminTopupsRouteImport.update({
+    id: '/topups',
+    path: '/topups',
+    getParentRoute: () => AuthenticatedAdminRoute,
+  } as any)
+const AuthenticatedAdminSettingsRoute =
+  AuthenticatedAdminSettingsRouteImport.update({
+    id: '/settings',
+    path: '/settings',
+    getParentRoute: () => AuthenticatedAdminRoute,
+  } as any)
+const AuthenticatedAdminServicesRoute =
+  AuthenticatedAdminServicesRouteImport.update({
+    id: '/services',
+    path: '/services',
+    getParentRoute: () => AuthenticatedAdminRoute,
+  } as any)
+const AuthenticatedAdminPackagesRoute =
+  AuthenticatedAdminPackagesRouteImport.update({
+    id: '/packages',
+    path: '/packages',
+    getParentRoute: () => AuthenticatedAdminRoute,
+  } as any)
+const AuthenticatedAdminOrdersRoute =
+  AuthenticatedAdminOrdersRouteImport.update({
+    id: '/orders',
+    path: '/orders',
+    getParentRoute: () => AuthenticatedAdminRoute,
   } as any)
 
 export interface FileRoutesByFullPath {
@@ -84,10 +137,18 @@ export interface FileRoutesByFullPath {
   '/register': typeof RegisterRoute
   '/reset-password': typeof ResetPasswordRoute
   '/verify': typeof VerifyRoute
+  '/admin': typeof AuthenticatedAdminRouteWithChildren
   '/dashboard': typeof AuthenticatedDashboardRoute
   '/services': typeof AuthenticatedServicesRoute
   '/wallet': typeof AuthenticatedWalletRouteWithChildren
+  '/admin/orders': typeof AuthenticatedAdminOrdersRoute
+  '/admin/packages': typeof AuthenticatedAdminPackagesRoute
+  '/admin/services': typeof AuthenticatedAdminServicesRoute
+  '/admin/settings': typeof AuthenticatedAdminSettingsRoute
+  '/admin/topups': typeof AuthenticatedAdminTopupsRoute
+  '/admin/users': typeof AuthenticatedAdminUsersRoute
   '/wallet/topup': typeof AuthenticatedWalletTopupRoute
+  '/admin/': typeof AuthenticatedAdminIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -99,7 +160,14 @@ export interface FileRoutesByTo {
   '/dashboard': typeof AuthenticatedDashboardRoute
   '/services': typeof AuthenticatedServicesRoute
   '/wallet': typeof AuthenticatedWalletRouteWithChildren
+  '/admin/orders': typeof AuthenticatedAdminOrdersRoute
+  '/admin/packages': typeof AuthenticatedAdminPackagesRoute
+  '/admin/services': typeof AuthenticatedAdminServicesRoute
+  '/admin/settings': typeof AuthenticatedAdminSettingsRoute
+  '/admin/topups': typeof AuthenticatedAdminTopupsRoute
+  '/admin/users': typeof AuthenticatedAdminUsersRoute
   '/wallet/topup': typeof AuthenticatedWalletTopupRoute
+  '/admin': typeof AuthenticatedAdminIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -110,10 +178,18 @@ export interface FileRoutesById {
   '/register': typeof RegisterRoute
   '/reset-password': typeof ResetPasswordRoute
   '/verify': typeof VerifyRoute
+  '/_authenticated/admin': typeof AuthenticatedAdminRouteWithChildren
   '/_authenticated/dashboard': typeof AuthenticatedDashboardRoute
   '/_authenticated/services': typeof AuthenticatedServicesRoute
   '/_authenticated/wallet': typeof AuthenticatedWalletRouteWithChildren
+  '/_authenticated/admin/orders': typeof AuthenticatedAdminOrdersRoute
+  '/_authenticated/admin/packages': typeof AuthenticatedAdminPackagesRoute
+  '/_authenticated/admin/services': typeof AuthenticatedAdminServicesRoute
+  '/_authenticated/admin/settings': typeof AuthenticatedAdminSettingsRoute
+  '/_authenticated/admin/topups': typeof AuthenticatedAdminTopupsRoute
+  '/_authenticated/admin/users': typeof AuthenticatedAdminUsersRoute
   '/_authenticated/wallet/topup': typeof AuthenticatedWalletTopupRoute
+  '/_authenticated/admin/': typeof AuthenticatedAdminIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -124,10 +200,18 @@ export interface FileRouteTypes {
     | '/register'
     | '/reset-password'
     | '/verify'
+    | '/admin'
     | '/dashboard'
     | '/services'
     | '/wallet'
+    | '/admin/orders'
+    | '/admin/packages'
+    | '/admin/services'
+    | '/admin/settings'
+    | '/admin/topups'
+    | '/admin/users'
     | '/wallet/topup'
+    | '/admin/'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -139,7 +223,14 @@ export interface FileRouteTypes {
     | '/dashboard'
     | '/services'
     | '/wallet'
+    | '/admin/orders'
+    | '/admin/packages'
+    | '/admin/services'
+    | '/admin/settings'
+    | '/admin/topups'
+    | '/admin/users'
     | '/wallet/topup'
+    | '/admin'
   id:
     | '__root__'
     | '/'
@@ -149,10 +240,18 @@ export interface FileRouteTypes {
     | '/register'
     | '/reset-password'
     | '/verify'
+    | '/_authenticated/admin'
     | '/_authenticated/dashboard'
     | '/_authenticated/services'
     | '/_authenticated/wallet'
+    | '/_authenticated/admin/orders'
+    | '/_authenticated/admin/packages'
+    | '/_authenticated/admin/services'
+    | '/_authenticated/admin/settings'
+    | '/_authenticated/admin/topups'
+    | '/_authenticated/admin/users'
     | '/_authenticated/wallet/topup'
+    | '/_authenticated/admin/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -237,6 +336,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedDashboardRouteImport
       parentRoute: typeof AuthenticatedRoute
     }
+    '/_authenticated/admin': {
+      id: '/_authenticated/admin'
+      path: '/admin'
+      fullPath: '/admin'
+      preLoaderRoute: typeof AuthenticatedAdminRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
+    '/_authenticated/admin/': {
+      id: '/_authenticated/admin/'
+      path: '/'
+      fullPath: '/admin/'
+      preLoaderRoute: typeof AuthenticatedAdminIndexRouteImport
+      parentRoute: typeof AuthenticatedAdminRoute
+    }
     '/_authenticated/wallet/topup': {
       id: '/_authenticated/wallet/topup'
       path: '/topup'
@@ -244,8 +357,73 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedWalletTopupRouteImport
       parentRoute: typeof AuthenticatedWalletRoute
     }
+    '/_authenticated/admin/users': {
+      id: '/_authenticated/admin/users'
+      path: '/users'
+      fullPath: '/admin/users'
+      preLoaderRoute: typeof AuthenticatedAdminUsersRouteImport
+      parentRoute: typeof AuthenticatedAdminRoute
+    }
+    '/_authenticated/admin/topups': {
+      id: '/_authenticated/admin/topups'
+      path: '/topups'
+      fullPath: '/admin/topups'
+      preLoaderRoute: typeof AuthenticatedAdminTopupsRouteImport
+      parentRoute: typeof AuthenticatedAdminRoute
+    }
+    '/_authenticated/admin/settings': {
+      id: '/_authenticated/admin/settings'
+      path: '/settings'
+      fullPath: '/admin/settings'
+      preLoaderRoute: typeof AuthenticatedAdminSettingsRouteImport
+      parentRoute: typeof AuthenticatedAdminRoute
+    }
+    '/_authenticated/admin/services': {
+      id: '/_authenticated/admin/services'
+      path: '/services'
+      fullPath: '/admin/services'
+      preLoaderRoute: typeof AuthenticatedAdminServicesRouteImport
+      parentRoute: typeof AuthenticatedAdminRoute
+    }
+    '/_authenticated/admin/packages': {
+      id: '/_authenticated/admin/packages'
+      path: '/packages'
+      fullPath: '/admin/packages'
+      preLoaderRoute: typeof AuthenticatedAdminPackagesRouteImport
+      parentRoute: typeof AuthenticatedAdminRoute
+    }
+    '/_authenticated/admin/orders': {
+      id: '/_authenticated/admin/orders'
+      path: '/orders'
+      fullPath: '/admin/orders'
+      preLoaderRoute: typeof AuthenticatedAdminOrdersRouteImport
+      parentRoute: typeof AuthenticatedAdminRoute
+    }
   }
 }
+
+interface AuthenticatedAdminRouteChildren {
+  AuthenticatedAdminOrdersRoute: typeof AuthenticatedAdminOrdersRoute
+  AuthenticatedAdminPackagesRoute: typeof AuthenticatedAdminPackagesRoute
+  AuthenticatedAdminServicesRoute: typeof AuthenticatedAdminServicesRoute
+  AuthenticatedAdminSettingsRoute: typeof AuthenticatedAdminSettingsRoute
+  AuthenticatedAdminTopupsRoute: typeof AuthenticatedAdminTopupsRoute
+  AuthenticatedAdminUsersRoute: typeof AuthenticatedAdminUsersRoute
+  AuthenticatedAdminIndexRoute: typeof AuthenticatedAdminIndexRoute
+}
+
+const AuthenticatedAdminRouteChildren: AuthenticatedAdminRouteChildren = {
+  AuthenticatedAdminOrdersRoute: AuthenticatedAdminOrdersRoute,
+  AuthenticatedAdminPackagesRoute: AuthenticatedAdminPackagesRoute,
+  AuthenticatedAdminServicesRoute: AuthenticatedAdminServicesRoute,
+  AuthenticatedAdminSettingsRoute: AuthenticatedAdminSettingsRoute,
+  AuthenticatedAdminTopupsRoute: AuthenticatedAdminTopupsRoute,
+  AuthenticatedAdminUsersRoute: AuthenticatedAdminUsersRoute,
+  AuthenticatedAdminIndexRoute: AuthenticatedAdminIndexRoute,
+}
+
+const AuthenticatedAdminRouteWithChildren =
+  AuthenticatedAdminRoute._addFileChildren(AuthenticatedAdminRouteChildren)
 
 interface AuthenticatedWalletRouteChildren {
   AuthenticatedWalletTopupRoute: typeof AuthenticatedWalletTopupRoute
@@ -259,12 +437,14 @@ const AuthenticatedWalletRouteWithChildren =
   AuthenticatedWalletRoute._addFileChildren(AuthenticatedWalletRouteChildren)
 
 interface AuthenticatedRouteChildren {
+  AuthenticatedAdminRoute: typeof AuthenticatedAdminRouteWithChildren
   AuthenticatedDashboardRoute: typeof AuthenticatedDashboardRoute
   AuthenticatedServicesRoute: typeof AuthenticatedServicesRoute
   AuthenticatedWalletRoute: typeof AuthenticatedWalletRouteWithChildren
 }
 
 const AuthenticatedRouteChildren: AuthenticatedRouteChildren = {
+  AuthenticatedAdminRoute: AuthenticatedAdminRouteWithChildren,
   AuthenticatedDashboardRoute: AuthenticatedDashboardRoute,
   AuthenticatedServicesRoute: AuthenticatedServicesRoute,
   AuthenticatedWalletRoute: AuthenticatedWalletRouteWithChildren,
