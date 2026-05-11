@@ -14,6 +14,92 @@ export type Database = {
   }
   public: {
     Tables: {
+      credit_packages: {
+        Row: {
+          bonus: number
+          created_at: string
+          credits: number
+          id: string
+          is_active: boolean
+          is_popular: boolean
+          name: string
+          price: number
+          sort_order: number
+        }
+        Insert: {
+          bonus?: number
+          created_at?: string
+          credits: number
+          id?: string
+          is_active?: boolean
+          is_popular?: boolean
+          name: string
+          price: number
+          sort_order?: number
+        }
+        Update: {
+          bonus?: number
+          created_at?: string
+          credits?: number
+          id?: string
+          is_active?: boolean
+          is_popular?: boolean
+          name?: string
+          price?: number
+          sort_order?: number
+        }
+        Relationships: []
+      }
+      orders: {
+        Row: {
+          created_at: string
+          credits_charged: number
+          id: string
+          imei: string | null
+          notes: string | null
+          order_number: string
+          result: string | null
+          service_id: string
+          status: Database["public"]["Enums"]["order_status"]
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          credits_charged: number
+          id?: string
+          imei?: string | null
+          notes?: string | null
+          order_number?: string
+          result?: string | null
+          service_id: string
+          status?: Database["public"]["Enums"]["order_status"]
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          credits_charged?: number
+          id?: string
+          imei?: string | null
+          notes?: string | null
+          order_number?: string
+          result?: string | null
+          service_id?: string
+          status?: Database["public"]["Enums"]["order_status"]
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "orders_service_id_fkey"
+            columns: ["service_id"]
+            isOneToOne: false
+            referencedRelation: "services"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       profiles: {
         Row: {
           avatar_url: string | null
@@ -41,6 +127,101 @@ export type Database = {
         }
         Relationships: []
       }
+      services: {
+        Row: {
+          brand: string | null
+          category: string
+          created_at: string
+          credit_price: number
+          delivery_eta: string | null
+          description: string | null
+          id: string
+          is_active: boolean
+          name: string
+        }
+        Insert: {
+          brand?: string | null
+          category: string
+          created_at?: string
+          credit_price: number
+          delivery_eta?: string | null
+          description?: string | null
+          id?: string
+          is_active?: boolean
+          name: string
+        }
+        Update: {
+          brand?: string | null
+          category?: string
+          created_at?: string
+          credit_price?: number
+          delivery_eta?: string | null
+          description?: string | null
+          id?: string
+          is_active?: boolean
+          name?: string
+        }
+        Relationships: []
+      }
+      topup_requests: {
+        Row: {
+          admin_note: string | null
+          amount: number
+          created_at: string
+          credits: number
+          id: string
+          method: Database["public"]["Enums"]["payment_method"]
+          package_id: string | null
+          proof_url: string | null
+          reference: string | null
+          reviewed_at: string | null
+          reviewed_by: string | null
+          status: Database["public"]["Enums"]["topup_status"]
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          admin_note?: string | null
+          amount: number
+          created_at?: string
+          credits: number
+          id?: string
+          method: Database["public"]["Enums"]["payment_method"]
+          package_id?: string | null
+          proof_url?: string | null
+          reference?: string | null
+          reviewed_at?: string | null
+          reviewed_by?: string | null
+          status?: Database["public"]["Enums"]["topup_status"]
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          admin_note?: string | null
+          amount?: number
+          created_at?: string
+          credits?: number
+          id?: string
+          method?: Database["public"]["Enums"]["payment_method"]
+          package_id?: string | null
+          proof_url?: string | null
+          reference?: string | null
+          reviewed_at?: string | null
+          reviewed_by?: string | null
+          status?: Database["public"]["Enums"]["topup_status"]
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "topup_requests_package_id_fkey"
+            columns: ["package_id"]
+            isOneToOne: false
+            referencedRelation: "credit_packages"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       user_roles: {
         Row: {
           created_at: string
@@ -62,11 +243,84 @@ export type Database = {
         }
         Relationships: []
       }
+      wallet_transactions: {
+        Row: {
+          amount: number
+          balance_after: number
+          created_at: string
+          description: string | null
+          id: string
+          reference_id: string | null
+          type: Database["public"]["Enums"]["txn_type"]
+          user_id: string
+        }
+        Insert: {
+          amount: number
+          balance_after: number
+          created_at?: string
+          description?: string | null
+          id?: string
+          reference_id?: string | null
+          type: Database["public"]["Enums"]["txn_type"]
+          user_id: string
+        }
+        Update: {
+          amount?: number
+          balance_after?: number
+          created_at?: string
+          description?: string | null
+          id?: string
+          reference_id?: string | null
+          type?: Database["public"]["Enums"]["txn_type"]
+          user_id?: string
+        }
+        Relationships: []
+      }
+      wallets: {
+        Row: {
+          balance: number
+          currency: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          balance?: number
+          currency?: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          balance?: number
+          currency?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
     }
     Functions: {
+      approve_topup: {
+        Args: { _note?: string; _topup_id: string }
+        Returns: {
+          amount: number
+          balance_after: number
+          created_at: string
+          description: string | null
+          id: string
+          reference_id: string | null
+          type: Database["public"]["Enums"]["txn_type"]
+          user_id: string
+        }
+        SetofOptions: {
+          from: "*"
+          to: "wallet_transactions"
+          isOneToOne: true
+          isSetofReturn: false
+        }
+      }
       has_role: {
         Args: {
           _role: Database["public"]["Enums"]["app_role"]
@@ -74,9 +328,48 @@ export type Database = {
         }
         Returns: boolean
       }
+      place_order: {
+        Args: { _imei?: string; _notes?: string; _service_id: string }
+        Returns: {
+          created_at: string
+          credits_charged: number
+          id: string
+          imei: string | null
+          notes: string | null
+          order_number: string
+          result: string | null
+          service_id: string
+          status: Database["public"]["Enums"]["order_status"]
+          updated_at: string
+          user_id: string
+        }
+        SetofOptions: {
+          from: "*"
+          to: "orders"
+          isOneToOne: true
+          isSetofReturn: false
+        }
+      }
+      refund_order: {
+        Args: { _note?: string; _order_id: string }
+        Returns: undefined
+      }
+      reject_topup: {
+        Args: { _note?: string; _topup_id: string }
+        Returns: undefined
+      }
     }
     Enums: {
       app_role: "admin" | "customer" | "reseller"
+      order_status:
+        | "pending"
+        | "processing"
+        | "completed"
+        | "rejected"
+        | "refunded"
+      payment_method: "fpx" | "duitnow" | "manual_bank"
+      topup_status: "pending" | "approved" | "rejected" | "cancelled"
+      txn_type: "topup" | "order" | "refund" | "adjustment" | "bonus"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -205,6 +498,16 @@ export const Constants = {
   public: {
     Enums: {
       app_role: ["admin", "customer", "reseller"],
+      order_status: [
+        "pending",
+        "processing",
+        "completed",
+        "rejected",
+        "refunded",
+      ],
+      payment_method: ["fpx", "duitnow", "manual_bank"],
+      topup_status: ["pending", "approved", "rejected", "cancelled"],
+      txn_type: ["topup", "order", "refund", "adjustment", "bonus"],
     },
   },
 } as const
