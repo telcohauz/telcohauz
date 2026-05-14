@@ -23,7 +23,15 @@ export function SiteHeader() {
         </nav>
 
         <div className="flex items-center gap-2">
-          <Link to="/dashboard" className="hidden rounded-lg px-4 py-2 text-sm font-medium text-foreground/80 transition hover:text-foreground sm:inline-block">
+          <Link
+            to="/login"
+            search={{ redirect: "/admin" }}
+            className="hidden items-center gap-1.5 rounded-lg border border-primary/30 bg-primary/10 px-3 py-2 text-xs font-semibold uppercase tracking-wider text-primary transition hover:bg-primary/20 hover:shadow-[var(--glow-soft)] sm:inline-flex"
+            title="Admin login"
+          >
+            <Shield className="h-3.5 w-3.5" /> Admin
+          </Link>
+          <Link to="/login" className="hidden rounded-lg px-4 py-2 text-sm font-medium text-foreground/80 transition hover:text-foreground sm:inline-block">
             Sign in
           </Link>
           <Link
