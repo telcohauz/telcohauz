@@ -1,5 +1,5 @@
 import { Link } from "@tanstack/react-router";
-import { Zap } from "lucide-react";
+import { Shield, Zap } from "lucide-react";
 
 export function SiteHeader() {
   return (
