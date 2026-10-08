@@ -112,3 +112,16 @@ Cashback: proposed owner-funded 20% applies only to **actual eligible commission
 TNG Mini Program concept: customer selects WiFi-only or WiFi+phone and explicitly consents to permitted, minimal identity/contact prefill; TNG Mini Program partnership / scopes and each product's supplier rights remain **not approved**.
 
 **Next single sourcing task:** obtain *one* real provider/supplier WiFi+HP package document or price list, including commercial terms. Validate it before building or advertising a bundle.
+
+## EasyApply device bundle catalogue examples (October 2026)
+
+- Owner says EasyApply catalogue also offers WiFi + HP/phone products. Publicly retrieved EasyApply Unifi agent catalogue confirms **device bundles**, especially Business "Device Fiesta" packs that specify tablets, not smartphones:
+  - Unifi Biz 300M Device Fiesta: RM169/month, listed "Free Tablet WiFi"
+  - Unifi Biz 500M Device Fiesta: RM209/month, listed "Free Tablet WiFi"
+  - Unifi Biz 800M Device Fiesta: RM249/month, listed "Free Tablet WiFi"
+  - Unifi Biz 1Gbps Device Fiesta: RM309/month, listed "Free Tablet WiFi LTE"
+  - Source: https://easyapply.com.my/store/Hafizhafizan/p/unifi (public EasyApply agent catalogue). Prices and supply may change; confirm each offering in owner Telcohauzwifi dashboard before publishing.
+- Telcohauzwifi / U Mobile listing confirms RM68/month 5G Home Unlimited Broadband with a WiFi 6 5G **router**, under 24-month contract; a router does not qualify as a smartphone. Source: https://easyapply.com.my/store/Telcohauzwifi/p/umobile .
+- No public, verifiable smartphone bundle for the owner's Telcohauzwifi storefront has yet been identified. Do not label tablet/router/DECT desk phone offers as "HP"/smartphone or assume owner carries the example packages.
+- Start with **EasyApply** as first supplier; do not source a separate vendor until the EasyApply agent catalogue is inspected.
+- **Next single task:** owner opens their EasyApply agent product catalogue and provides a screenshot of any bona fide smartphone + WiFi bundle with product name, provider, monthly fee, contract and device model; redact customer data and credentials.
