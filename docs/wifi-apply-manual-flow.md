@@ -79,3 +79,18 @@ Status: **Owner-selected working proposal; not yet a published or payable promot
 - Customer-facing copy must never imply cashback on mere form submission, or that EasyApply/TNG sponsors or guarantees the reward. Payout will not be automated or advertised until the launch gates pass.
 
 Next single task: **verify EasyApply package-specific commissions and any supplier restrictions on agent-funded cashback**; use authorized agent terms or account documentation, not customer records or credentials.
+
+## Potential TNG Mini Program consented identity autofill (NOT APPROVED)
+
+**Official documentation checked (Oct 2026):**
+- https://miniprogram.tngdigital.com.my/docs/miniprogram_tngd/mpdev/api_openapi_getauthcode
+- https://miniprogram.tngdigital.com.my/docs/miniprogram_tngd/mpdev/vs3pkf
+- https://www.touchngo.com.my/business/mini-program
+- `auth_user / USER_INFO` gives registered name, mobile, email with interactive user authorization and is listed as preassigned to merchants; use only once approved as a TNG partner.
+- `USER_INFO_EKYC` describes verified name, ID type/number, nationality, identity-card address, DOB, etc. It is **not preassigned**, is **not silent**, and requires business approval and individual customer authorization. Having an eWallet account does NOT entitle Telcohauz to see or reuse NRIC numbers.
+- Proposed user journey after approved integration: customer opens TNG Mini Program > explicitly authorizes relevant identity fields > sees and checks prefilled name/contact (and NRIC only if approved and necessary) > manually specifies WiFi **installation address** (may differ from IC address) and package > explicitly consents to Telcohauz's processing and onward sharing with named service providers/EasyApply where required > submits application for Telcohauz's manual review and forwarding.
+- Minimize personal data: prefer verified-identity indicator or confirmed contact without storing NRIC unless necessary for authorized broadband order; encrypted server-only access, restricted staff, audit trail, short retention, no raw PII in app logs, URLs, GitHub or WhatsApp. For ID documents use an approved secure channel, not routine WhatsApp forwarding.
+- Non-TNG website route must still work through ordinary customer data entry and informed consent.
+- **No TNG partnership, access scope, API provisioning, EasyApply permission, or production auto-fill is active yet.** TNG Mini Program and any scope access are separate commercial and technical approvals.
+
+**Next single external step:** Request from TNG Mini Program partnerships eligibility requirements and approved auth scopes (`auth_user`, optionally `USER_INFO_EKYC`) for a consent-based WiFi application use case; separately validate EasyApply/provider disclosure requirements. Do not request individual customer data during the application.
