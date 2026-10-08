@@ -61,3 +61,8 @@ Implement a secure lead-intake endpoint and restricted WiFi leads table (separat
 - Preferred payout should use an approved, documented business payment workflow, not an assumed automated TNG cashback API.
 
 **Next decision:** Verify supplier/provider permission and actual per-package net commission before choosing or publicly offering a cashback amount.
+
+### Owner-reported maximum supplier commission
+- Owner confirms maximum EasyApply WiFi agent commission of **370% of the selected package monthly subscription** (3.7 × monthly fee). This is the **highest advertised/reported tier, not necessarily the rate for each package**. Supplier commission terms and actual credited payouts are not yet independently verified.
+- Example only: RM100/month package × 3.7 = RM370 gross commission *if that particular package qualifies for the maximum rate*.
+- Before setting customer cashback, check commission schedule for every actual package, payment/activation conditions, potential clawbacks, direct costs, and whether agent-funded cashback is permitted by provider/EasyApply terms. Cashback stays NOT ACTIVE until those checks and a net-margin budget are complete.
