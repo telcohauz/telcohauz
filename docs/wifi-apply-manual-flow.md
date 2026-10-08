@@ -94,3 +94,21 @@ Next single task: **verify EasyApply package-specific commissions and any suppli
 - **No TNG partnership, access scope, API provisioning, EasyApply permission, or production auto-fill is active yet.** TNG Mini Program and any scope access are separate commercial and technical approvals.
 
 **Next single external step:** Request from TNG Mini Program partnerships eligibility requirements and approved auth scopes (`auth_user`, optionally `USER_INFO_EKYC`) for a consent-based WiFi application use case; separately validate EasyApply/provider disclosure requirements. Do not request individual customer data during the application.
+
+## Proposed additional product path: WiFi + Phone (NOT YET SOURCED)
+
+Owner intends to source more products, including optional **WiFi + HP/phone** offers, in addition to WiFi-only applications.
+
+Customer-facing product choices (planned):
+1. `WiFi Sahaja` — broadband package application.
+2. `WiFi + Telefon` — an actual supplier-approved bundle, OR two clearly identified linked applications if no genuine bundle exists (never mislabel as one bundle).
+
+Product listing must include: verified supplier, service/provider, plan name, monthly fee, phone make/model & storage, one-time/upfront cost, financing/instalment obligations, contract length, eligibility and credit checks, coverage, supply availability, early termination costs, commission/cashback eligibility and provider terms. Do not display fictitious phone subsidies or "free phone" claims.
+
+BOZ order model: capture preferred offer type and basic safe enquiry information first. Only collect extra ID/payment data in an authorized secure application process after transparent customer consent. Staff may manually forward to EasyApply and/or other **approved** suppliers, and separately track each application and external status/reference. Do not assume EasyApply offers phone bundles; check product rights and commission terms per supplier.
+
+Cashback: proposed owner-funded 20% applies only to **actual eligible commission received** on relevant transactions, after confirming contract/supplier promotional terms and net margin. Bundle cashbacks and returns/reversals require independent verification; don't promise a payment while waiting for supplier commission.
+
+TNG Mini Program concept: customer selects WiFi-only or WiFi+phone and explicitly consents to permitted, minimal identity/contact prefill; TNG Mini Program partnership / scopes and each product's supplier rights remain **not approved**.
+
+**Next single sourcing task:** obtain *one* real provider/supplier WiFi+HP package document or price list, including commercial terms. Validate it before building or advertising a bundle.
