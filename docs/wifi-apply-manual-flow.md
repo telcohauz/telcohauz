@@ -66,3 +66,16 @@ Implement a secure lead-intake endpoint and restricted WiFi leads table (separat
 - Owner reports that EasyApply WiFi agent commission rates range from **280% (lowest)** to **370% (highest)** of the selected package's monthly fee (2.8–3.7 × monthly fee). Actual rate must be confirmed for each package; supplier terms and credited payouts are not yet independently verified.
 - Example only: RM100/month package × 2.8 = RM280 gross commission at the lowest reported rate; × 3.7 = RM370 at the highest reported rate. These figures are conditional on actual package eligibility.
 - Before setting customer cashback, check commission schedule for every actual package, payment/activation conditions, potential clawbacks, direct costs, and whether agent-funded cashback is permitted by provider/EasyApply terms. Cashback stays NOT ACTIVE until those checks and a net-margin budget are complete.
+
+## Proposed 20% customer cashback rule
+
+Status: **Owner-selected working proposal; not yet a published or payable promotion.**
+
+- Owner-selected proposal: refund **20% of the actual EasyApply commission received by Telcohauz** to an eligible customer after verified broadband installation/activation and commission payment; retain remaining 80% before Telcohauz operating costs, taxes, refunds/clawbacks, and reserves.
+- Owner-reported EasyApply commission range: 280%–370% of qualifying monthly plan price. Rates depend on the actual package; **do not assume every package receives 370%**.
+- Formula: `supplier_commission = monthly_package_fee × confirmed_commission_rate`; `cashback = supplier_commission × 0.20`; `balance_before_costs = supplier_commission × 0.80`. Apply correct rounding to Malaysian sen at payout.
+- Examples (not public guarantees): RM89 × 2.8 = RM249.20 commission, RM49.84 cashback, RM199.36 retained; RM89 × 3.7 = RM329.30, RM65.86 cashback, RM263.44 retained; RM100 × 2.8 = RM280, RM56 cashback, RM224 retained; RM100 × 3.7 = RM370, RM74 cashback, RM296 retained.
+- Launch gates: confirm package-specific supplier commissions; ensure EasyApply/provider terms allow a Telcohauz-funded rebate; create clear eligibility, activation, commission-receipt, verification, refund/clawback, payout timing, eligibility and personal-data terms. Then test one manual payout securely.
+- Customer-facing copy must never imply cashback on mere form submission, or that EasyApply/TNG sponsors or guarantees the reward. Payout will not be automated or advertised until the launch gates pass.
+
+Next single task: **verify EasyApply package-specific commissions and any supplier restrictions on agent-funded cashback**; use authorized agent terms or account documentation, not customer records or credentials.
