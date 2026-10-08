@@ -125,3 +125,21 @@ TNG Mini Program concept: customer selects WiFi-only or WiFi+phone and explicitl
 - No public, verifiable smartphone bundle for the owner's Telcohauzwifi storefront has yet been identified. Do not label tablet/router/DECT desk phone offers as "HP"/smartphone or assume owner carries the example packages.
 - Start with **EasyApply** as first supplier; do not source a separate vendor until the EasyApply agent catalogue is inspected.
 - **Next single task:** owner opens their EasyApply agent product catalogue and provides a screenshot of any bona fide smartphone + WiFi bundle with product name, provider, monthly fee, contract and device model; redact customer data and credentials.
+
+## Product catalogue first: customer chooses before applying (OWNER-APPROVED DESIGN)
+
+**Owner decision:** Telcohauz Apply should display every supplier-authorized, current product that Telcohauz can actually sell. The customer compares options and selects one before submitting a lead. EasyApply is the starting supplier; other authorized suppliers can be added later.
+
+**Minimum public customer journey**
+1. Browse `Telcohauz Apply` catalogue (mobile-first).
+2. Filter by verified product type and provider: `Home WiFi`, `WiFi + Device`, `Mobile/Postpaid + Phone` (only when real supplier-offered packages exist), and future vetted application products.
+3. Open product card: actual provider and package, monthly commitment, up-front payments, contract duration, device model (if applicable), speed/allowance, eligibility, coverage/availability, and clear provider terms. Prices and claims must match source and approval.
+4. Customer selects `Apply` for a specific verified product. Pre-fill product reference into a minimal consented lead form, receive Telcohauz tracking reference, and show `Application received by Telcohauz; not yet approved by provider`.
+5. Telcohauz owner/staff reviews and forwards manually using authorized EasyApply dashboard or trusted EasyApply agent WhatsApp, then updates status in BOZ. Customer is notified of honest status changes.
+6. Show a **20%-of-received-commission cashback estimate only when** the relevant supplier terms and Telcohauz offer have been approved, including eligibility and timing; otherwise do not display cashback promises.
+
+**Admin catalogue source of truth** — every offer must have an internal `product_id`, supplier, supplier_product_code/link, category, provider, plan title, product/service specs, current price, costs/contract/eligibility, eligible device details, commission rate/amount when verified, cashback eligibility and offer terms, source snapshot/date last checked, and `draft | verified | active | paused | expired` status. Publish only `active` and verified entries; never silently assume every public EasyApply listing is eligible for this agent.
+
+**Safety/compliance:** no real customer IC data in catalogue, product screenshots, tracking links or GitHub; optional TNG identity autofill only after approval + informed opt-in; show coverage/package availability as subject to provider checks. Do not call separate phone and WiFi subscriptions a single bundle unless supplier terms say so.
+
+**Status:** product catalogue UX and data requirements agreed; catalogue content not yet fully inventoried, code not deployed, no live form. **Immediate next work item:** inventory EasyApply products available to the owner's Telcohauzwifi store, collecting *verified* product details without exposing customer data. Then build the catalogue only from that list.
