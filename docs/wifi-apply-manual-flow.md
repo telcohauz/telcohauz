@@ -49,3 +49,15 @@ Implement a secure lead-intake endpoint and restricted WiFi leads table (separat
 - Agreement on what an initial WiFi lead must contain.
 - Clear human handoff through both EasyApply dashboard and authorized agent WhatsApp.
 - No false promise of automatic EasyApply API or Touch 'n Go Mini Program inclusion.
+
+## Proposed commission-funded customer cashback (NOT ACTIVE)
+- Idea: Telcohauz may share a small portion of its **verified, received** EasyApply broadband commission with an eligible customer to encourage genuine installations.
+- **Do not advertise, promise, reserve, or pay cashback until** EasyApply and relevant broadband-provider promotion/agent terms are confirmed to allow it; for future TNG Mini Program, obtain approval for any campaign and payment mechanics separately.
+- A submitted enquiry is **not** an eligible cashback event. Minimum suggested condition: verified successful installation/activation, application eligibility, commission credited and not reversed, and customer's reward eligibility validated. Make conditions and payout timing clear upfront.
+- Do not advertise "cashback just for submitting" if it actually requires installation. Do not describe a self-funded reward as sponsored or guaranteed by EasyApply or TNG.
+- Reward cap and amount must be decided from the **actual commission for each package** minus direct operating costs, contingencies and necessary margin. No fixed amount is approved yet.
+- Record in the restricted BOZ system: internal application reference; campaign terms/version; eligibility; supplier commission status; cashback amount; approval; payout method/transaction proof; dates. Never put customer identity or payment details into GitHub.
+- Prevent repeated/duplicate claims and fake applications. Refund/reversal rules need to be specified in customer-facing terms before launch.
+- Preferred payout should use an approved, documented business payment workflow, not an assumed automated TNG cashback API.
+
+**Next decision:** Verify supplier/provider permission and actual per-package net commission before choosing or publicly offering a cashback amount.
