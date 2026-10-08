@@ -50,8 +50,8 @@ Implement a secure lead-intake endpoint and restricted WiFi leads table (separat
 - Clear human handoff through both EasyApply dashboard and authorized agent WhatsApp.
 - No false promise of automatic EasyApply API or Touch 'n Go Mini Program inclusion.
 
-## Proposed commission-funded customer cashback (NOT ACTIVE)
-- Idea: Telcohauz may share a small portion of its **verified, received** EasyApply broadband commission with an eligible customer to encourage genuine installations.
+## Telcohauz self-funded customer cashback (OWNER CONCEPT APPROVED; NOT ACTIVE)
+- Owner decision: Telcohauz itself funds any customer cashback from a portion of its **verified, received** EasyApply broadband commission. This is **not** an EasyApply or Touch 'n Go funded reward, and should never be described as one.
 - **Do not advertise, promise, reserve, or pay cashback until** EasyApply and relevant broadband-provider promotion/agent terms are confirmed to allow it; for future TNG Mini Program, obtain approval for any campaign and payment mechanics separately.
 - A submitted enquiry is **not** an eligible cashback event. Minimum suggested condition: verified successful installation/activation, application eligibility, commission credited and not reversed, and customer's reward eligibility validated. Make conditions and payout timing clear upfront.
 - Do not advertise "cashback just for submitting" if it actually requires installation. Do not describe a self-funded reward as sponsored or guaranteed by EasyApply or TNG.
