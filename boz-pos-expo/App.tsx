@@ -3,12 +3,14 @@ import {SafeAreaView,View,Text,TextInput,Pressable,ScrollView,StyleSheet,Alert,S
 import {CameraView,useCameraPermissions} from 'expo-camera';
 import * as Crypto from 'expo-crypto';
 import * as Print from 'expo-print';
+import * as SecureStore from 'expo-secure-store';
 import {items,jobs,labels,money,ShopId,Item,Job} from './src/demo';
 import {BozMobileApi,MobileSession} from './src/mobileApi';
 import {BozSupabaseApi} from './src/supabaseMobile';
 import {BOZ_SUPABASE_URL,BOZ_PUBLISHABLE_KEY} from './src/bozConfig';
 import {addCartUnit,buildDraftReceipt,cartLines} from './src/posDraft';
 import {confirmedSalePrintHtml} from './src/receiptPrint';
+import {PendingSale,parsePendingSale,encodePendingSale} from './src/pendingSale';
 import {answerBozShopQuestion} from './src/bozAssistant';
 import {selectShopRecords} from './src/shopView';
 type Tab='Cashier'|'Inventory'|'Repairs'|'BOZ AI'|'Settings';
@@ -20,7 +22,7 @@ export default function App(){
  const [search,setSearch]=useState('');const [cart,setCart]=useState<Record<string,number>>({});
  const [scan,setScan]=useState(false);const [scanLock,setScanLock]=useState(false);
  const scanGuard=useRef(false);const [draftReceipt,setDraftReceipt]=useState('');
- const pendingCheckoutKey=useRef<string|null>(null);const checkoutGuard=useRef(false);const [confirmedSaleId,setConfirmedSaleId]=useState('');
+ const pendingCheckoutKey=useRef<string|null>(null);const pendingSale=useRef<PendingSale|null>(null);const checkoutGuard=useRef(false);const [confirmedSaleId,setConfirmedSaleId]=useState('');
  const [permission,requestPermission]=useCameraPermissions();const [ask,setAsk]=useState('');
 
  const [answer,setAnswer]=useState('');const [adFree,setAdFree]=useState(false);
@@ -58,9 +60,15 @@ export default function App(){
   setBusy(true);
   try{
    const s=await api.signIn(email,password);
+   const local=await SecureStore.getItemAsync('boz_pos_pending_cash_v1');
+   const pending=local?parsePendingSale(local):null;
+   if(pending&&!(pending.userId===s.userId&&s.shops.some(x=>x.id===pending.shopId)))
+    throw new Error('A pending sale belongs to another staff or an unassigned shop. Reconcile it with the original cashier before starting a new sale.');
    setLiveProducts([]);setLiveRepairs([]);setLoadedShopId('');setAnswer('');
-   setSession(s);setActiveShopId(s.shops[0].id);setPassword('');setSearch('');setCart({});
-   setServerStatus('Authenticated. Loading authorized shop data...');
+   pendingSale.current=pending;pendingCheckoutKey.current=pending?.key||null;
+   setSession(s);setActiveShopId(pending?.shopId||s.shops[0].id);setPassword('');setSearch('');
+   setCart(pending?Object.fromEntries(pending.items.map(i=>[i.productId,i.quantity])):{});
+   setServerStatus(pending?'Previous sale pending confirmation: retry the same transaction key.':'Authenticated. Loading authorized shop data...');
   }catch(e){setServerStatus('Login failed: '+(e instanceof Error?e.message:'Unknown error'));}
   finally{setBusy(false);}
  }
@@ -74,7 +82,7 @@ export default function App(){
  function signOut(){
   if(checkoutGuard.current||pendingCheckoutKey.current){Alert.alert('Pending cash sale','Resolve the pending transaction before signing out. Check the Admin sales list or retry the same sale.');return;}
   setSession(null);setActiveShopId('');setLiveProducts([]);setLiveRepairs([]);setLoadedShopId('');
-  setCart({});setDraftReceipt('');setConfirmedSaleId('');pendingCheckoutKey.current=null;setPassword('');setSearch('');setAnswer('');setServerStatus('Disconnected.');
+  setCart({});setDraftReceipt('');setConfirmedSaleId('');pendingCheckoutKey.current=null;pendingSale.current=null;setPassword('');setSearch('');setAnswer('');setServerStatus('Disconnected.');
  }
 
  const own=useMemo(()=>session?selectShopRecords(activeShopId,loadedShopId,liveProducts):isLiveMode?[]:items.filter(x=>x.shop===shop),[session,activeShopId,loadedShopId,liveProducts,shop,isLiveMode]);
@@ -112,25 +120,37 @@ export default function App(){
  async function saveCashSale(){
   if(checkoutGuard.current||!session||!(api instanceof BozSupabaseApi)||!activeShopId)return;
   if(loadedShopId!==activeShopId){Alert.alert('Shop is loading','Wait until authorized shop records are ready.');return;}
-  let lines;
-  try{lines=cartLines(own,cart,activeShopId);if(!lines.length)throw Error('Add products first');}
-  catch(e){Alert.alert('Cart validation',e instanceof Error?e.message:'Invalid cart');return;}
-  const key=pendingCheckoutKey.current||Crypto.randomUUID();
-  pendingCheckoutKey.current=key;checkoutGuard.current=true;setBusy(true);
+  checkoutGuard.current=true;setBusy(true);
   try{
-   const receipt=await api.submitCashSale(session,activeShopId,key,lines.map(x=>({productId:x.id,quantity:x.quantity})));
+   let pending=pendingSale.current;
+   if(!pending){
+    const lines=cartLines(own,cart,activeShopId);
+    if(!lines.length)throw Error('Add products first');
+    const existing=await SecureStore.getItemAsync('boz_pos_pending_cash_v1');
+    if(existing)throw Error('A different pending sale already exists. Reconcile it first.');
+    pending={key:Crypto.randomUUID(),shopId:activeShopId,userId:session.userId,
+     items:lines.map(x=>({productId:x.id,quantity:x.quantity}))};
+    // Persist before the first network request; never put tokens/passwords here.
+    await SecureStore.setItemAsync('boz_pos_pending_cash_v1',encodePendingSale(pending));
+    pendingSale.current=pending;pendingCheckoutKey.current=pending.key;
+   }else if(pending.shopId!==activeShopId||pending.userId!==session.userId)
+    throw Error('Pending sale belongs to a different shop or cashier');
+   const receipt=await api.submitCashSale(session,activeShopId,pending.key,pending.items);
+   // A confirmed sale may still be restored and replayed if local deletion fails.
+   await SecureStore.deleteItemAsync('boz_pos_pending_cash_v1');
+   pendingSale.current=null;pendingCheckoutKey.current=null;
    const name=session.shops.find(x=>x.id===activeShopId)?.name||'Authorized shop';
    const msg=['BOZ POS · SALE CONFIRMATION','NOT A TAX INVOICE',
     'Shop: '+name,'Sale ID: '+receipt.saleId,'Paid cash: '+money(receipt.totalCents),
     receipt.replayed?'Recovered an already recorded sale.':'Payment recorded in BOZ.',
     'Receipt printer verification pending.'].join('\n');
-   pendingCheckoutKey.current=null;setCart({});setDraftReceipt(msg);setConfirmedSaleId(receipt.saleId);
+   setCart({});setDraftReceipt(msg);setConfirmedSaleId(receipt.saleId);
    setServerStatus('Cash sale recorded: '+receipt.saleId);
    try{const records=await api.inventory(session,activeShopId);setLiveProducts(records);}
    catch{setLiveProducts([]);setServerStatus('Sale saved. Reload stock from BOZ before next transaction.');}
   }catch(e){
-   setServerStatus('Sale confirmation uncertain. Retry using the same transaction key or verify in Admin Website.');
-   Alert.alert('Sale not confirmed', (e instanceof Error?e.message:'Connection error')+'\nRetry uses the same transaction key; do not create a new sale until reconciled.');
+   setServerStatus('Sale confirmation uncertain. Retry the persisted pending transaction or verify in Admin Website.');
+   Alert.alert('Sale not confirmed',(e instanceof Error?e.message:'Connection error')+'\nDo not take cash again. Reopen BOZ POS and retry using the persisted transaction key.');
   }finally{checkoutGuard.current=false;setBusy(false);}
  }
  async function printSaleConfirmation(){
@@ -141,7 +161,7 @@ export default function App(){
   }catch(e){Alert.alert('Print unavailable',e instanceof Error?e.message:'Select an Android-compatible printer');}
  }
  function askCashConfirmation(){
-  if(!mayCheckout||busy||!Object.values(cart).some(v=>v>0))return;
+  if(!mayCheckout||busy||(!pendingSale.current&&!Object.values(cart).some(v=>v>0)))return;
   if(pendingCheckoutKey.current){void saveCashSale();return;}
   Alert.alert('Confirm CASH received','Only confirm after collecting the cash. BOZ will save a real sale and reduce shop inventory.',
    [{text:'Cancel',style:'cancel'},{text:'Cash received — save sale',onPress:()=>{void saveCashSale()}}]);
