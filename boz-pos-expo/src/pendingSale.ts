@@ -19,7 +19,7 @@ export function parsePendingSale(raw:string):PendingSale{
   if(!v||typeof v!=='object'||Array.isArray(v))throw Error('Pending sale line invalid');
   const p=v as Record<string,unknown>;
   if(typeof p.productId!=='string'||!UUID.test(p.productId)
-  ||!Number.isSafeInteger(p.quantity)||Number(p.quantity)<1||Number(p.quantity)>1000)
+  ||typeof p.quantity!=='number'||!Number.isSafeInteger(p.quantity)||p.quantity<1||p.quantity>1000)
    throw Error('Pending sale product/quantity invalid');
   return {productId:p.productId,quantity:Number(p.quantity)};
  });
