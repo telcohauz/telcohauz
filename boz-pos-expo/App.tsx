@@ -3,6 +3,8 @@ import {SafeAreaView,View,Text,TextInput,Pressable,ScrollView,StyleSheet,Alert,S
 import {CameraView,useCameraPermissions} from 'expo-camera';
 import {items,jobs,labels,money,ShopId,Item,Job} from './src/demo';
 import {BozMobileApi,MobileSession} from './src/mobileApi';
+import {BozSupabaseApi} from './src/supabaseMobile';
+import {BOZ_SUPABASE_URL,BOZ_PUBLISHABLE_KEY} from './src/bozConfig';
 import {addCartUnit,buildDraftReceipt} from './src/posDraft';
 import {answerBozShopQuestion} from './src/bozAssistant';
 import {selectShopRecords} from './src/shopView';
@@ -19,7 +21,9 @@ export default function App(){
 
  const [answer,setAnswer]=useState('');const [adFree,setAdFree]=useState(false);
  const endpoint=process.env.EXPO_PUBLIC_BOZ_API_URL||'';
- const api=useMemo(()=>{try{return endpoint?new BozMobileApi(endpoint):null;}catch{return null;}},[endpoint]);
+ const supabaseUrl=process.env.EXPO_PUBLIC_BOZ_SUPABASE_URL||BOZ_SUPABASE_URL;
+ const supabaseKey=process.env.EXPO_PUBLIC_BOZ_SUPABASE_KEY||BOZ_PUBLISHABLE_KEY;
+ const api=useMemo(()=>{try{return supabaseUrl&&supabaseKey?new BozSupabaseApi(supabaseUrl,supabaseKey):endpoint?new BozMobileApi(endpoint):null;}catch{return null;}},[endpoint,supabaseUrl,supabaseKey]);
  const [email,setEmail]=useState('');const [password,setPassword]=useState('');
  const [session,setSession]=useState<MobileSession|null>(null);
  const [activeShopId,setActiveShopId]=useState('');
@@ -90,7 +94,7 @@ export default function App(){
  {tab==='BOZ AI'&&<><Text style={s.title}>BOZ AI demo</Text><Text style={s.small}>{session?'No live AI connected.':'Rule-based sample helper, not a connected model.'}</Text><TextInput style={s.input} placeholder="Ask in Malay or English..." value={ask} onChangeText={setAsk}/><Btn name="Ask" onPress={()=>{const allowedShop=session?activeShopId:shop;setAnswer(session&&(loadedShopId!==activeShopId||serverStatus!=='Read-only shop records loaded.')?'Data kedai belum tersedia / Shop records are not ready.':answerBozShopQuestion(allowedShop,own,ownRepairs,ask));setAsk('')}}/><View style={s.card}><Text style={s.strong}>BOZ</Text><Text style={s.body}>{answer||'Ask about stock, repairs or prices.'}</Text></View></>}
  {tab==='Settings'&&<><Text style={s.title}>Settings</Text>
  <View style={s.card}><Text style={s.strong}>BOS API connection</Text>
- <Text style={s.small}>Configured endpoint: {endpoint||'None — demo only'}</Text>
+ <Text style={s.small}>Configured BOZ endpoint: {supabaseUrl||endpoint||'None — demo only'}</Text>
  <Text style={s.small}>{serverStatus}</Text>
  <Btn name="Check API health" onPress={()=>{if(!busy)void health()}}/>
  {!session&&api&&<>
