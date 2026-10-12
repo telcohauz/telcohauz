@@ -19,3 +19,7 @@ Login to Expo only through official sign-in; never paste tokens into code or cha
 The workflow `BOZ POS Android Test APK` builds a **debug** APK without Expo login. Open GitHub Actions > workflow run > artifact `boz-pos-debug-apk`, provided the run actually succeeds. Debug APK is only for testing.
 ## Security rule
 Only the separate admin website may change master products, cost/price, suppliers, roles, or approve imports. The POS APK must use secure APIs for authorized operations and may never hold admin database credentials. Demo cart is intentionally read-only and never posts sales.
+
+## Phase 2 — Read-only mobile API client
+Android has a **gated optional authentication UI** and documented versioned mobile API adapter. Real BOS API is **not yet deployed or verified**. By default `EXPO_PUBLIC_BOZ_API_URL` is empty, so the app remains synthetic demo only. Once a trusted backend implements [the contract](docs/MOBILE_API_CONTRACT.md), supply its HTTPS URL at build time (never secrets), run tenant-isolation tests, then enable real data.
+No live sales, database/master-data writes or AI private-record access are possible from this prototype. Staff token exists in memory only and clears upon logout. Run `npm run unit` for API boundary tests.

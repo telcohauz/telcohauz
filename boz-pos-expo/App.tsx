@@ -1,7 +1,8 @@
-import React,{useMemo,useState} from 'react';
+import React,{useMemo,useState,useEffect} from 'react';
 import {SafeAreaView,View,Text,TextInput,Pressable,ScrollView,StyleSheet,Alert} from 'react-native';
 import {CameraView,useCameraPermissions} from 'expo-camera';
-import {items,jobs,labels,money,demoAnswer,ShopId,Item} from './src/demo';
+import {items,jobs,labels,money,demoAnswer,ShopId,Item,Job} from './src/demo';
+import {BozMobileApi,MobileSession} from './src/mobileApi';
 type Tab='Cashier'|'Inventory'|'Repairs'|'BOZ AI'|'Settings';
 const tabs:Tab[]=['Cashier','Inventory','Repairs','BOZ AI','Settings'];
 const colors={bg:'#f3f7f7',ink:'#193034',teal:'#137d6d',white:'#fff',muted:'#64767a'};
@@ -11,26 +12,86 @@ export default function App(){
  const [search,setSearch]=useState('');const [cart,setCart]=useState<Record<string,number>>({});
  const [scan,setScan]=useState(false);const [scanLock,setScanLock]=useState(false);
  const [permission,requestPermission]=useCameraPermissions();const [ask,setAsk]=useState('');
+
  const [answer,setAnswer]=useState('');const [adFree,setAdFree]=useState(false);
- const own=useMemo(()=>items.filter(x=>x.shop===shop),[shop]);
+ const endpoint=process.env.EXPO_PUBLIC_BOZ_API_URL||'';
+ const api=useMemo(()=>{try{return endpoint?new BozMobileApi(endpoint):null;}catch{return null;}},[endpoint]);
+ const [email,setEmail]=useState('');const [password,setPassword]=useState('');
+ const [session,setSession]=useState<MobileSession|null>(null);
+ const [activeShopId,setActiveShopId]=useState('');
+ const [liveProducts,setLiveProducts]=useState<Item[]>([]);const [liveRepairs,setLiveRepairs]=useState<Job[]>([]);
+ const [serverStatus,setServerStatus]=useState('No authenticated BOS server connected.');
+ const [busy,setBusy]=useState(false);
+ useEffect(()=>{
+  if(!api||!session||!activeShopId)return;
+  let cancelled=false;
+  setLiveProducts([]);setLiveRepairs([]);setServerStatus('Loading shop records...');
+  Promise.all([api.inventory(session,activeShopId),api.repairs(session,activeShopId)])
+   .then(([ps,rs])=>{if(!cancelled){setLiveProducts(ps);setLiveRepairs(rs);setServerStatus('Read-only shop records loaded.');}})
+   .catch(e=>{if(!cancelled){setLiveProducts([]);setLiveRepairs([]);setServerStatus(e instanceof Error?e.message:'Request failed');}});
+  return()=>{cancelled=true;};
+ },[api,session,activeShopId]);
+ async function signIn(){
+  if(!api)return;
+  setBusy(true);
+  try{
+   const s=await api.signIn(email,password);
+   setSession(s);setActiveShopId(s.shops[0].id);setPassword('');setSearch('');setCart({});
+   setServerStatus('Authenticated. Loading authorized shop data...');
+  }catch(e){setServerStatus('Login failed: '+(e instanceof Error?e.message:'Unknown error'));}
+  finally{setBusy(false);}
+ }
+ async function health(){
+  if(!api){setServerStatus('Backend is not configured in this build.');return;}
+  setBusy(true);
+  try{setServerStatus(await api.health());}
+  catch(e){setServerStatus(e instanceof Error?e.message:'Health check failed');}
+  finally{setBusy(false);}
+ }
+ function signOut(){
+  setSession(null);setActiveShopId('');setLiveProducts([]);setLiveRepairs([]);
+  setCart({});setPassword('');setSearch('');setAnswer('');setServerStatus('Disconnected.');
+ }
+
+ const own=useMemo(()=>session?liveProducts:items.filter(x=>x.shop===shop),[session,liveProducts,shop]);
+ const ownRepairs=useMemo(()=>session?liveRepairs:jobs.filter(j=>j.shop===shop),[session,liveRepairs,shop]);
  const found=useMemo(()=>own.filter(x=>(x.name+' '+x.sku+' '+x.barcode).toLowerCase().includes(search.toLowerCase())),[own,search]);
  const total=own.reduce((sum,p)=>sum+(cart[p.id]||0)*p.price,0);
- function changeShop(){setShop(shop==='shop-a'?'shop-b':'shop-a');setCart({});setSearch('');setAnswer('');}
+ function changeShop(){
+  if(session){
+   if(session.shops.length<2)return;
+   const i=session.shops.findIndex(x=>x.id===activeShopId);
+   setActiveShopId(session.shops[(i+1)%session.shops.length].id);
+  }else{setShop(shop==='shop-a'?'shop-b':'shop-a');}
+  setCart({});setSearch('');setAnswer('');
+ }
  function add(p:Item){if((cart[p.id]||0)>=p.qty){Alert.alert('Demo limit','Insufficient sample stock');return;}setCart(c=>({...c,[p.id]:(c[p.id]||0)+1}));}
  function barcode(data:string){if(scanLock)return;setScanLock(true);setScan(false);const p=own.find(x=>x.barcode===data||x.sku===data);if(p){add(p);setSearch(p.name);setTab('Cashier')}else{setSearch(data);setTab('Inventory');Alert.alert('Not found','Not found in selected demo shop. No database edit was made.')}}
  function row(label:string,value:string){return <View style={s.row}><Text style={s.body}>{label}</Text><Text style={s.strong}>{value}</Text></View>}
  return <SafeAreaView style={s.safe}>
- <View style={s.top}><View><Text style={s.small}>TELCOHAUZ · BUSINESS OS</Text><Text style={s.logo}>BOZ <Text style={{color:colors.teal}}>POS</Text></Text></View><Text style={s.chip}>DEMO OFFLINE</Text></View>
- <Pressable onPress={changeShop} style={s.shop}><Text style={s.strong}>▣ {labels[shop]}</Text><Text style={s.link}>Switch shop ↗</Text></Pressable>
+ <View style={s.top}><View><Text style={s.small}>TELCOHAUZ · BUSINESS OS</Text><Text style={s.logo}>BOZ <Text style={{color:colors.teal}}>POS</Text></Text></View><Text style={s.chip}>{session?'API READ ONLY':'DEMO OFFLINE'}</Text></View>
+ <Pressable onPress={changeShop} style={s.shop}><Text style={s.strong}>▣ {session?(session.shops.find(x=>x.id===activeShopId)?.name||'Assigned shop'):labels[shop]}</Text><Text style={s.link}>{session&&session.shops.length<2?'Assigned':'Switch shop ↗'}</Text></Pressable>
  {scan?<View style={{flex:1,padding:15}}><Text style={s.title}>Product scanner</Text>{!permission?<Text>Checking permission…</Text>:!permission.granted?<Btn name="Allow camera" onPress={()=>{void requestPermission()}}/>:<CameraView style={{flex:1,borderRadius:16,overflow:'hidden'}} facing="back" barcodeScannerSettings={{barcodeTypes:['ean13','ean8','code128','qr']}} onBarcodeScanned={scanLock?undefined:({data})=>barcode(data)}/>}<Btn name="Cancel" onPress={()=>setScan(false)}/></View>:
  <ScrollView style={{flex:1,padding:16}} keyboardShouldPersistTaps="handled">
  {tab==='Cashier'&&<><Text style={s.title}>New sale (preview)</Text><Text style={s.small}>No payment or database transactions</Text><Btn name="▣ Scan barcode using camera" onPress={()=>{setScanLock(false);setScan(true)}}/><TextInput placeholder="Search product, SKU or barcode" style={s.input} value={search} onChangeText={setSearch}/>
  {found.map(p=><View key={p.id} style={s.card}>{row(p.name,money(p.price))}<Text style={s.small}>{p.sku} · {p.qty} available</Text><Btn name={'Add to sample cart +'+(cart[p.id]?' ('+cart[p.id]+')':'')} onPress={()=>add(p)}/></View>)}
  <View style={s.card}><Text style={s.strong}>Sample cart</Text>{own.filter(p=>cart[p.id]).map(p=>row(p.name+' × '+cart[p.id],money(p.price*cart[p.id])))}{row('Total',money(total))}<Text style={s.small}>Checkout intentionally disabled until secure BOS backend integration.</Text><Btn name="Clear demo cart" onPress={()=>setCart({})}/></View></>}
  {tab==='Inventory'&&<><Text style={s.title}>Inventory · read only</Text><Text style={s.small}>Supplier costs and master products are edited ONLY on Admin Website</Text><TextInput style={s.input} placeholder="Search stock" value={search} onChangeText={setSearch}/>{found.map(p=><View style={s.card} key={p.id}>{row(p.name,money(p.price))}<Text style={s.small}>{p.sku} / {p.barcode} / Qty {p.qty}</Text></View>)}<Btn name="Camera scan" onPress={()=>{setScanLock(false);setScan(true)}}/></>}
- {tab==='Repairs'&&<><Text style={s.title}>Repair tickets</Text>{jobs.filter(j=>j.shop===shop).map(j=><View style={s.card} key={j.id}>{row(j.device,j.status)}<Text style={s.small}>{j.id} — {j.issue}</Text></View>)}<Text style={s.small}>Live repair changes require authenticated API permissions.</Text></>}
- {tab==='BOZ AI'&&<><Text style={s.title}>BOZ AI demo</Text><Text style={s.small}>Rule-based sample helper, not a connected model.</Text><TextInput style={s.input} placeholder="Ask in Malay or English..." value={ask} onChangeText={setAsk}/><Btn name="Ask" onPress={()=>{setAnswer(demoAnswer(shop,ask));setAsk('')}}/><View style={s.card}><Text style={s.strong}>BOZ</Text><Text style={s.body}>{answer||'Ask about stock, repairs or prices.'}</Text></View></>}
- {tab==='Settings'&&<><Text style={s.title}>Settings</Text><View style={s.card}><Text style={s.strong}>Ad removal preview</Text><Text style={s.small}>Local UI preview only. No subscription payment or ad network.</Text><Btn name={adFree?'Switch to free with banner':'Preview ad-free'} onPress={()=>setAdFree(!adFree)}/></View><View style={s.card}><Text style={s.strong}>Integrations</Text><Text style={s.small}>Bluetooth printing: pending hardware validation</Text><Text style={s.small}>AI historical migration: Admin Website only</Text><Text style={s.small}>Backend/API: disconnected demo</Text></View></>}
+ {tab==='Repairs'&&<><Text style={s.title}>Repair tickets</Text>{ownRepairs.map(j=><View style={s.card} key={j.id}>{row(j.device,j.status)}<Text style={s.small}>{j.id} — {j.issue}</Text></View>)}<Text style={s.small}>Live repair changes require authenticated API permissions.</Text></>}
+ {tab==='BOZ AI'&&<><Text style={s.title}>BOZ AI demo</Text><Text style={s.small}>{session?'No live AI connected.':'Rule-based sample helper, not a connected model.'}</Text><TextInput style={s.input} placeholder="Ask in Malay or English..." value={ask} onChangeText={setAsk}/><Btn name="Ask" onPress={()=>{setAnswer(session?'Live AI gateway not configured. No shop data sent.':demoAnswer(shop,ask));setAsk('')}}/><View style={s.card}><Text style={s.strong}>BOZ</Text><Text style={s.body}>{answer||'Ask about stock, repairs or prices.'}</Text></View></>}
+ {tab==='Settings'&&<><Text style={s.title}>Settings</Text>
+ <View style={s.card}><Text style={s.strong}>BOS API connection</Text>
+ <Text style={s.small}>Configured endpoint: {endpoint||'None — demo only'}</Text>
+ <Text style={s.small}>{serverStatus}</Text>
+ <Btn name="Check API health" onPress={()=>{if(!busy)void health()}}/>
+ {!session&&api&&<>
+ <TextInput style={s.input} placeholder="Staff email" autoCapitalize="none" keyboardType="email-address" value={email} onChangeText={setEmail}/>
+ <TextInput style={s.input} placeholder="Password (memory only)" secureTextEntry value={password} onChangeText={setPassword}/>
+ <Btn name={busy?'Working...':'Sign in to verified BOS API'} onPress={()=>{if(!busy)void signIn()}}/>
+ </>}
+ {session&&<><Text style={s.small}>Authorized shops: {session.shops.map(x=>x.name).join(', ')}</Text><Btn name="Disconnect and clear token" onPress={signOut}/></>}
+ <Text style={s.small}>Use only an independently verified HTTPS BOS server. Passwords and tokens are not saved on your device.</Text>
+ </View><View style={s.card}><Text style={s.strong}>Ad removal preview</Text><Text style={s.small}>Local UI preview only. No subscription payment or ad network.</Text><Btn name={adFree?'Switch to free with banner':'Preview ad-free'} onPress={()=>setAdFree(!adFree)}/></View><View style={s.card}><Text style={s.strong}>Integrations</Text><Text style={s.small}>Bluetooth printing: pending hardware validation</Text><Text style={s.small}>AI historical migration: Admin Website only</Text><Text style={s.small}>Backend/API: {session?'Read-only session':'Disconnected demo'}</Text></View></>}
  {!adFree && tab==='Settings' && <View style={s.ad}><Text style={s.small}>ADVERTISEMENT · PLACEHOLDER (NO REAL ADS)</Text></View>}
  </ScrollView>}
  <View style={s.nav}>{tabs.map(t=><Pressable key={t} onPress={()=>{setTab(t);setSearch('');setScan(false)}} style={[s.navItem,tab===t&&s.navActive]}><Text style={[s.navText,tab===t&&{color:colors.teal}]}>{t}</Text></Pressable>)}</View>

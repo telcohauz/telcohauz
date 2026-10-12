@@ -31,6 +31,8 @@ jobs:
         run: npx expo install --check
       - name: Validate application
         run: npm run check && npm run typecheck
+      - name: Test mobile API boundaries
+        run: npm run unit
       - name: Generate Android project
         run: npx expo prebuild --platform android --non-interactive --no-install
       - name: Build installable debug APK
