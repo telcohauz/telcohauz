@@ -1,0 +1,10 @@
+import assert from 'node:assert/strict';import fs from 'node:fs';
+const root=new URL('../',import.meta.url);
+const rd=(x)=>fs.readFileSync(new URL(x,root),'utf8');
+const p=JSON.parse(rd('package.json'));const a=JSON.parse(rd('app.json'));const e=JSON.parse(rd('eas.json'));
+assert.match(p.dependencies.expo,/^~57/);assert.equal(a.expo.android.package,'com.telcohauz.bozpos');
+assert.equal(e.build.preview.android.buildType,'apk');assert.equal(e.build.preview.distribution,'internal');
+const s=rd('App.tsx');for(const tab of ['Cashier','Inventory','Repairs','BOZ AI','Settings'])assert(s.includes(tab));
+assert(s.includes('CameraView')&&s.includes('onBarcodeScanned'));
+assert(!s.includes('service_role')&&!s.includes('SUPABASE_SERVICE_ROLE'));
+console.log('PASS: Expo MVP safety and configuration checks');

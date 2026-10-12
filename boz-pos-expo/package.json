@@ -1,0 +1,22 @@
+{
+  "name": "boz-pos-expo",
+  "version": "0.1.0",
+  "private": true,
+  "main": "index.ts",
+  "scripts": {
+    "start": "expo start",
+    "typecheck": "tsc --noEmit",
+    "check": "node scripts/validate.mjs",
+    "eas:apk": "eas build -p android --profile preview"
+  },
+  "dependencies": {
+    "expo": "~57.0.21",
+    "expo-camera": "~57.0.6",
+    "react": "19.2.3",
+    "react-native": "0.86.3"
+  },
+  "devDependencies": {
+    "@types/react": "~19.2.0",
+    "typescript": "~5.9.3"
+  }
+}
