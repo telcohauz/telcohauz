@@ -94,6 +94,14 @@ export class BozSupabaseApi{
     issue:str(x.issue,'issue'),status:str(x.status,'status').replace(/_/g,' ')};
   });
  }
+ async adFreeEntitlement(session:MobileSession,shopId:string):Promise<boolean>{
+  const id=this.check(session,shopId);
+  const rows=arr(await this.call('/rest/v1/pos_shop_entitlements?select=shop_id,ad_free&shop_id=eq.'+id,session.accessToken),'shop entitlements');
+  if(rows.length>1)throw Error('Duplicate shop entitlement response');
+  if(rows.length===0)return false;
+  if(rows[0].shop_id!==shopId||typeof rows[0].ad_free!=='boolean')throw Error('Invalid entitlement response');
+  return rows[0].ad_free;
+ }
  async updateRepair(session:MobileSession,shopId:string,repairId:string,status:string):Promise<{repairId:string;shopId:string;status:string}>{
   this.check(session,shopId);
   const role=session.shops.find(x=>x.id===shopId)?.role;

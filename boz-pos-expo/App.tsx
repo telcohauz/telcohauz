@@ -45,6 +45,14 @@ export default function App(){
    .catch(e=>{if(!cancelled){setLiveProducts([]);setLiveRepairs([]);setLoadedShopId('');setServerStatus(e instanceof Error?e.message:'Request failed');}});
   return()=>{cancelled=true;};
  },[api,session,activeShopId]);
+ useEffect(()=>{
+  if(!session||!activeShopId||!(api instanceof BozSupabaseApi)){setAdFree(false);return;}
+  let closed=false;setAdFree(false);
+  api.adFreeEntitlement(session,activeShopId)
+    .then(enabled=>{if(!closed)setAdFree(enabled)})
+    .catch(()=>{if(!closed)setAdFree(false)});
+  return ()=>{closed=true;};
+ },[api,session,activeShopId]);
  async function signIn(){
   if(!api)return;
   setBusy(true);
@@ -176,7 +184,7 @@ export default function App(){
  </>}
  {session&&<><Text style={s.small}>Authorized shops: {session.shops.map(x=>x.name).join(', ')}</Text><Btn name="Disconnect and clear token" onPress={signOut}/></>}
  <Text style={s.small}>Use only an independently verified HTTPS BOS server. Passwords and tokens are not saved on your device.</Text>
- </View><View style={s.card}><Text style={s.strong}>Ad removal preview</Text><Text style={s.small}>Local UI preview only. No subscription payment or ad network.</Text><Btn name={adFree?'Switch to free with banner':'Preview ad-free'} onPress={()=>setAdFree(!adFree)}/></View><View style={s.card}><Text style={s.strong}>Integrations</Text><Text style={s.small}>Bluetooth printing: pending hardware validation</Text><Text style={s.small}>AI historical migration: Admin Website only</Text><Text style={s.small}>Backend/API: {session?'Read-only session':'Disconnected demo'}</Text></View></>}
+ </View><View style={s.card}><Text style={s.strong}>BOZ Ad Entitlement</Text><Text style={s.small}>{session?(adFree?'Ad-free entitlement active (BOZ verified).':'Free tier — ad network is not connected yet.'):'No subscription is active.'}</Text><Text style={s.small}>Payments or ad-free upgrades cannot be toggled locally. Entitlement is managed by Telcohauz BOZ.</Text></View><View style={s.card}><Text style={s.strong}>Integrations</Text><Text style={s.small}>Bluetooth printing: pending hardware validation</Text><Text style={s.small}>AI historical migration: Admin Website only</Text><Text style={s.small}>Backend/API: {session?'Read-only session':'Disconnected demo'}</Text></View></>}
  {!adFree && tab==='Settings' && <View style={s.ad}><Text style={s.small}>ADVERTISEMENT · PLACEHOLDER (NO REAL ADS)</Text></View>}
  </ScrollView>}
  <View style={s.nav}>{tabs.map(t=><Pressable key={t} onPress={()=>{setTab(t);setSearch('');setScan(false)}} style={[s.navItem,tab===t&&s.navActive]}><Text style={[s.navText,tab===t&&{color:colors.teal}]}>{t}</Text></Pressable>)}</View>
