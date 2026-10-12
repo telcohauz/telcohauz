@@ -1,11 +1,12 @@
 import React,{useMemo,useState,useEffect,useRef} from 'react';
 import {SafeAreaView,View,Text,TextInput,Pressable,ScrollView,StyleSheet,Alert,Share} from 'react-native';
 import {CameraView,useCameraPermissions} from 'expo-camera';
+import * as Crypto from 'expo-crypto';
 import {items,jobs,labels,money,ShopId,Item,Job} from './src/demo';
 import {BozMobileApi,MobileSession} from './src/mobileApi';
 import {BozSupabaseApi} from './src/supabaseMobile';
 import {BOZ_SUPABASE_URL,BOZ_PUBLISHABLE_KEY} from './src/bozConfig';
-import {addCartUnit,buildDraftReceipt} from './src/posDraft';
+import {addCartUnit,buildDraftReceipt,cartLines} from './src/posDraft';
 import {answerBozShopQuestion} from './src/bozAssistant';
 import {selectShopRecords} from './src/shopView';
 type Tab='Cashier'|'Inventory'|'Repairs'|'BOZ AI'|'Settings';
@@ -17,6 +18,7 @@ export default function App(){
  const [search,setSearch]=useState('');const [cart,setCart]=useState<Record<string,number>>({});
  const [scan,setScan]=useState(false);const [scanLock,setScanLock]=useState(false);
  const scanGuard=useRef(false);const [draftReceipt,setDraftReceipt]=useState('');
+ const pendingCheckoutKey=useRef<string|null>(null);const checkoutGuard=useRef(false);const [confirmedSaleId,setConfirmedSaleId]=useState('');
  const [permission,requestPermission]=useCameraPermissions();const [ask,setAsk]=useState('');
 
  const [answer,setAnswer]=useState('');const [adFree,setAdFree]=useState(false);
@@ -61,26 +63,60 @@ export default function App(){
  }
  function signOut(){
   setSession(null);setActiveShopId('');setLiveProducts([]);setLiveRepairs([]);setLoadedShopId('');
-  setCart({});setDraftReceipt('');setPassword('');setSearch('');setAnswer('');setServerStatus('Disconnected.');
+  setCart({});setDraftReceipt('');setConfirmedSaleId('');pendingCheckoutKey.current=null;setPassword('');setSearch('');setAnswer('');setServerStatus('Disconnected.');
  }
 
  const own=useMemo(()=>session?selectShopRecords(activeShopId,loadedShopId,liveProducts):isLiveMode?[]:items.filter(x=>x.shop===shop),[session,activeShopId,loadedShopId,liveProducts,shop,isLiveMode]);
  const ownRepairs=useMemo(()=>session?selectShopRecords(activeShopId,loadedShopId,liveRepairs):isLiveMode?[]:jobs.filter(j=>j.shop===shop),[session,activeShopId,loadedShopId,liveRepairs,shop,isLiveMode]);
  const found=useMemo(()=>own.filter(x=>(x.name+' '+x.sku+' '+x.barcode).toLowerCase().includes(search.toLowerCase())),[own,search]);
  const total=own.reduce((sum,p)=>sum+(cart[p.id]||0)*p.price,0);
+ const role=session?.shops.find(s=>s.id===activeShopId)?.role||'';
+ const mayCheckout=session&&api instanceof BozSupabaseApi&&['OWNER','ADMIN','CASHIER'].includes(role);
  function changeShop(){
+  if(pendingCheckoutKey.current){Alert.alert('Pending sale','Resolve the previous sale before changing shops.');return;}
   if(session){
    if(session.shops.length<2)return;
    const i=session.shops.findIndex(x=>x.id===activeShopId);
    setLiveProducts([]);setLiveRepairs([]);setLoadedShopId('');
    setActiveShopId(session.shops[(i+1)%session.shops.length].id);
   }else{setShop(shop==='shop-a'?'shop-b':'shop-a');}
-  setCart({});setDraftReceipt('');setSearch('');setAnswer('');
+  setCart({});setDraftReceipt('');setConfirmedSaleId('');setSearch('');setAnswer('');
  }
- function add(p:Item){try{setCart(addCartUnit(cart,p,session?activeShopId:shop));setDraftReceipt('');}catch(e){Alert.alert('Cart restriction',e instanceof Error?e.message:'Cannot add product');}}
+ function add(p:Item){if(pendingCheckoutKey.current){Alert.alert('Pending sale','Retry or verify the pending cash sale before changing this cart.');return;}try{setCart(addCartUnit(cart,p,session?activeShopId:shop));setDraftReceipt('');setConfirmedSaleId('');}catch(e){Alert.alert('Cart restriction',e instanceof Error?e.message:'Cannot add product');}}
  function barcode(data:string){if(scanGuard.current)return;scanGuard.current=true;setScanLock(true);setScan(false);const p=own.find(x=>x.barcode===data||x.sku===data);if(p){add(p);setSearch(p.name);setTab('Cashier')}else{setSearch(data);setTab('Inventory');Alert.alert('Not found','Product unavailable in selected shop. No database edit was made.')}}
  function openScanner(){scanGuard.current=false;setScanLock(false);setScan(true);}
  function previewDraft(){try{const shopId=session?activeShopId:shop;const label=session?(session.shops.find(x=>x.id===shopId)?.name||'Assigned shop'):labels[shop];setDraftReceipt(buildDraftReceipt(own,cart,shopId,label));}catch(e){Alert.alert('Draft unavailable',e instanceof Error?e.message:'Cart validation failed');}}
+ function clearCart(){if(pendingCheckoutKey.current){Alert.alert('Sale status unresolved','Do not discard a pending sale. Retry using the same key or check BOZ Admin sales.');return;}setCart({});setDraftReceipt('');setConfirmedSaleId('');}
+ async function saveCashSale(){
+  if(checkoutGuard.current||!session||!(api instanceof BozSupabaseApi)||!activeShopId)return;
+  if(loadedShopId!==activeShopId){Alert.alert('Shop is loading','Wait until authorized shop records are ready.');return;}
+  let lines;
+  try{lines=cartLines(own,cart,activeShopId);if(!lines.length)throw Error('Add products first');}
+  catch(e){Alert.alert('Cart validation',e instanceof Error?e.message:'Invalid cart');return;}
+  const key=pendingCheckoutKey.current||Crypto.randomUUID();
+  pendingCheckoutKey.current=key;checkoutGuard.current=true;setBusy(true);
+  try{
+   const receipt=await api.submitCashSale(session,activeShopId,key,lines.map(x=>({productId:x.id,quantity:x.quantity})));
+   const name=session.shops.find(x=>x.id===activeShopId)?.name||'Authorized shop';
+   const msg=['BOZ POS · SALE CONFIRMATION','NOT A TAX INVOICE',
+    'Shop: '+name,'Sale ID: '+receipt.saleId,'Paid cash: '+money(receipt.totalCents),
+    receipt.replayed?'Recovered an already recorded sale.':'Payment recorded in BOZ.',
+    'Receipt printer verification pending.'].join('\n');
+   pendingCheckoutKey.current=null;setCart({});setDraftReceipt(msg);setConfirmedSaleId(receipt.saleId);
+   setServerStatus('Cash sale recorded: '+receipt.saleId);
+   try{const records=await api.inventory(session,activeShopId);setLiveProducts(records);}
+   catch{setLiveProducts([]);setServerStatus('Sale saved. Reload stock from BOZ before next transaction.');}
+  }catch(e){
+   setServerStatus('Sale confirmation uncertain. Retry using the same transaction key or verify in Admin Website.');
+   Alert.alert('Sale not confirmed', (e instanceof Error?e.message:'Connection error')+'\nRetry uses the same transaction key; do not create a new sale until reconciled.');
+  }finally{checkoutGuard.current=false;setBusy(false);}
+ }
+ function askCashConfirmation(){
+  if(!mayCheckout||busy||!Object.values(cart).some(v=>v>0))return;
+  if(pendingCheckoutKey.current){void saveCashSale();return;}
+  Alert.alert('Confirm CASH received','Only confirm after collecting the cash. BOZ will save a real sale and reduce shop inventory.',
+   [{text:'Cancel',style:'cancel'},{text:'Cash received — save sale',onPress:()=>{void saveCashSale()}}]);
+ }
  function row(label:string,value:string){return <View style={s.row}><Text style={s.body}>{label}</Text><Text style={s.strong}>{value}</Text></View>}
  if(isLiveMode&&!session)return <SafeAreaView style={s.safe}>
   <View style={s.top}><View><Text style={s.small}>TELCOHAUZ BOZ · PRODUCTION BACKEND</Text><Text style={s.logo}>BOZ <Text style={{color:colors.teal}}>POS</Text></Text></View><Text style={s.chip}>LOGIN REQUIRED</Text></View>
@@ -103,7 +139,7 @@ export default function App(){
  <ScrollView style={{flex:1,padding:16}} keyboardShouldPersistTaps="handled">
  {tab==='Cashier'&&<><Text style={s.title}>New sale (preview)</Text><Text style={s.small}>Draft only — server checkout requires an enabled and tested cashier workflow.</Text><Btn name="▣ Scan barcode using camera" onPress={openScanner}/><TextInput placeholder="Search product, SKU or barcode" style={s.input} value={search} onChangeText={setSearch}/>
  {found.map(p=><View key={p.id} style={s.card}>{row(p.name,money(p.price))}<Text style={s.small}>{p.sku} · {p.qty} available</Text><Btn name={'Add to sample cart +'+(cart[p.id]?' ('+cart[p.id]+')':'')} onPress={()=>add(p)}/></View>)}
- <View style={s.card}><Text style={s.strong}>Cart</Text>{own.filter(p=>cart[p.id]).map(p=>row(p.name+' × '+cart[p.id],money(p.price*cart[p.id])))}{row('Total',money(total))}<Text style={s.small}>Cash checkout will be enabled after staff onboarding, transactional acceptance tests and a physical receipt test.</Text><Btn name="Preview receipt draft (no sale)" onPress={previewDraft}/>{draftReceipt?<View style={s.card}><Text style={s.body}>{draftReceipt}</Text><Btn name="Share draft only" onPress={()=>{void Share.share({message:draftReceipt})}}/></View>:null}<Btn name="Clear cart" onPress={()=>{setCart({});setDraftReceipt('')}}/></View></>}
+ <View style={s.card}><Text style={s.strong}>Cart</Text>{own.filter(p=>cart[p.id]).map(p=>row(p.name+' × '+cart[p.id],money(p.price*cart[p.id])))}{row('Estimate',money(total))}<Text style={s.small}>BOZ server calculates the authoritative sale total and stock deduction. Cash sale requires cashier confirmation.</Text>{mayCheckout?<Btn name={busy?'Saving...':pendingCheckoutKey.current?'Retry pending cash sale':'Confirm cash received & record sale'} onPress={askCashConfirmation}/>:null}<Btn name="Preview unsaved draft" onPress={previewDraft}/>{draftReceipt?<View style={s.card}><Text style={s.body}>{draftReceipt}</Text><Btn name={confirmedSaleId?'Share confirmed sale summary':'Share draft only'} onPress={()=>{void Share.share({message:draftReceipt})}}/></View>:null}<Btn name="Clear cart" onPress={clearCart}/></View></>}
  {tab==='Inventory'&&<><Text style={s.title}>Inventory · read only</Text><Text style={s.small}>Supplier costs and master products are edited ONLY on Admin Website</Text><TextInput style={s.input} placeholder="Search stock" value={search} onChangeText={setSearch}/>{found.map(p=><View style={s.card} key={p.id}>{row(p.name,money(p.price))}<Text style={s.small}>{p.sku} / {p.barcode} / Qty {p.qty}</Text></View>)}<Btn name="Camera scan" onPress={openScanner}/></>}
  {tab==='Repairs'&&<><Text style={s.title}>Repair tickets</Text>{ownRepairs.map(j=><View style={s.card} key={j.id}>{row(j.device,j.status)}<Text style={s.small}>{j.id} — {j.issue}</Text></View>)}<Text style={s.small}>Live repair changes require authenticated API permissions.</Text></>}
  {tab==='BOZ AI'&&<><Text style={s.title}>BOZ Assistant</Text><Text style={s.small}>{session?'No live AI connected.':'Rule-based sample helper, not a connected model.'}</Text><TextInput style={s.input} placeholder="Ask in Malay or English..." value={ask} onChangeText={setAsk}/><Btn name="Ask" onPress={()=>{const allowedShop=session?activeShopId:shop;setAnswer(session&&(loadedShopId!==activeShopId||serverStatus!=='Read-only shop records loaded.')?'Data kedai belum tersedia / Shop records are not ready.':answerBozShopQuestion(allowedShop,own,ownRepairs,ask));setAsk('')}}/><View style={s.card}><Text style={s.strong}>BOZ</Text><Text style={s.body}>{answer||'Ask about stock, repairs or prices.'}</Text></View></>}
