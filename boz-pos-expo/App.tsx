@@ -72,6 +72,7 @@ export default function App(){
  const total=own.reduce((sum,p)=>sum+(cart[p.id]||0)*p.price,0);
  const role=session?.shops.find(s=>s.id===activeShopId)?.role||'';
  const mayCheckout=session&&api instanceof BozSupabaseApi&&['OWNER','ADMIN','CASHIER'].includes(role);
+ const mayRepair=session&&api instanceof BozSupabaseApi&&['OWNER','ADMIN','TECHNICIAN'].includes(role);
  function changeShop(){
   if(pendingCheckoutKey.current){Alert.alert('Pending sale','Resolve the previous sale before changing shops.');return;}
   if(session){
@@ -87,6 +88,16 @@ export default function App(){
  function openScanner(){scanGuard.current=false;setScanLock(false);setScan(true);}
  function previewDraft(){try{const shopId=session?activeShopId:shop;const label=session?(session.shops.find(x=>x.id===shopId)?.name||'Assigned shop'):labels[shop];setDraftReceipt(buildDraftReceipt(own,cart,shopId,label));}catch(e){Alert.alert('Draft unavailable',e instanceof Error?e.message:'Cart validation failed');}}
  function clearCart(){if(pendingCheckoutKey.current){Alert.alert('Sale status unresolved','Do not discard a pending sale. Retry using the same key or check BOZ Admin sales.');return;}setCart({});setDraftReceipt('');setConfirmedSaleId('');}
+ async function advanceRepair(repairId:string,nextStatus:string){
+  if(!mayRepair||!session||!(api instanceof BozSupabaseApi)||!activeShopId||busy)return;
+  setBusy(true);
+  try{
+   await api.updateRepair(session,activeShopId,repairId,nextStatus);
+   setLiveRepairs(await api.repairs(session,activeShopId));
+   setServerStatus('Repair ticket updated: '+nextStatus);
+  }catch(e){Alert.alert('Repair not changed',e instanceof Error?e.message:'Operation rejected');}
+  finally{setBusy(false);}
+ }
  async function saveCashSale(){
   if(checkoutGuard.current||!session||!(api instanceof BozSupabaseApi)||!activeShopId)return;
   if(loadedShopId!==activeShopId){Alert.alert('Shop is loading','Wait until authorized shop records are ready.');return;}
@@ -141,7 +152,7 @@ export default function App(){
  {found.map(p=><View key={p.id} style={s.card}>{row(p.name,money(p.price))}<Text style={s.small}>{p.sku} · {p.qty} available</Text><Btn name={'Add to sample cart +'+(cart[p.id]?' ('+cart[p.id]+')':'')} onPress={()=>add(p)}/></View>)}
  <View style={s.card}><Text style={s.strong}>Cart</Text>{own.filter(p=>cart[p.id]).map(p=>row(p.name+' × '+cart[p.id],money(p.price*cart[p.id])))}{row('Estimate',money(total))}<Text style={s.small}>BOZ server calculates the authoritative sale total and stock deduction. Cash sale requires cashier confirmation.</Text>{mayCheckout?<Btn name={busy?'Saving...':pendingCheckoutKey.current?'Retry pending cash sale':'Confirm cash received & record sale'} onPress={askCashConfirmation}/>:null}<Btn name="Preview unsaved draft" onPress={previewDraft}/>{draftReceipt?<View style={s.card}><Text style={s.body}>{draftReceipt}</Text><Btn name={confirmedSaleId?'Share confirmed sale summary':'Share draft only'} onPress={()=>{void Share.share({message:draftReceipt})}}/></View>:null}<Btn name="Clear cart" onPress={clearCart}/></View></>}
  {tab==='Inventory'&&<><Text style={s.title}>Inventory · read only</Text><Text style={s.small}>Supplier costs and master products are edited ONLY on Admin Website</Text><TextInput style={s.input} placeholder="Search stock" value={search} onChangeText={setSearch}/>{found.map(p=><View style={s.card} key={p.id}>{row(p.name,money(p.price))}<Text style={s.small}>{p.sku} / {p.barcode} / Qty {p.qty}</Text></View>)}<Btn name="Camera scan" onPress={openScanner}/></>}
- {tab==='Repairs'&&<><Text style={s.title}>Repair tickets</Text>{ownRepairs.map(j=><View style={s.card} key={j.id}>{row(j.device,j.status)}<Text style={s.small}>{j.id} — {j.issue}</Text></View>)}<Text style={s.small}>Live repair changes require authenticated API permissions.</Text></>}
+ {tab==='Repairs'&&<><Text style={s.title}>Repair tickets</Text>{ownRepairs.map(j=><View style={s.card} key={j.id}>{row(j.device,j.status)}<Text style={s.small}>{j.id} — {j.issue}</Text>{mayRepair&&j.status!=='COMPLETED'&&j.status!=='CANCELLED'?<Btn name={j.status==='READY'?'Mark completed':'Move to next repair stage'} onPress={()=>{const next=j.status==='PENDING'?'IN_PROGRESS':j.status==='IN_PROGRESS'?'READY':'COMPLETED';Alert.alert('Confirm repair status','Update ticket to '+next+'?', [{text:'Cancel',style:'cancel'},{text:'Confirm update',onPress:()=>{void advanceRepair(j.id,next)}}])}}/>:null}</View>)}<Text style={s.small}>Live repair changes require authenticated API permissions.</Text></>}
  {tab==='BOZ AI'&&<><Text style={s.title}>BOZ Assistant</Text><Text style={s.small}>{session?'No live AI connected.':'Rule-based sample helper, not a connected model.'}</Text><TextInput style={s.input} placeholder="Ask in Malay or English..." value={ask} onChangeText={setAsk}/><Btn name="Ask" onPress={()=>{const allowedShop=session?activeShopId:shop;setAnswer(session&&(loadedShopId!==activeShopId||serverStatus!=='Read-only shop records loaded.')?'Data kedai belum tersedia / Shop records are not ready.':answerBozShopQuestion(allowedShop,own,ownRepairs,ask));setAsk('')}}/><View style={s.card}><Text style={s.strong}>BOZ</Text><Text style={s.body}>{answer||'Ask about stock, repairs or prices.'}</Text></View></>}
  {tab==='Settings'&&<><Text style={s.title}>Settings</Text>
  <View style={s.card}><Text style={s.strong}>BOS API connection</Text>

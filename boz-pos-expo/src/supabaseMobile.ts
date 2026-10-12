@@ -94,6 +94,17 @@ export class BozSupabaseApi{
     issue:str(x.issue,'issue'),status:str(x.status,'status').replace(/_/g,' ')};
   });
  }
+ async updateRepair(session:MobileSession,shopId:string,repairId:string,status:string):Promise<{repairId:string;shopId:string;status:string}>{
+  this.check(session,shopId);
+  const role=session.shops.find(x=>x.id===shopId)?.role;
+  if(!['OWNER','ADMIN','TECHNICIAN'].includes(role||''))throw Error('Repair staff role required');
+  if(!UUID.test(repairId)||!['PENDING','IN_PROGRESS','READY','COMPLETED','CANCELLED'].includes(status))throw Error('Invalid repair update');
+  const v=obj(await this.call('/rest/v1/rpc/pos_admin_update_repair',session.accessToken,'POST',{
+   p_shop:shopId,p_repair:repairId,p_status:status
+  }));
+  if(v.shopId!==shopId||v.repairId!==repairId||v.status!==status)throw Error('Unexpected repair update response');
+  return {shopId,repairId,status};
+ }
  async submitCashSale(session:MobileSession,shopId:string,idempotencyKey:string,items:{productId:string,quantity:number}[]):Promise<{saleId:string;shopId:string;totalCents:number;replayed:boolean}>{
   this.check(session,shopId);
   if(!UUID.test(idempotencyKey)||!Array.isArray(items)||items.length<1||items.length>100)throw Error('Invalid checkout');
