@@ -5,6 +5,7 @@ import {items,jobs,labels,money,ShopId,Item,Job} from './src/demo';
 import {BozMobileApi,MobileSession} from './src/mobileApi';
 import {addCartUnit,buildDraftReceipt} from './src/posDraft';
 import {answerBozShopQuestion} from './src/bozAssistant';
+import {selectShopRecords} from './src/shopView';
 type Tab='Cashier'|'Inventory'|'Repairs'|'BOZ AI'|'Settings';
 const tabs:Tab[]=['Cashier','Inventory','Repairs','BOZ AI','Settings'];
 const colors={bg:'#f3f7f7',ink:'#193034',teal:'#137d6d',white:'#fff',muted:'#64767a'};
@@ -23,15 +24,16 @@ export default function App(){
  const [session,setSession]=useState<MobileSession|null>(null);
  const [activeShopId,setActiveShopId]=useState('');
  const [liveProducts,setLiveProducts]=useState<Item[]>([]);const [liveRepairs,setLiveRepairs]=useState<Job[]>([]);
+ const [loadedShopId,setLoadedShopId]=useState('');
  const [serverStatus,setServerStatus]=useState('No authenticated BOS server connected.');
  const [busy,setBusy]=useState(false);
  useEffect(()=>{
   if(!api||!session||!activeShopId)return;
   let cancelled=false;
-  setLiveProducts([]);setLiveRepairs([]);setServerStatus('Loading shop records...');
+  setLiveProducts([]);setLiveRepairs([]);setLoadedShopId('');setServerStatus('Loading shop records...');
   Promise.all([api.inventory(session,activeShopId),api.repairs(session,activeShopId)])
-   .then(([ps,rs])=>{if(!cancelled){setLiveProducts(ps);setLiveRepairs(rs);setServerStatus('Read-only shop records loaded.');}})
-   .catch(e=>{if(!cancelled){setLiveProducts([]);setLiveRepairs([]);setServerStatus(e instanceof Error?e.message:'Request failed');}});
+   .then(([ps,rs])=>{if(!cancelled){setLiveProducts(ps);setLiveRepairs(rs);setLoadedShopId(activeShopId);setServerStatus('Read-only shop records loaded.');}})
+   .catch(e=>{if(!cancelled){setLiveProducts([]);setLiveRepairs([]);setLoadedShopId('');setServerStatus(e instanceof Error?e.message:'Request failed');}});
   return()=>{cancelled=true;};
  },[api,session,activeShopId]);
  async function signIn(){
@@ -39,6 +41,7 @@ export default function App(){
   setBusy(true);
   try{
    const s=await api.signIn(email,password);
+   setLiveProducts([]);setLiveRepairs([]);setLoadedShopId('');setAnswer('');
    setSession(s);setActiveShopId(s.shops[0].id);setPassword('');setSearch('');setCart({});
    setServerStatus('Authenticated. Loading authorized shop data...');
   }catch(e){setServerStatus('Login failed: '+(e instanceof Error?e.message:'Unknown error'));}
@@ -52,18 +55,19 @@ export default function App(){
   finally{setBusy(false);}
  }
  function signOut(){
-  setSession(null);setActiveShopId('');setLiveProducts([]);setLiveRepairs([]);
+  setSession(null);setActiveShopId('');setLiveProducts([]);setLiveRepairs([]);setLoadedShopId('');
   setCart({});setDraftReceipt('');setPassword('');setSearch('');setAnswer('');setServerStatus('Disconnected.');
  }
 
- const own=useMemo(()=>session?liveProducts:items.filter(x=>x.shop===shop),[session,liveProducts,shop]);
- const ownRepairs=useMemo(()=>session?liveRepairs:jobs.filter(j=>j.shop===shop),[session,liveRepairs,shop]);
+ const own=useMemo(()=>session?selectShopRecords(activeShopId,loadedShopId,liveProducts):items.filter(x=>x.shop===shop),[session,activeShopId,loadedShopId,liveProducts,shop]);
+ const ownRepairs=useMemo(()=>session?selectShopRecords(activeShopId,loadedShopId,liveRepairs):jobs.filter(j=>j.shop===shop),[session,activeShopId,loadedShopId,liveRepairs,shop]);
  const found=useMemo(()=>own.filter(x=>(x.name+' '+x.sku+' '+x.barcode).toLowerCase().includes(search.toLowerCase())),[own,search]);
  const total=own.reduce((sum,p)=>sum+(cart[p.id]||0)*p.price,0);
  function changeShop(){
   if(session){
    if(session.shops.length<2)return;
    const i=session.shops.findIndex(x=>x.id===activeShopId);
+   setLiveProducts([]);setLiveRepairs([]);setLoadedShopId('');
    setActiveShopId(session.shops[(i+1)%session.shops.length].id);
   }else{setShop(shop==='shop-a'?'shop-b':'shop-a');}
   setCart({});setDraftReceipt('');setSearch('');setAnswer('');
@@ -83,7 +87,7 @@ export default function App(){
  <View style={s.card}><Text style={s.strong}>Sample cart</Text>{own.filter(p=>cart[p.id]).map(p=>row(p.name+' × '+cart[p.id],money(p.price*cart[p.id])))}{row('Total',money(total))}<Text style={s.small}>Checkout intentionally disabled until secure BOS backend integration.</Text><Btn name="Preview receipt draft (no sale)" onPress={previewDraft}/>{draftReceipt?<View style={s.card}><Text style={s.body}>{draftReceipt}</Text><Btn name="Share draft only" onPress={()=>{void Share.share({message:draftReceipt})}}/></View>:null}<Btn name="Clear demo cart" onPress={()=>{setCart({});setDraftReceipt('')}}/></View></>}
  {tab==='Inventory'&&<><Text style={s.title}>Inventory · read only</Text><Text style={s.small}>Supplier costs and master products are edited ONLY on Admin Website</Text><TextInput style={s.input} placeholder="Search stock" value={search} onChangeText={setSearch}/>{found.map(p=><View style={s.card} key={p.id}>{row(p.name,money(p.price))}<Text style={s.small}>{p.sku} / {p.barcode} / Qty {p.qty}</Text></View>)}<Btn name="Camera scan" onPress={openScanner}/></>}
  {tab==='Repairs'&&<><Text style={s.title}>Repair tickets</Text>{ownRepairs.map(j=><View style={s.card} key={j.id}>{row(j.device,j.status)}<Text style={s.small}>{j.id} — {j.issue}</Text></View>)}<Text style={s.small}>Live repair changes require authenticated API permissions.</Text></>}
- {tab==='BOZ AI'&&<><Text style={s.title}>BOZ AI demo</Text><Text style={s.small}>{session?'No live AI connected.':'Rule-based sample helper, not a connected model.'}</Text><TextInput style={s.input} placeholder="Ask in Malay or English..." value={ask} onChangeText={setAsk}/><Btn name="Ask" onPress={()=>{const allowedShop=session?activeShopId:shop;setAnswer(session&&serverStatus!=='Read-only shop records loaded.'?'Data kedai belum tersedia / Shop records are not ready.':answerBozShopQuestion(allowedShop,own,ownRepairs,ask));setAsk('')}}/><View style={s.card}><Text style={s.strong}>BOZ</Text><Text style={s.body}>{answer||'Ask about stock, repairs or prices.'}</Text></View></>}
+ {tab==='BOZ AI'&&<><Text style={s.title}>BOZ AI demo</Text><Text style={s.small}>{session?'No live AI connected.':'Rule-based sample helper, not a connected model.'}</Text><TextInput style={s.input} placeholder="Ask in Malay or English..." value={ask} onChangeText={setAsk}/><Btn name="Ask" onPress={()=>{const allowedShop=session?activeShopId:shop;setAnswer(session&&(loadedShopId!==activeShopId||serverStatus!=='Read-only shop records loaded.')?'Data kedai belum tersedia / Shop records are not ready.':answerBozShopQuestion(allowedShop,own,ownRepairs,ask));setAsk('')}}/><View style={s.card}><Text style={s.strong}>BOZ</Text><Text style={s.body}>{answer||'Ask about stock, repairs or prices.'}</Text></View></>}
  {tab==='Settings'&&<><Text style={s.title}>Settings</Text>
  <View style={s.card}><Text style={s.strong}>BOS API connection</Text>
  <Text style={s.small}>Configured endpoint: {endpoint||'None — demo only'}</Text>
