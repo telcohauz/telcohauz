@@ -1,5 +1,10 @@
 # BOZ POS — Expo Android demo (Telcohauz)
-**Status: source starter only. Not production or a tested APK.**
+**Status (12 Oct 2026): REAL BOZ Supabase backend deployed; production user onboarding and device acceptance NOT completed.**
+- [Production readiness + owner onboarding](docs/PRODUCTION_READINESS.md)
+- [Admin web portal](https://ocqcmdigylxasxsuxaxt.supabase.co/functions/v1/boz-pos-admin-site)
+- Current Android source uses Supabase Auth and real shop-scoped inventory, repairs, staff cash checkout, and native Android print dialog; the cloud-created APK is DEBUG/TEST, not signed release.
+- Supabase `ocqcmdigylxasxsuxaxt` currently has NO registered Auth/OWNER/shop; users must register/verify legitimate accounts, then authorized BOZ owner approves role. Do not seed fictitious sales.
+- Real ad network/subscription activation, full AI, historical import, hardware thermal printer QA, signed APK and production availability remain pending.
 Five screens: Cashier, Inventory, Repairs, BOZ AI, Settings. Camera barcode/QR scanning, sample products, a cart that CANNOT finalize transactions, shop-specific synthetic data, and non-network ads placeholder. All records are sample only. Production backend, POS authentication, tenant enforcement, real AI, payment, subscription and printer adapters still need work.
 ## Phone-only build with Expo EAS
 From an Android browser, open this branch in GitHub Codespaces. In the terminal:
