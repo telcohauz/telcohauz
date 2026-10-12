@@ -1,9 +1,10 @@
 import React,{useMemo,useState,useEffect,useRef} from 'react';
 import {SafeAreaView,View,Text,TextInput,Pressable,ScrollView,StyleSheet,Alert,Share} from 'react-native';
 import {CameraView,useCameraPermissions} from 'expo-camera';
-import {items,jobs,labels,money,demoAnswer,ShopId,Item,Job} from './src/demo';
+import {items,jobs,labels,money,ShopId,Item,Job} from './src/demo';
 import {BozMobileApi,MobileSession} from './src/mobileApi';
 import {addCartUnit,buildDraftReceipt} from './src/posDraft';
+import {answerBozShopQuestion} from './src/bozAssistant';
 type Tab='Cashier'|'Inventory'|'Repairs'|'BOZ AI'|'Settings';
 const tabs:Tab[]=['Cashier','Inventory','Repairs','BOZ AI','Settings'];
 const colors={bg:'#f3f7f7',ink:'#193034',teal:'#137d6d',white:'#fff',muted:'#64767a'};
@@ -82,7 +83,7 @@ export default function App(){
  <View style={s.card}><Text style={s.strong}>Sample cart</Text>{own.filter(p=>cart[p.id]).map(p=>row(p.name+' × '+cart[p.id],money(p.price*cart[p.id])))}{row('Total',money(total))}<Text style={s.small}>Checkout intentionally disabled until secure BOS backend integration.</Text><Btn name="Preview receipt draft (no sale)" onPress={previewDraft}/>{draftReceipt?<View style={s.card}><Text style={s.body}>{draftReceipt}</Text><Btn name="Share draft only" onPress={()=>{void Share.share({message:draftReceipt})}}/></View>:null}<Btn name="Clear demo cart" onPress={()=>{setCart({});setDraftReceipt('')}}/></View></>}
  {tab==='Inventory'&&<><Text style={s.title}>Inventory · read only</Text><Text style={s.small}>Supplier costs and master products are edited ONLY on Admin Website</Text><TextInput style={s.input} placeholder="Search stock" value={search} onChangeText={setSearch}/>{found.map(p=><View style={s.card} key={p.id}>{row(p.name,money(p.price))}<Text style={s.small}>{p.sku} / {p.barcode} / Qty {p.qty}</Text></View>)}<Btn name="Camera scan" onPress={openScanner}/></>}
  {tab==='Repairs'&&<><Text style={s.title}>Repair tickets</Text>{ownRepairs.map(j=><View style={s.card} key={j.id}>{row(j.device,j.status)}<Text style={s.small}>{j.id} — {j.issue}</Text></View>)}<Text style={s.small}>Live repair changes require authenticated API permissions.</Text></>}
- {tab==='BOZ AI'&&<><Text style={s.title}>BOZ AI demo</Text><Text style={s.small}>{session?'No live AI connected.':'Rule-based sample helper, not a connected model.'}</Text><TextInput style={s.input} placeholder="Ask in Malay or English..." value={ask} onChangeText={setAsk}/><Btn name="Ask" onPress={()=>{setAnswer(session?'Live AI gateway not configured. No shop data sent.':demoAnswer(shop,ask));setAsk('')}}/><View style={s.card}><Text style={s.strong}>BOZ</Text><Text style={s.body}>{answer||'Ask about stock, repairs or prices.'}</Text></View></>}
+ {tab==='BOZ AI'&&<><Text style={s.title}>BOZ AI demo</Text><Text style={s.small}>{session?'No live AI connected.':'Rule-based sample helper, not a connected model.'}</Text><TextInput style={s.input} placeholder="Ask in Malay or English..." value={ask} onChangeText={setAsk}/><Btn name="Ask" onPress={()=>{const allowedShop=session?activeShopId:shop;setAnswer(session&&serverStatus!=='Read-only shop records loaded.'?'Data kedai belum tersedia / Shop records are not ready.':answerBozShopQuestion(allowedShop,own,ownRepairs,ask));setAsk('')}}/><View style={s.card}><Text style={s.strong}>BOZ</Text><Text style={s.body}>{answer||'Ask about stock, repairs or prices.'}</Text></View></>}
  {tab==='Settings'&&<><Text style={s.title}>Settings</Text>
  <View style={s.card}><Text style={s.strong}>BOS API connection</Text>
  <Text style={s.small}>Configured endpoint: {endpoint||'None — demo only'}</Text>
