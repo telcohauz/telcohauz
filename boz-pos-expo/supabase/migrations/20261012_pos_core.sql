@@ -182,18 +182,18 @@ begin
    'totalCents',v_existing.total_cents,'replayed',true);
  end if;
  -- Quantity and type checks also reject over-large or malformed client payloads.
- if exists(select 1 from pg_catalog.jsonb_array_elements(p_items) v
-           where pg_catalog.jsonb_typeof(v) <> 'object'
-              or v->>'productId' is null
-              or v->>'quantity' is null)
+ if exists(select 1 from pg_catalog.jsonb_array_elements(p_items) as item(value)
+           where pg_catalog.jsonb_typeof(item.value) <> 'object'
+              or item.value->>'productId' is null
+              or item.value->>'quantity' is null)
  then raise exception 'Malformed sale line'; end if;
  insert into public.pos_sales(shop_id,idempotency_key,cashier_user_id,total_cents,tender_method)
  values(p_shop_id,p_idempotency_key,v_user,0,'CASH') returning id into v_sale_id;
  for v_line in
-   select (l->>'productId')::uuid as product_id,
-     sum((l->>'quantity')::integer)::integer as quantity
-   from pg_catalog.jsonb_array_elements(p_items) l
-   group by (l->>'productId')::uuid
+   select (item.value->>'productId')::uuid as product_id,
+     sum((item.value->>'quantity')::integer)::integer as quantity
+   from pg_catalog.jsonb_array_elements(p_items) as item(value)
+   group by (item.value->>'productId')::uuid
  loop
   if v_line.quantity < 1 or v_line.quantity > 1000
   then raise exception 'Invalid item quantity'; end if;
