@@ -26,7 +26,8 @@ export function normalizeApiRoot(input:string):string{
 }
 export class BozMobileApi{
  private root:string;
- constructor(endpoint:string,private transport:Requester=fetch){this.root=normalizeApiRoot(endpoint);}
+ private transport:Requester;
+ constructor(endpoint:string,transport:Requester=fetch){this.root=normalizeApiRoot(endpoint);this.transport=transport;}
  private async request(path:string,method:'GET'|'POST'='GET',token?:string,payload?:unknown):Promise<unknown>{
   if(!path.startsWith('/mobile/v1/'))throw new Error('Unexpected API path');
   const response=await this.transport(this.root+path,{method,headers:{
