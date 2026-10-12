@@ -91,7 +91,7 @@ export class BozSupabaseApi{
   return rows.map(x=>{
    if(x.shop_id!==shopId)throw Error('Cross-shop repair returned');
    return {id:str(x.id,'repair ID'),shop:shopId,device:str(x.device,'device'),
-    issue:str(x.issue,'issue'),status:str(x.status,'status').replace(/_/g,' ')};
+    issue:str(x.issue,'issue'),status:str(x.status,'status')};
   });
  }
  async adFreeEntitlement(session:MobileSession,shopId:string):Promise<boolean>{
