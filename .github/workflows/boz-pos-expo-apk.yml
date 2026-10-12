@@ -4,9 +4,20 @@ on:
     branches:
       - boz-pos-expo-mvp-20261012
     paths:
-      - 'boz-pos-expo/**'
+      - 'boz-pos-expo/App.tsx'
+      - 'boz-pos-expo/index.ts'
+      - 'boz-pos-expo/src/**'
+      - 'boz-pos-expo/tests/**'
+      - 'boz-pos-expo/scripts/**'
+      - 'boz-pos-expo/package.json'
+      - 'boz-pos-expo/app.json'
+      - 'boz-pos-expo/tsconfig.json'
+      - 'boz-pos-expo/eas.json'
       - '.github/workflows/boz-pos-expo-apk.yml'
   workflow_dispatch:
+concurrency:
+  group: boz-pos-apk-${{ github.ref }}
+  cancel-in-progress: true
 jobs:
   build-android-debug-apk:
     runs-on: ubuntu-latest
