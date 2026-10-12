@@ -2,11 +2,13 @@ import React,{useMemo,useState,useEffect,useRef} from 'react';
 import {SafeAreaView,View,Text,TextInput,Pressable,ScrollView,StyleSheet,Alert,Share} from 'react-native';
 import {CameraView,useCameraPermissions} from 'expo-camera';
 import * as Crypto from 'expo-crypto';
+import * as Print from 'expo-print';
 import {items,jobs,labels,money,ShopId,Item,Job} from './src/demo';
 import {BozMobileApi,MobileSession} from './src/mobileApi';
 import {BozSupabaseApi} from './src/supabaseMobile';
 import {BOZ_SUPABASE_URL,BOZ_PUBLISHABLE_KEY} from './src/bozConfig';
 import {addCartUnit,buildDraftReceipt,cartLines} from './src/posDraft';
+import {confirmedSalePrintHtml} from './src/receiptPrint';
 import {answerBozShopQuestion} from './src/bozAssistant';
 import {selectShopRecords} from './src/shopView';
 type Tab='Cashier'|'Inventory'|'Repairs'|'BOZ AI'|'Settings';
@@ -123,6 +125,13 @@ export default function App(){
    Alert.alert('Sale not confirmed', (e instanceof Error?e.message:'Connection error')+'\nRetry uses the same transaction key; do not create a new sale until reconciled.');
   }finally{checkoutGuard.current=false;setBusy(false);}
  }
+ async function printSaleConfirmation(){
+  if(!confirmedSaleId){Alert.alert('No confirmed sale','A completed BOZ sale is required to print.');return;}
+  try{
+   const html=confirmedSalePrintHtml(confirmedSaleId,draftReceipt);
+   await Print.printAsync({html});
+  }catch(e){Alert.alert('Print unavailable',e instanceof Error?e.message:'Select an Android-compatible printer');}
+ }
  function askCashConfirmation(){
   if(!mayCheckout||busy||!Object.values(cart).some(v=>v>0))return;
   if(pendingCheckoutKey.current){void saveCashSale();return;}
@@ -151,7 +160,7 @@ export default function App(){
  <ScrollView style={{flex:1,padding:16}} keyboardShouldPersistTaps="handled">
  {tab==='Cashier'&&<><Text style={s.title}>Cash Sales</Text><Text style={s.small}>Authenticated shop cash checkout. Confirm cash receipt before submitting the sale.</Text><Btn name="▣ Scan barcode using camera" onPress={openScanner}/><TextInput placeholder="Search product, SKU or barcode" style={s.input} value={search} onChangeText={setSearch}/>
  {found.map(p=><View key={p.id} style={s.card}>{row(p.name,money(p.price))}<Text style={s.small}>{p.sku} · {p.qty} available</Text><Btn name={'Add to sample cart +'+(cart[p.id]?' ('+cart[p.id]+')':'')} onPress={()=>add(p)}/></View>)}
- <View style={s.card}><Text style={s.strong}>Cart</Text>{own.filter(p=>cart[p.id]).map(p=>row(p.name+' × '+cart[p.id],money(p.price*cart[p.id])))}{row('Estimate',money(total))}<Text style={s.small}>BOZ server calculates the authoritative sale total and stock deduction. Cash sale requires cashier confirmation.</Text>{mayCheckout?<Btn name={busy?'Saving...':pendingCheckoutKey.current?'Retry pending cash sale':'Confirm cash received & record sale'} onPress={askCashConfirmation}/>:null}<Btn name="Preview unsaved draft" onPress={previewDraft}/>{draftReceipt?<View style={s.card}><Text style={s.body}>{draftReceipt}</Text><Btn name={confirmedSaleId?'Share confirmed sale summary':'Share draft only'} onPress={()=>{void Share.share({message:draftReceipt})}}/></View>:null}<Btn name="Clear cart" onPress={clearCart}/></View></>}
+ <View style={s.card}><Text style={s.strong}>Cart</Text>{own.filter(p=>cart[p.id]).map(p=>row(p.name+' × '+cart[p.id],money(p.price*cart[p.id])))}{row('Estimate',money(total))}<Text style={s.small}>BOZ server calculates the authoritative sale total and stock deduction. Cash sale requires cashier confirmation.</Text>{mayCheckout?<Btn name={busy?'Saving...':pendingCheckoutKey.current?'Retry pending cash sale':'Confirm cash received & record sale'} onPress={askCashConfirmation}/>:null}<Btn name="Preview unsaved draft" onPress={previewDraft}/>{draftReceipt?<View style={s.card}><Text style={s.body}>{draftReceipt}</Text><Btn name={confirmedSaleId?'Share confirmed sale summary':'Share draft only'} onPress={()=>{void Share.share({message:draftReceipt})}}/>{confirmedSaleId?<Btn name="Print confirmed sale via Android" onPress={()=>{void printSaleConfirmation()}}/>:null}</View>:null}<Btn name="Clear cart" onPress={clearCart}/></View></>}
  {tab==='Inventory'&&<><Text style={s.title}>Inventory · read only</Text><Text style={s.small}>Supplier costs and master products are edited ONLY on Admin Website</Text><TextInput style={s.input} placeholder="Search stock" value={search} onChangeText={setSearch}/>{found.map(p=><View style={s.card} key={p.id}>{row(p.name,money(p.price))}<Text style={s.small}>{p.sku} / {p.barcode} / Qty {p.qty}</Text></View>)}<Btn name="Camera scan" onPress={openScanner}/></>}
  {tab==='Repairs'&&<><Text style={s.title}>Repair tickets</Text>{ownRepairs.map(j=><View style={s.card} key={j.id}>{row(j.device,j.status)}<Text style={s.small}>{j.id} — {j.issue}</Text>{mayRepair&&j.status!=='COMPLETED'&&j.status!=='CANCELLED'?<Btn name={j.status==='READY'?'Mark completed':'Move to next repair stage'} onPress={()=>{const next=j.status==='PENDING'?'IN_PROGRESS':j.status==='IN_PROGRESS'?'READY':'COMPLETED';Alert.alert('Confirm repair status','Update ticket to '+next+'?', [{text:'Cancel',style:'cancel'},{text:'Confirm update',onPress:()=>{void advanceRepair(j.id,next)}}])}}/>:null}</View>)}<Text style={s.small}>Live repair changes require authenticated API permissions.</Text></>}
  {tab==='BOZ AI'&&<><Text style={s.title}>BOZ Assistant</Text><Text style={s.small}>{session?'No live AI connected.':'Rule-based sample helper, not a connected model.'}</Text><TextInput style={s.input} placeholder="Ask in Malay or English..." value={ask} onChangeText={setAsk}/><Btn name="Ask" onPress={()=>{const allowedShop=session?activeShopId:shop;setAnswer(session&&(loadedShopId!==activeShopId||serverStatus!=='Read-only shop records loaded.')?'Data kedai belum tersedia / Shop records are not ready.':answerBozShopQuestion(allowedShop,own,ownRepairs,ask));setAsk('')}}/><View style={s.card}><Text style={s.strong}>BOZ</Text><Text style={s.body}>{answer||'Ask about stock, repairs or prices.'}</Text></View></>}
