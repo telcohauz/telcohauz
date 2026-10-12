@@ -1,8 +1,9 @@
-import React,{useMemo,useState,useEffect} from 'react';
-import {SafeAreaView,View,Text,TextInput,Pressable,ScrollView,StyleSheet,Alert} from 'react-native';
+import React,{useMemo,useState,useEffect,useRef} from 'react';
+import {SafeAreaView,View,Text,TextInput,Pressable,ScrollView,StyleSheet,Alert,Share} from 'react-native';
 import {CameraView,useCameraPermissions} from 'expo-camera';
 import {items,jobs,labels,money,demoAnswer,ShopId,Item,Job} from './src/demo';
 import {BozMobileApi,MobileSession} from './src/mobileApi';
+import {addCartUnit,buildDraftReceipt} from './src/posDraft';
 type Tab='Cashier'|'Inventory'|'Repairs'|'BOZ AI'|'Settings';
 const tabs:Tab[]=['Cashier','Inventory','Repairs','BOZ AI','Settings'];
 const colors={bg:'#f3f7f7',ink:'#193034',teal:'#137d6d',white:'#fff',muted:'#64767a'};
@@ -11,6 +12,7 @@ export default function App(){
  const [shop,setShop]=useState<ShopId>('shop-a');const [tab,setTab]=useState<Tab>('Cashier');
  const [search,setSearch]=useState('');const [cart,setCart]=useState<Record<string,number>>({});
  const [scan,setScan]=useState(false);const [scanLock,setScanLock]=useState(false);
+ const scanGuard=useRef(false);const [draftReceipt,setDraftReceipt]=useState('');
  const [permission,requestPermission]=useCameraPermissions();const [ask,setAsk]=useState('');
 
  const [answer,setAnswer]=useState('');const [adFree,setAdFree]=useState(false);
@@ -50,7 +52,7 @@ export default function App(){
  }
  function signOut(){
   setSession(null);setActiveShopId('');setLiveProducts([]);setLiveRepairs([]);
-  setCart({});setPassword('');setSearch('');setAnswer('');setServerStatus('Disconnected.');
+  setCart({});setDraftReceipt('');setPassword('');setSearch('');setAnswer('');setServerStatus('Disconnected.');
  }
 
  const own=useMemo(()=>session?liveProducts:items.filter(x=>x.shop===shop),[session,liveProducts,shop]);
@@ -63,20 +65,22 @@ export default function App(){
    const i=session.shops.findIndex(x=>x.id===activeShopId);
    setActiveShopId(session.shops[(i+1)%session.shops.length].id);
   }else{setShop(shop==='shop-a'?'shop-b':'shop-a');}
-  setCart({});setSearch('');setAnswer('');
+  setCart({});setDraftReceipt('');setSearch('');setAnswer('');
  }
- function add(p:Item){if((cart[p.id]||0)>=p.qty){Alert.alert('Demo limit','Insufficient sample stock');return;}setCart(c=>({...c,[p.id]:(c[p.id]||0)+1}));}
- function barcode(data:string){if(scanLock)return;setScanLock(true);setScan(false);const p=own.find(x=>x.barcode===data||x.sku===data);if(p){add(p);setSearch(p.name);setTab('Cashier')}else{setSearch(data);setTab('Inventory');Alert.alert('Not found','Not found in selected demo shop. No database edit was made.')}}
+ function add(p:Item){try{setCart(addCartUnit(cart,p,session?activeShopId:shop));setDraftReceipt('');}catch(e){Alert.alert('Cart restriction',e instanceof Error?e.message:'Cannot add product');}}
+ function barcode(data:string){if(scanGuard.current)return;scanGuard.current=true;setScanLock(true);setScan(false);const p=own.find(x=>x.barcode===data||x.sku===data);if(p){add(p);setSearch(p.name);setTab('Cashier')}else{setSearch(data);setTab('Inventory');Alert.alert('Not found','Product unavailable in selected shop. No database edit was made.')}}
+ function openScanner(){scanGuard.current=false;setScanLock(false);setScan(true);}
+ function previewDraft(){try{const shopId=session?activeShopId:shop;const label=session?(session.shops.find(x=>x.id===shopId)?.name||'Assigned shop'):labels[shop];setDraftReceipt(buildDraftReceipt(own,cart,shopId,label));}catch(e){Alert.alert('Draft unavailable',e instanceof Error?e.message:'Cart validation failed');}}
  function row(label:string,value:string){return <View style={s.row}><Text style={s.body}>{label}</Text><Text style={s.strong}>{value}</Text></View>}
  return <SafeAreaView style={s.safe}>
  <View style={s.top}><View><Text style={s.small}>TELCOHAUZ · BUSINESS OS</Text><Text style={s.logo}>BOZ <Text style={{color:colors.teal}}>POS</Text></Text></View><Text style={s.chip}>{session?'API READ ONLY':'DEMO OFFLINE'}</Text></View>
  <Pressable onPress={changeShop} style={s.shop}><Text style={s.strong}>▣ {session?(session.shops.find(x=>x.id===activeShopId)?.name||'Assigned shop'):labels[shop]}</Text><Text style={s.link}>{session&&session.shops.length<2?'Assigned':'Switch shop ↗'}</Text></Pressable>
  {scan?<View style={{flex:1,padding:15}}><Text style={s.title}>Product scanner</Text>{!permission?<Text>Checking permission…</Text>:!permission.granted?<Btn name="Allow camera" onPress={()=>{void requestPermission()}}/>:<CameraView style={{flex:1,borderRadius:16,overflow:'hidden'}} facing="back" barcodeScannerSettings={{barcodeTypes:['ean13','ean8','code128','qr']}} onBarcodeScanned={scanLock?undefined:({data})=>barcode(data)}/>}<Btn name="Cancel" onPress={()=>setScan(false)}/></View>:
  <ScrollView style={{flex:1,padding:16}} keyboardShouldPersistTaps="handled">
- {tab==='Cashier'&&<><Text style={s.title}>New sale (preview)</Text><Text style={s.small}>No payment or database transactions</Text><Btn name="▣ Scan barcode using camera" onPress={()=>{setScanLock(false);setScan(true)}}/><TextInput placeholder="Search product, SKU or barcode" style={s.input} value={search} onChangeText={setSearch}/>
+ {tab==='Cashier'&&<><Text style={s.title}>New sale (preview)</Text><Text style={s.small}>No payment or database transactions</Text><Btn name="▣ Scan barcode using camera" onPress={openScanner}/><TextInput placeholder="Search product, SKU or barcode" style={s.input} value={search} onChangeText={setSearch}/>
  {found.map(p=><View key={p.id} style={s.card}>{row(p.name,money(p.price))}<Text style={s.small}>{p.sku} · {p.qty} available</Text><Btn name={'Add to sample cart +'+(cart[p.id]?' ('+cart[p.id]+')':'')} onPress={()=>add(p)}/></View>)}
- <View style={s.card}><Text style={s.strong}>Sample cart</Text>{own.filter(p=>cart[p.id]).map(p=>row(p.name+' × '+cart[p.id],money(p.price*cart[p.id])))}{row('Total',money(total))}<Text style={s.small}>Checkout intentionally disabled until secure BOS backend integration.</Text><Btn name="Clear demo cart" onPress={()=>setCart({})}/></View></>}
- {tab==='Inventory'&&<><Text style={s.title}>Inventory · read only</Text><Text style={s.small}>Supplier costs and master products are edited ONLY on Admin Website</Text><TextInput style={s.input} placeholder="Search stock" value={search} onChangeText={setSearch}/>{found.map(p=><View style={s.card} key={p.id}>{row(p.name,money(p.price))}<Text style={s.small}>{p.sku} / {p.barcode} / Qty {p.qty}</Text></View>)}<Btn name="Camera scan" onPress={()=>{setScanLock(false);setScan(true)}}/></>}
+ <View style={s.card}><Text style={s.strong}>Sample cart</Text>{own.filter(p=>cart[p.id]).map(p=>row(p.name+' × '+cart[p.id],money(p.price*cart[p.id])))}{row('Total',money(total))}<Text style={s.small}>Checkout intentionally disabled until secure BOS backend integration.</Text><Btn name="Preview receipt draft (no sale)" onPress={previewDraft}/>{draftReceipt?<View style={s.card}><Text style={s.body}>{draftReceipt}</Text><Btn name="Share draft only" onPress={()=>{void Share.share({message:draftReceipt})}}/></View>:null}<Btn name="Clear demo cart" onPress={()=>{setCart({});setDraftReceipt('')}}/></View></>}
+ {tab==='Inventory'&&<><Text style={s.title}>Inventory · read only</Text><Text style={s.small}>Supplier costs and master products are edited ONLY on Admin Website</Text><TextInput style={s.input} placeholder="Search stock" value={search} onChangeText={setSearch}/>{found.map(p=><View style={s.card} key={p.id}>{row(p.name,money(p.price))}<Text style={s.small}>{p.sku} / {p.barcode} / Qty {p.qty}</Text></View>)}<Btn name="Camera scan" onPress={openScanner}/></>}
  {tab==='Repairs'&&<><Text style={s.title}>Repair tickets</Text>{ownRepairs.map(j=><View style={s.card} key={j.id}>{row(j.device,j.status)}<Text style={s.small}>{j.id} — {j.issue}</Text></View>)}<Text style={s.small}>Live repair changes require authenticated API permissions.</Text></>}
  {tab==='BOZ AI'&&<><Text style={s.title}>BOZ AI demo</Text><Text style={s.small}>{session?'No live AI connected.':'Rule-based sample helper, not a connected model.'}</Text><TextInput style={s.input} placeholder="Ask in Malay or English..." value={ask} onChangeText={setAsk}/><Btn name="Ask" onPress={()=>{setAnswer(session?'Live AI gateway not configured. No shop data sent.':demoAnswer(shop,ask));setAsk('')}}/><View style={s.card}><Text style={s.strong}>BOZ</Text><Text style={s.body}>{answer||'Ask about stock, repairs or prices.'}</Text></View></>}
  {tab==='Settings'&&<><Text style={s.title}>Settings</Text>

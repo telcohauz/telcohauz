@@ -23,3 +23,6 @@ Only the separate admin website may change master products, cost/price, supplier
 ## Phase 2 — Read-only mobile API client
 Android has a **gated optional authentication UI** and documented versioned mobile API adapter. Real BOS API is **not yet deployed or verified**. By default `EXPO_PUBLIC_BOZ_API_URL` is empty, so the app remains synthetic demo only. Once a trusted backend implements [the contract](docs/MOBILE_API_CONTRACT.md), supply its HTTPS URL at build time (never secrets), run tenant-isolation tests, then enable real data.
 No live sales, database/master-data writes or AI private-record access are possible from this prototype. Staff token exists in memory only and clears upon logout. Run `npm run unit` for API boundary tests.
+
+## Phase 3 — Cart integrity + shareable draft
+Pure functions validate current shop ownership, integer sen, stock quantity and cart totals. Camera scanning uses a synchronous callback guard against repeated barcode events. Staff can generate and share an **UNSAVED DRAFT** marked not a receipt/tax invoice; this does not print on a Bluetooth receipt printer or finalize any sale. Cloud workflow runs `npm run unit` and compiles APK. Physical camera installation/printing remains unverified.
