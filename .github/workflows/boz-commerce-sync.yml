@@ -1,0 +1,30 @@
+name: BOZ Commerce Sync Guardrails
+
+on:
+  push:
+    branches:
+      - feat/boz-shopee-loyverse-sync-20261015
+  pull_request:
+    branches:
+      - boz-pos-expo-mvp-20261012
+    paths:
+      - 'services/commerce-sync/**'
+      - '.github/workflows/boz-commerce-sync.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  unit:
+    name: Offline order safety tests
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Checkout source
+        uses: actions/checkout@v4
+      - name: Configure Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Run tests without credentials or live orders
+        run: node --test services/commerce-sync/core.test.mjs
