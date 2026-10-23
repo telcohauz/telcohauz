@@ -74,7 +74,7 @@ def worker_lock_status(work,python):
     # PID alone is insufficient: verify the executable and exact script path.
     command=f"Get-CimInstance Win32_Process -Filter 'ProcessId={int(raw)}' | Select-Object ExecutablePath,CommandLine | ConvertTo-Json -Compress"
     p=subprocess.run(['powershell.exe','-NoProfile','-Command',command],capture_output=True,text=True,timeout=15)
-    if p.returncode:return 'UNVERIFIED_LOCK'
+    if p.returncode or p.stderr.strip():return 'UNVERIFIED_LOCK'
     if p.stdout.strip():
         proc=json.loads(p.stdout)
         if not proc.get('CommandLine') or not proc.get('ExecutablePath'):return 'UNVERIFIED_LOCK'

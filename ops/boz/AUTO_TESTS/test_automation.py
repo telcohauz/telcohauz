@@ -59,3 +59,12 @@ class WorkerGates(unittest.TestCase):
   with w.conn() as c:
    payload=json.loads(c.execute('select payload from jobs where id=?',('tampered',)).fetchone()[0]);payload['paid']=True;c.execute('update jobs set payload=? where id=?',(json.dumps(payload),'tampered'))
   w.tick();self.assertEqual(self.status('tampered'),'blocked')
+
+class LockPermissionTests(unittest.TestCase):
+ def test_process_query_error_does_not_archive_lock(self):
+  from types import SimpleNamespace
+  with tempfile.TemporaryDirectory() as d:
+   work=Path(d);(work/'worker.lock').write_text('123');python=work/'python.exe'
+   with patch.object(a.os,'name','nt'),patch.object(a.subprocess,'run',return_value=SimpleNamespace(returncode=0,stdout='',stderr='Access denied')):
+    self.assertEqual(a.worker_lock_status(work,python),'UNVERIFIED_LOCK')
+   self.assertTrue((work/'worker.lock').exists())
