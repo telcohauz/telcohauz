@@ -57,17 +57,41 @@ function RegisterPage() {
         <div>
           <FieldLabel>Account type</FieldLabel>
           <div className="grid grid-cols-2 gap-2">
-            <RoleOption icon={ShoppingBag} label="Customer" desc="Order services" active={role === "customer"} onClick={() => setRole("customer")} />
-            <RoleOption icon={Users} label="Reseller" desc="Wholesale & API" active={role === "reseller"} onClick={() => setRole("reseller")} />
+            <RoleOption
+              icon={ShoppingBag}
+              label="Customer"
+              desc="Order services"
+              active={role === "customer"}
+              onClick={() => setRole("customer")}
+            />
+            <RoleOption
+              icon={Users}
+              label="Reseller"
+              desc="Wholesale & API"
+              active={role === "reseller"}
+              onClick={() => setRole("reseller")}
+            />
           </div>
         </div>
         <div>
           <FieldLabel>Display name</FieldLabel>
-          <Input value={form.display_name} onChange={upd("display_name")} placeholder="Your name" required />
+          <Input
+            value={form.display_name}
+            onChange={upd("display_name")}
+            placeholder="Your name"
+            required
+          />
         </div>
         <div>
           <FieldLabel>Email</FieldLabel>
-          <Input type="email" autoComplete="email" value={form.email} onChange={upd("email")} placeholder="you@telcohauz.com" required />
+          <Input
+            type="email"
+            autoComplete="email"
+            value={form.email}
+            onChange={upd("email")}
+            placeholder="you@telcohauz.com"
+            required
+          />
         </div>
         <div>
           <FieldLabel>WhatsApp / Phone (optional)</FieldLabel>
@@ -75,7 +99,14 @@ function RegisterPage() {
         </div>
         <div>
           <FieldLabel>Password</FieldLabel>
-          <Input type="password" autoComplete="new-password" value={form.password} onChange={upd("password")} placeholder="At least 8 characters" required />
+          <Input
+            type="password"
+            autoComplete="new-password"
+            value={form.password}
+            onChange={upd("password")}
+            placeholder="At least 8 characters"
+            required
+          />
         </div>
         <PrimaryButton type="submit" disabled={loading}>
           {loading && <Loader2 className="h-4 w-4 animate-spin" />} Create account
@@ -84,7 +115,13 @@ function RegisterPage() {
 
       <p className="mt-6 text-center text-xs text-muted-foreground">
         Already have an account?{" "}
-        <Link to="/login" className="font-semibold text-primary hover:underline">Sign in</Link>
+        <Link
+          to="/login"
+          search={{ redirect: "/dashboard" }}
+          className="font-semibold text-primary hover:underline"
+        >
+          Sign in
+        </Link>
       </p>
     </AuthShell>
   );
@@ -96,7 +133,9 @@ function RoleOption({ icon: Icon, label, desc, active, onClick }: any) {
       type="button"
       onClick={onClick}
       className={`flex flex-col items-start gap-1 rounded-xl border p-3 text-left transition ${
-        active ? "border-primary bg-primary/10 shadow-[0_0_20px_oklch(0.72_0.22_235/0.2)]" : "border-border hover:border-primary/40"
+        active
+          ? "border-primary bg-primary/10 shadow-[0_0_20px_oklch(0.72_0.22_235/0.2)]"
+          : "border-border hover:border-primary/40"
       }`}
     >
       <Icon className={`h-4 w-4 ${active ? "text-primary" : "text-muted-foreground"}`} />

@@ -75,17 +75,37 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
       { title: "TELCOHAUZ Digital Service Hub" },
-      { name: "description", content: "All In One Digital Service Platform — unlock, FRP, iCloud, flashing & telecom services." },
+      {
+        name: "description",
+        content:
+          "All In One Digital Service Platform — unlock, FRP, iCloud, flashing & telecom services.",
+      },
       { name: "author", content: "Telcohauz Phone Enterprise" },
       { property: "og:title", content: "TELCOHAUZ Digital Service Hub" },
-      { property: "og:description", content: "All In One Digital Service Platform — unlock, FRP, iCloud, flashing & telecom services." },
+      {
+        property: "og:description",
+        content:
+          "All In One Digital Service Platform — unlock, FRP, iCloud, flashing & telecom services.",
+      },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },
       { name: "twitter:site", content: "@Lovable" },
       { name: "twitter:title", content: "TELCOHAUZ Digital Service Hub" },
-      { name: "twitter:description", content: "All In One Digital Service Platform — unlock, FRP, iCloud, flashing & telecom services." },
-      { property: "og:image", content: "https://storage.googleapis.com/gpt-engineer-file-uploads/attachments/og-images/52071d95-682d-4dd4-93a9-544f477b1896" },
-      { name: "twitter:image", content: "https://storage.googleapis.com/gpt-engineer-file-uploads/attachments/og-images/52071d95-682d-4dd4-93a9-544f477b1896" },
+      {
+        name: "twitter:description",
+        content:
+          "All In One Digital Service Platform — unlock, FRP, iCloud, flashing & telecom services.",
+      },
+      {
+        property: "og:image",
+        content:
+          "https://storage.googleapis.com/gpt-engineer-file-uploads/attachments/og-images/52071d95-682d-4dd4-93a9-544f477b1896",
+      },
+      {
+        name: "twitter:image",
+        content:
+          "https://storage.googleapis.com/gpt-engineer-file-uploads/attachments/og-images/52071d95-682d-4dd4-93a9-544f477b1896",
+      },
     ],
     links: [
       {

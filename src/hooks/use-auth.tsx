@@ -27,7 +27,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   useEffect(() => {
     // Set listener FIRST
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, s) => {
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange((_event, s) => {
       setSession(s);
       if (s?.user) {
         // Defer Supabase calls to avoid deadlocks
@@ -58,7 +60,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   };
 
   return (
-    <Ctx.Provider value={{ session, user: session?.user ?? null, roles, loading, signOut, refreshRoles }}>
+    <Ctx.Provider
+      value={{ session, user: session?.user ?? null, roles, loading, signOut, refreshRoles }}
+    >
       {children}
     </Ctx.Provider>
   );
