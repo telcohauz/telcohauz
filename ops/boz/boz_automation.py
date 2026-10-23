@@ -53,9 +53,10 @@ def model_probe():
     return {'state':'READY','model':MODEL,'bytes':models[MODEL].get('size'),'response_sha256':hashlib.sha256(answer.encode()).hexdigest()}
 def run_test(label,command,logs,timeout):
     start=now();dest=logs/(label+'.log')
+    atomic(logs/'progress.json',json.dumps({'at':start,'stage':label,'state':'STARTING'}))
     try:
         with dest.open('w',encoding='utf-8') as output:
-            p=subprocess.run(command,stdout=output,stderr=subprocess.STDOUT,timeout=timeout,shell=False)
+            p=subprocess.run(command,stdin=subprocess.DEVNULL,stdout=output,stderr=subprocess.STDOUT,timeout=timeout,shell=False,creationflags=subprocess.CREATE_NO_WINDOW if os.name=='nt' else 0)
         text=dest.read_text(encoding='utf-8',errors='replace');count=re.search(r'Ran (\d+) tests?',text)
         return {'state':'PASS' if p.returncode==0 else 'FAIL','exit_code':p.returncode,'count':int(count[1]) if count else None,'at':start,'log':str(dest),'sha256':hashlib.sha256(dest.read_bytes()).hexdigest()}
     except subprocess.TimeoutExpired:return {'state':'TIMEOUT','at':start,'log':str(dest)}
@@ -117,6 +118,7 @@ def execute(control,work,boz,run_tests=False,run_worker=False):
     logs=control/'AUTO_LOGS'/dt.datetime.now(TZ).strftime('%Y%m%d-%H%M%S-%f');logs.mkdir(parents=True,exist_ok=False)
     python=work/'tools'/'python-3.12.10'/'python.exe' if os.name=='nt' else Path(sys.executable)
     with exclusive(control/'automation.lock'):
+        atomic(logs/'progress.json',json.dumps({'at':now(),'stage':'model_probe','state':'STARTING'}))
         summary={'schema_version':2,'at':now(),'host':socket.gethostname(),'mode':'daily' if run_tests else 'hourly','state':'COMPLETED','logs':str(logs),'tests':{},'worker':{'state':'NOT_REQUESTED'}}
         try:summary['model']=model_probe()
         except Exception as e:summary['model']={'state':'UNAVAILABLE','error_type':type(e).__name__}
@@ -151,4 +153,9 @@ def execute(control,work,boz,run_tests=False,run_worker=False):
 if __name__=='__main__':
     p=argparse.ArgumentParser();p.add_argument('--control',default=r'D:\TELCOHAUZ_BOS\00_CONTROL_CENTER');p.add_argument('--work',default=r'D:\TELCOHAUZ_BOZ_AI_WORKFORCE');p.add_argument('--boz',default=r'D:\BOZ');p.add_argument('--run-tests',action='store_true');p.add_argument('--run-worker',action='store_true');a=p.parse_args()
     try:sys.exit(execute(a.control,a.work,a.boz,a.run_tests,a.run_worker))
-    except Exception as e:print(json.dumps({'state':'FAILED','error_type':type(e).__name__,'at':now()}));sys.exit(2)
+    except Exception as e:
+        result={'state':'SKIPPED_CONCURRENT' if str(e)=='Another automation run holds the lock' else 'FAILED','error_type':type(e).__name__,'at':now()}
+        failure=Path(a.control)/'AUTO_LOGS'/'AUTO_FAILURES.jsonl'
+        failure.parent.mkdir(parents=True,exist_ok=True)
+        with failure.open('a',encoding='utf-8') as f:f.write(json.dumps(result)+'\n')
+        print(json.dumps(result));sys.exit(0 if result['state']=='SKIPPED_CONCURRENT' else 2)
