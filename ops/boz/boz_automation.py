@@ -1,13 +1,18 @@
 """Allowlisted BOZ maintenance. No model-generated commands or production writes."""
 import argparse, contextlib, datetime as dt, hashlib, html, importlib.util, json, os
 from pathlib import Path
-import re, socket, sqlite3, subprocess, sys, time, urllib.error, urllib.request
+import re, socket, sqlite3, subprocess, sys, time, tempfile, traceback, urllib.error, urllib.request
 TZ=dt.timezone(dt.timedelta(hours=8))
 MODEL='qwen3:1.7b'
 def now(): return dt.datetime.now(TZ).isoformat()
 def atomic(path,value):
     path=Path(path);path.parent.mkdir(parents=True,exist_ok=True)
     tmp=path.with_name(path.name+'.tmp');tmp.write_text(value,encoding='utf-8');os.replace(tmp,path)
+def new_run_logs(control):
+    base=Path(control)/'AUTO_LOGS';base.mkdir(parents=True,exist_ok=True)
+    prefix=dt.datetime.now(TZ).strftime('%Y%m%d-%H%M%S-')
+    # Timestamp alone can collide when missed hourly/daily tasks resume together.
+    return Path(tempfile.mkdtemp(prefix=prefix,dir=base))
 def read_json(path): return json.loads(Path(path).read_text(encoding='utf-8-sig'))
 @contextlib.contextmanager
 def exclusive(path):
@@ -115,7 +120,7 @@ def probe_blockers(register,model,queue,control,work):
 
 def execute(control,work,boz,run_tests=False,run_worker=False):
     control=Path(control).resolve();work=Path(work).resolve();boz=Path(boz).resolve()
-    logs=control/'AUTO_LOGS'/dt.datetime.now(TZ).strftime('%Y%m%d-%H%M%S-%f');logs.mkdir(parents=True,exist_ok=False)
+    logs=new_run_logs(control)
     python=work/'tools'/'python-3.12.10'/'python.exe' if os.name=='nt' else Path(sys.executable)
     with exclusive(control/'automation.lock'):
         atomic(logs/'progress.json',json.dumps({'at':now(),'stage':'model_probe','state':'STARTING'}))
@@ -154,7 +159,7 @@ if __name__=='__main__':
     p=argparse.ArgumentParser();p.add_argument('--control',default=r'D:\TELCOHAUZ_BOS\00_CONTROL_CENTER');p.add_argument('--work',default=r'D:\TELCOHAUZ_BOZ_AI_WORKFORCE');p.add_argument('--boz',default=r'D:\BOZ');p.add_argument('--run-tests',action='store_true');p.add_argument('--run-worker',action='store_true');a=p.parse_args()
     try:sys.exit(execute(a.control,a.work,a.boz,a.run_tests,a.run_worker))
     except Exception as e:
-        result={'state':'SKIPPED_CONCURRENT' if str(e)=='Another automation run holds the lock' else 'FAILED','error_type':type(e).__name__,'at':now()}
+        result={'state':'SKIPPED_CONCURRENT' if str(e)=='Another automation run holds the lock' else 'FAILED','error_type':type(e).__name__,'at':now(),'frames':[{'file':Path(frame.filename).name,'line':frame.lineno,'function':frame.name} for frame in traceback.extract_tb(e.__traceback__)]}
         failure=Path(a.control)/'AUTO_LOGS'/'AUTO_FAILURES.jsonl'
         failure.parent.mkdir(parents=True,exist_ok=True)
         with failure.open('a',encoding='utf-8') as f:f.write(json.dumps(result)+'\n')

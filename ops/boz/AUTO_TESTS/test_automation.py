@@ -68,3 +68,17 @@ class LockPermissionTests(unittest.TestCase):
    with patch.object(a.os,'name','nt'),patch.object(a.subprocess,'run',return_value=SimpleNamespace(returncode=0,stdout='',stderr='Access denied')):
     self.assertEqual(a.worker_lock_status(work,python),'UNVERIFIED_LOCK')
    self.assertTrue((work/'worker.lock').exists())
+
+class RunDirectoryTests(unittest.TestCase):
+ def test_same_wall_clock_does_not_reuse_existing_log_folder(self):
+  with tempfile.TemporaryDirectory() as d,patch.object(a.dt,'datetime') as clock:
+   clock.now.return_value.strftime.return_value='frozen-'
+   first=a.new_run_logs(Path(d));(first/'evidence.txt').write_text('preserved')
+   second=a.new_run_logs(Path(d))
+   self.assertNotEqual(first,second);self.assertEqual((first/'evidence.txt').read_text(),'preserved')
+ def test_parallel_runs_with_same_timestamp_get_distinct_folders(self):
+  from concurrent.futures import ThreadPoolExecutor
+  with tempfile.TemporaryDirectory() as d,patch.object(a.dt,'datetime') as clock:
+   clock.now.return_value.strftime.return_value='frozen-';root=Path(d)
+   with ThreadPoolExecutor(max_workers=4) as pool:folders=list(pool.map(lambda _:a.new_run_logs(root),range(8)))
+   self.assertEqual(len(set(folders)),8);self.assertTrue(all(p.is_dir() for p in folders))
