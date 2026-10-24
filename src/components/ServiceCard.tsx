@@ -21,20 +21,30 @@ export function ServiceCard({ icon: Icon, brand, title, time, price, status = "l
             <Icon className="h-5 w-5 text-primary" />
           </div>
           <div>
-            <div className="text-[10px] uppercase tracking-[0.18em] text-muted-foreground">{brand}</div>
+            <div className="text-[10px] uppercase tracking-[0.18em] text-muted-foreground">
+              {brand}
+            </div>
             <div className="text-sm font-semibold leading-tight">{title}</div>
           </div>
         </div>
-        <span className={`flex items-center gap-1.5 rounded-full px-2 py-1 text-[10px] font-medium ${
-          status === "live" ? "bg-success/15 text-[oklch(0.78_0.16_155)]" : "bg-warning/15 text-[oklch(0.85_0.16_80)]"
-        }`}>
-          <span className={`h-1.5 w-1.5 rounded-full ${status === "live" ? "bg-[oklch(0.78_0.16_155)]" : "bg-[oklch(0.85_0.16_80)]"} animate-pulse`} />
+        <span
+          className={`flex items-center gap-1.5 rounded-full px-2 py-1 text-[10px] font-medium ${
+            status === "live"
+              ? "bg-success/15 text-[oklch(0.78_0.16_155)]"
+              : "bg-warning/15 text-[oklch(0.85_0.16_80)]"
+          }`}
+        >
+          <span
+            className={`h-1.5 w-1.5 rounded-full ${status === "live" ? "bg-[oklch(0.78_0.16_155)]" : "bg-[oklch(0.85_0.16_80)]"} animate-pulse`}
+          />
           {status === "live" ? "Live" : "Busy"}
         </span>
       </div>
 
       <div className="relative mt-5 flex items-center justify-between text-xs text-muted-foreground">
-        <span className="flex items-center gap-1.5"><Clock className="h-3.5 w-3.5" /> {time}</span>
+        <span className="flex items-center gap-1.5">
+          <Clock className="h-3.5 w-3.5" /> {time}
+        </span>
         <span className="text-base font-bold text-foreground">{price}</span>
       </div>
 

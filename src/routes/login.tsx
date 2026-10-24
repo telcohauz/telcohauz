@@ -12,7 +12,9 @@ const schema = z.object({
 });
 
 export const Route = createFileRoute("/login")({
-  validateSearch: (s: Record<string, unknown>) => ({ redirect: (s.redirect as string) || "/dashboard" }),
+  validateSearch: (s: Record<string, unknown>) => ({
+    redirect: (s.redirect as string) || "/dashboard",
+  }),
   component: LoginPage,
 });
 
@@ -49,14 +51,30 @@ function LoginPage() {
       <form onSubmit={submit} className="space-y-4">
         <div>
           <FieldLabel>Email</FieldLabel>
-          <Input type="email" autoComplete="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="you@telcohauz.com" required />
+          <Input
+            type="email"
+            autoComplete="email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            placeholder="you@telcohauz.com"
+            required
+          />
         </div>
         <div>
           <div className="flex items-center justify-between">
             <FieldLabel>Password</FieldLabel>
-            <Link to="/forgot-password" className="text-xs text-primary hover:underline mb-1.5">Forgot?</Link>
+            <Link to="/forgot-password" className="text-xs text-primary hover:underline mb-1.5">
+              Forgot?
+            </Link>
           </div>
-          <Input type="password" autoComplete="current-password" value={password} onChange={(e) => setPassword(e.target.value)} placeholder="••••••••" required />
+          <Input
+            type="password"
+            autoComplete="current-password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            placeholder="••••••••"
+            required
+          />
         </div>
         <PrimaryButton type="submit" disabled={loading}>
           {loading && <Loader2 className="h-4 w-4 animate-spin" />} Sign in
@@ -65,7 +83,9 @@ function LoginPage() {
 
       <p className="mt-6 text-center text-xs text-muted-foreground">
         New to TELCOHAUZ?{" "}
-        <Link to="/register" className="font-semibold text-primary hover:underline">Create an account</Link>
+        <Link to="/register" className="font-semibold text-primary hover:underline">
+          Create an account
+        </Link>
       </p>
     </AuthShell>
   );

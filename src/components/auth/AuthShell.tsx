@@ -2,7 +2,15 @@ import { Link } from "@tanstack/react-router";
 import { Zap } from "lucide-react";
 import type { ReactNode } from "react";
 
-export function AuthShell({ children, title, subtitle }: { children: ReactNode; title: string; subtitle?: string }) {
+export function AuthShell({
+  children,
+  title,
+  subtitle,
+}: {
+  children: ReactNode;
+  title: string;
+  subtitle?: string;
+}) {
   return (
     <div className="relative min-h-screen overflow-hidden">
       <div className="absolute inset-0 grid-bg opacity-30" />
@@ -15,7 +23,9 @@ export function AuthShell({ children, title, subtitle }: { children: ReactNode; 
           </div>
           <div className="leading-tight">
             <div className="font-display text-base font-bold">TELCOHAUZ</div>
-            <div className="text-[10px] uppercase tracking-[0.2em] text-muted-foreground">Digital Hub</div>
+            <div className="text-[10px] uppercase tracking-[0.2em] text-muted-foreground">
+              Digital Hub
+            </div>
           </div>
         </Link>
 
@@ -32,7 +42,11 @@ export function AuthShell({ children, title, subtitle }: { children: ReactNode; 
 }
 
 export function FieldLabel({ children }: { children: ReactNode }) {
-  return <label className="mb-1.5 block text-xs font-medium uppercase tracking-wider text-muted-foreground">{children}</label>;
+  return (
+    <label className="mb-1.5 block text-xs font-medium uppercase tracking-wider text-muted-foreground">
+      {children}
+    </label>
+  );
 }
 
 export function Input(props: React.InputHTMLAttributes<HTMLInputElement>) {
@@ -44,7 +58,10 @@ export function Input(props: React.InputHTMLAttributes<HTMLInputElement>) {
   );
 }
 
-export function PrimaryButton({ children, ...props }: React.ButtonHTMLAttributes<HTMLButtonElement>) {
+export function PrimaryButton({
+  children,
+  ...props
+}: React.ButtonHTMLAttributes<HTMLButtonElement>) {
   return (
     <button
       {...props}

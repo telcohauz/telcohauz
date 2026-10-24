@@ -1,9 +1,33 @@
+import type { ReactNode } from "react";
+import type { LucideIcon } from "lucide-react";
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useState } from "react";
 import {
-  LayoutDashboard, Smartphone, Apple, Network, Cpu, Wrench, Coins,
-  ShoppingBag, MessageSquare, Wallet, Users, Code, LifeBuoy, Settings, LogOut,
-  Bell, Search, Menu, X, TrendingUp, Activity, Zap, ArrowUpRight, Megaphone, Shield
+  LayoutDashboard,
+  Smartphone,
+  Apple,
+  Network,
+  Cpu,
+  Wrench,
+  Coins,
+  ShoppingBag,
+  MessageSquare,
+  Wallet,
+  Users,
+  Code,
+  LifeBuoy,
+  Settings,
+  LogOut,
+  Bell,
+  Search,
+  Menu,
+  X,
+  TrendingUp,
+  Activity,
+  Zap,
+  ArrowUpRight,
+  Megaphone,
+  Shield,
 } from "lucide-react";
 import { ServiceCard } from "@/components/ServiceCard";
 import { WhatsAppButton } from "@/components/WhatsAppButton";
@@ -20,7 +44,7 @@ export const Route = createFileRoute("/_authenticated/dashboard")({
   component: Dashboard,
 });
 
-const navItems: { icon: any; label: string; to?: string; active?: boolean }[] = [
+const navItems: { icon: LucideIcon; label: string; to?: string; active?: boolean }[] = [
   { icon: LayoutDashboard, label: "Dashboard", to: "/dashboard", active: true },
   { icon: Smartphone, label: "Android Services", to: "/services" },
   { icon: Apple, label: "iPhone Services", to: "/services" },
@@ -38,20 +62,80 @@ const navItems: { icon: any; label: string; to?: string; active?: boolean }[] = 
 ];
 
 const services = [
-  { icon: Smartphone, brand: "Samsung", title: "FRP Unlock — All Models", time: "5-30 min", price: "RM 25" },
-  { icon: Apple, brand: "Apple", title: "iCloud Bypass — Premium", time: "1-24 hrs", price: "RM 180" },
-  { icon: Network, brand: "Carrier", title: "Network Unlock — Worldwide", time: "1-3 days", price: "RM 65" },
+  {
+    icon: Smartphone,
+    brand: "Samsung",
+    title: "FRP Unlock — All Models",
+    time: "5-30 min",
+    price: "RM 25",
+  },
+  {
+    icon: Apple,
+    brand: "Apple",
+    title: "iCloud Bypass — Premium",
+    time: "1-24 hrs",
+    price: "RM 180",
+  },
+  {
+    icon: Network,
+    brand: "Carrier",
+    title: "Network Unlock — Worldwide",
+    time: "1-3 days",
+    price: "RM 65",
+  },
   { icon: Cpu, brand: "Xiaomi", title: "Mi Account Remove", time: "10-60 min", price: "RM 80" },
-  { icon: Wrench, brand: "Huawei", title: "Bootloader / FRP / ID", time: "1-6 hrs", price: "RM 45" },
-  { icon: Smartphone, brand: "Oppo", title: "Pattern & FRP Remove", time: "Instant", price: "RM 20" },
+  {
+    icon: Wrench,
+    brand: "Huawei",
+    title: "Bootloader / FRP / ID",
+    time: "1-6 hrs",
+    price: "RM 45",
+  },
+  {
+    icon: Smartphone,
+    brand: "Oppo",
+    title: "Pattern & FRP Remove",
+    time: "Instant",
+    price: "RM 20",
+  },
 ];
 
 const recentOrders = [
-  { id: "TH-48201", svc: "Samsung FRP Unlock", device: "SM-A546B", status: "Processing", color: "bg-warning/15 text-[oklch(0.85_0.16_80)]" },
-  { id: "TH-48198", svc: "iCloud Bypass", device: "iPhone 12", status: "Completed", color: "bg-success/15 text-[oklch(0.78_0.16_155)]" },
-  { id: "TH-48197", svc: "Mi Account", device: "Redmi Note 11", status: "Completed", color: "bg-success/15 text-[oklch(0.78_0.16_155)]" },
-  { id: "TH-48190", svc: "Network Unlock", device: "iPhone 14 Pro", status: "Pending", color: "bg-primary/15 text-primary" },
-  { id: "TH-48184", svc: "Huawei FRP", device: "P30 Lite", status: "Failed", color: "bg-destructive/15 text-destructive" },
+  {
+    id: "TH-48201",
+    svc: "Samsung FRP Unlock",
+    device: "SM-A546B",
+    status: "Processing",
+    color: "bg-warning/15 text-[oklch(0.85_0.16_80)]",
+  },
+  {
+    id: "TH-48198",
+    svc: "iCloud Bypass",
+    device: "iPhone 12",
+    status: "Completed",
+    color: "bg-success/15 text-[oklch(0.78_0.16_155)]",
+  },
+  {
+    id: "TH-48197",
+    svc: "Mi Account",
+    device: "Redmi Note 11",
+    status: "Completed",
+    color: "bg-success/15 text-[oklch(0.78_0.16_155)]",
+  },
+  {
+    id: "TH-48190",
+    svc: "Network Unlock",
+    device: "iPhone 14 Pro",
+    status: "Pending",
+    color: "bg-primary/15 text-primary",
+  },
+  {
+    id: "TH-48184",
+    svc: "Huawei FRP",
+    device: "P30 Lite",
+    status: "Failed",
+    color: "bg-destructive/15 text-destructive",
+  },
 ];
 
 function Dashboard() {
@@ -59,10 +143,14 @@ function Dashboard() {
   const { user, roles, signOut } = useAuth();
   const { balance } = useWallet();
   const nav = useNavigate();
-  const displayName = (user?.user_metadata?.display_name as string) || user?.email?.split("@")[0] || "User";
+  const displayName =
+    (user?.user_metadata?.display_name as string) || user?.email?.split("@")[0] || "User";
   const initial = displayName.charAt(0).toUpperCase();
   const role = roles[0] ?? "customer";
-  const handleLogout = async () => { await signOut(); nav({ to: "/" }); };
+  const handleLogout = async () => {
+    await signOut();
+    nav({ to: "/" });
+  };
 
   return (
     <div className="min-h-screen">
@@ -81,14 +169,18 @@ function Dashboard() {
 
       <div className="flex">
         {/* Sidebar */}
-        <aside className={`fixed inset-y-0 left-0 z-40 w-72 transform border-r border-border/40 bg-sidebar transition-transform lg:static lg:translate-x-0 ${open ? "translate-x-0" : "-translate-x-full"}`}>
+        <aside
+          className={`fixed inset-y-0 left-0 z-40 w-72 transform border-r border-border/40 bg-sidebar transition-transform lg:static lg:translate-x-0 ${open ? "translate-x-0" : "-translate-x-full"}`}
+        >
           <div className="hidden h-16 items-center gap-2 border-b border-border/40 px-6 lg:flex">
             <div className="grid h-9 w-9 place-items-center rounded-lg bg-gradient-to-br from-primary to-[oklch(0.55_0.22_270)] shadow-[var(--glow-neon)]">
               <Zap className="h-5 w-5 text-background" />
             </div>
             <div className="leading-tight">
               <div className="font-display text-sm font-bold">TELCOHAUZ</div>
-              <div className="text-[10px] uppercase tracking-[0.2em] text-muted-foreground">Digital Hub</div>
+              <div className="text-[10px] uppercase tracking-[0.2em] text-muted-foreground">
+                Digital Hub
+              </div>
             </div>
           </div>
 
@@ -100,18 +192,30 @@ function Dashboard() {
                   : "text-sidebar-foreground/80 hover:bg-sidebar-accent hover:text-sidebar-foreground"
               }`;
               return n.to ? (
-                <Link key={n.label} to={n.to} className={cls}><n.icon className="h-4 w-4" />{n.label}</Link>
+                <Link key={n.label} to={n.to} className={cls}>
+                  <n.icon className="h-4 w-4" />
+                  {n.label}
+                </Link>
               ) : (
-                <button key={n.label} className={cls}><n.icon className="h-4 w-4" />{n.label}</button>
+                <button key={n.label} className={cls}>
+                  <n.icon className="h-4 w-4" />
+                  {n.label}
+                </button>
               );
             })}
             <div className="mt-auto pt-4 space-y-1">
               {roles.includes("admin") && (
-                <Link to="/admin" className="flex items-center gap-3 rounded-lg bg-primary/10 border border-primary/30 px-3 py-2.5 text-sm font-semibold text-primary hover:bg-primary/20">
+                <Link
+                  to="/admin"
+                  className="flex items-center gap-3 rounded-lg bg-primary/10 border border-primary/30 px-3 py-2.5 text-sm font-semibold text-primary hover:bg-primary/20"
+                >
                   <Shield className="h-4 w-4" /> Admin Console
                 </Link>
               )}
-              <button onClick={handleLogout} className="flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium text-muted-foreground hover:bg-sidebar-accent hover:text-foreground">
+              <button
+                onClick={handleLogout}
+                className="flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium text-muted-foreground hover:bg-sidebar-accent hover:text-foreground"
+              >
                 <LogOut className="h-4 w-4" /> Logout
               </button>
             </div>
@@ -130,12 +234,18 @@ function Dashboard() {
               />
             </div>
             <div className="flex items-center gap-3">
-              <Link to="/wallet" className="flex items-center gap-2 rounded-lg glass px-3 py-1.5 text-sm hover:border-primary/40 transition">
+              <Link
+                to="/wallet"
+                className="flex items-center gap-2 rounded-lg glass px-3 py-1.5 text-sm hover:border-primary/40 transition"
+              >
                 <Coins className="h-4 w-4 text-primary" />
                 <span className="font-semibold">RM {balance.toFixed(2)}</span>
                 <span className="text-xs text-muted-foreground">credits</span>
               </Link>
-              <Link to="/wallet/topup" className="hidden sm:inline-flex items-center gap-2 rounded-lg bg-primary/15 border border-primary/30 px-3 py-1.5 text-xs font-semibold text-primary hover:bg-primary hover:text-background transition">
+              <Link
+                to="/wallet/topup"
+                className="hidden sm:inline-flex items-center gap-2 rounded-lg bg-primary/15 border border-primary/30 px-3 py-1.5 text-xs font-semibold text-primary hover:bg-primary hover:text-background transition"
+              >
                 <ArrowUpRight className="h-3.5 w-3.5" /> Top Up
               </Link>
               <button className="relative rounded-lg glass p-2">
@@ -146,7 +256,10 @@ function Dashboard() {
                 <Shield className="h-3.5 w-3.5 text-primary" />
                 <span className="text-xs font-semibold uppercase tracking-wider">{role}</span>
               </div>
-              <div title={displayName} className="grid h-9 w-9 place-items-center rounded-full bg-gradient-to-br from-primary to-[oklch(0.55_0.22_270)] text-sm font-bold text-background">
+              <div
+                title={displayName}
+                className="grid h-9 w-9 place-items-center rounded-full bg-gradient-to-br from-primary to-[oklch(0.55_0.22_270)] text-sm font-bold text-background"
+              >
                 {initial}
               </div>
             </div>
@@ -170,9 +283,14 @@ function Dashboard() {
                 </div>
                 <div className="flex-1">
                   <div className="text-xs uppercase tracking-[0.2em] text-primary">Promotion</div>
-                  <div className="mt-1 font-semibold">Get 10% bonus credits on all top-ups above RM 200 — this week only.</div>
+                  <div className="mt-1 font-semibold">
+                    Get 10% bonus credits on all top-ups above RM 200 — this week only.
+                  </div>
                 </div>
-                <Link to="/wallet/topup" className="hidden sm:inline-flex items-center gap-1 rounded-lg bg-primary/15 px-3 py-1.5 text-xs font-semibold text-primary border border-primary/30 hover:bg-primary hover:text-background transition">
+                <Link
+                  to="/wallet/topup"
+                  className="hidden sm:inline-flex items-center gap-1 rounded-lg bg-primary/15 px-3 py-1.5 text-xs font-semibold text-primary border border-primary/30 hover:bg-primary hover:text-background transition"
+                >
                   Top Up <ArrowUpRight className="h-3.5 w-3.5" />
                 </Link>
               </div>
@@ -185,10 +303,14 @@ function Dashboard() {
                   <div className="text-xs uppercase tracking-[0.2em] text-primary">Marketplace</div>
                   <h2 className="mt-1 font-display text-2xl font-bold">Popular Services</h2>
                 </div>
-                <button className="text-xs text-muted-foreground hover:text-foreground">View all →</button>
+                <button className="text-xs text-muted-foreground hover:text-foreground">
+                  View all →
+                </button>
               </div>
               <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3">
-                {services.map((s) => <ServiceCard key={s.title} {...s} />)}
+                {services.map((s) => (
+                  <ServiceCard key={s.title} {...s} />
+                ))}
               </div>
             </section>
 
@@ -196,7 +318,9 @@ function Dashboard() {
             <section className="rounded-2xl glass overflow-hidden">
               <div className="flex items-center justify-between border-b border-border/40 p-5">
                 <h3 className="font-display font-bold">Recent Orders</h3>
-                <button className="text-xs text-muted-foreground hover:text-foreground">View all →</button>
+                <button className="text-xs text-muted-foreground hover:text-foreground">
+                  View all →
+                </button>
               </div>
               <div className="overflow-x-auto">
                 <table className="w-full text-sm">
@@ -210,12 +334,19 @@ function Dashboard() {
                   </thead>
                   <tbody>
                     {recentOrders.map((o) => (
-                      <tr key={o.id} className="border-t border-border/30 transition hover:bg-muted/30">
+                      <tr
+                        key={o.id}
+                        className="border-t border-border/30 transition hover:bg-muted/30"
+                      >
                         <td className="px-5 py-3 font-mono text-xs text-primary">{o.id}</td>
                         <td className="px-5 py-3">{o.svc}</td>
                         <td className="px-5 py-3 text-muted-foreground">{o.device}</td>
                         <td className="px-5 py-3">
-                          <span className={`rounded-full px-2.5 py-1 text-[11px] font-semibold ${o.color}`}>{o.status}</span>
+                          <span
+                            className={`rounded-full px-2.5 py-1 text-[11px] font-semibold ${o.color}`}
+                          >
+                            {o.status}
+                          </span>
                         </td>
                       </tr>
                     ))}
@@ -231,7 +362,19 @@ function Dashboard() {
   );
 }
 
-function StatCard({ icon: Icon, label, value, change, tone = "good" }: any) {
+function StatCard({
+  icon: Icon,
+  label,
+  value,
+  change,
+  tone = "good",
+}: {
+  icon: LucideIcon;
+  label: string;
+  value: ReactNode;
+  change: string;
+  tone?: "good" | "warning";
+}) {
   return (
     <div className="relative overflow-hidden rounded-2xl glass p-5 glow-on-hover">
       <div className="absolute -right-6 -top-6 h-20 w-20 rounded-full bg-primary/20 blur-2xl" />
@@ -239,7 +382,11 @@ function StatCard({ icon: Icon, label, value, change, tone = "good" }: any) {
         <div className="grid h-10 w-10 place-items-center rounded-xl bg-primary/10 border border-primary/30">
           <Icon className="h-5 w-5 text-primary" />
         </div>
-        <span className={`text-xs font-semibold ${tone === "warning" ? "text-[oklch(0.85_0.16_80)]" : "text-[oklch(0.78_0.16_155)]"}`}>{change}</span>
+        <span
+          className={`text-xs font-semibold ${tone === "warning" ? "text-[oklch(0.85_0.16_80)]" : "text-[oklch(0.78_0.16_155)]"}`}
+        >
+          {change}
+        </span>
       </div>
       <div className="relative mt-4 font-display text-2xl font-bold">{value}</div>
       <div className="relative text-xs text-muted-foreground">{label}</div>

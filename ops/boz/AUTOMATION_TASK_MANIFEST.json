@@ -1,0 +1,104 @@
+{
+  "schema_version": 1,
+  "tasks": [
+    {
+      "id": "SEC-002",
+      "priority": "P0",
+      "dependencies": [],
+      "prompt": "PROMPTS/SEC-002.md",
+      "scheduled_executor": "read_only_probe",
+      "repair_executor": "authorized_codex_session",
+      "production_gate": true
+    },
+    {
+      "id": "SEC-003",
+      "priority": "P0",
+      "dependencies": [],
+      "prompt": "PROMPTS/SEC-003.md",
+      "scheduled_executor": "read_only_probe",
+      "repair_executor": "authorized_codex_session",
+      "production_gate": true
+    },
+    {
+      "id": "BUILD-001",
+      "priority": "P1",
+      "dependencies": [],
+      "prompt": "PROMPTS/BUILD-001.md",
+      "scheduled_executor": "read_only_probe",
+      "repair_executor": "authorized_codex_session",
+      "production_gate": true
+    },
+    {
+      "id": "AUTH-001",
+      "priority": "P1",
+      "dependencies": [
+        "SEC-002",
+        "SEC-003"
+      ],
+      "prompt": "PROMPTS/AUTH-001.md",
+      "scheduled_executor": "read_only_probe",
+      "repair_executor": "authorized_codex_session",
+      "production_gate": true
+    },
+    {
+      "id": "WF-001",
+      "priority": "P1",
+      "dependencies": [],
+      "prompt": "PROMPTS/WF-001.md",
+      "scheduled_executor": "read_only_probe",
+      "repair_executor": "authorized_codex_session",
+      "production_gate": true
+    },
+    {
+      "id": "CAT-001",
+      "priority": "P2",
+      "dependencies": [
+        "SEC-003"
+      ],
+      "prompt": "PROMPTS/CAT-001.md",
+      "scheduled_executor": "read_only_probe",
+      "repair_executor": "authorized_codex_session",
+      "production_gate": true
+    },
+    {
+      "id": "PAY-001",
+      "priority": "P2",
+      "dependencies": [
+        "AUTH-001"
+      ],
+      "prompt": "PROMPTS/PAY-001.md",
+      "scheduled_executor": "read_only_probe",
+      "repair_executor": "authorized_codex_session",
+      "production_gate": true
+    },
+    {
+      "id": "ANDROID-001",
+      "priority": "P3",
+      "dependencies": [
+        "AUTH-001"
+      ],
+      "prompt": "PROMPTS/ANDROID-001.md",
+      "scheduled_executor": "read_only_probe",
+      "repair_executor": "authorized_codex_session",
+      "production_gate": true
+    },
+    {
+      "id": "SCOPE-001",
+      "priority": "P2",
+      "dependencies": [],
+      "prompt": "PROMPTS/SCOPE-001.md",
+      "scheduled_executor": "read_only_probe",
+      "repair_executor": "authorized_codex_session",
+      "production_gate": true
+    },
+    {
+      "id": "OUTPUT-001",
+      "priority": "P1",
+      "dependencies": [],
+      "prompt": "PROMPTS/OUTPUT-001.md",
+      "scheduled_executor": "read_only_probe",
+      "repair_executor": "authorized_codex_session",
+      "production_gate": true
+    }
+  ]
+}

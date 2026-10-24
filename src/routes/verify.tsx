@@ -72,13 +72,18 @@ function VerifyPage() {
   };
 
   return (
-    <AuthShell title="Verify your email" subtitle={email ? `We sent a 6-digit code to ${email}` : "Check your inbox"}>
+    <AuthShell
+      title="Verify your email"
+      subtitle={email ? `We sent a 6-digit code to ${email}` : "Check your inbox"}
+    >
       <form onSubmit={verify} className="space-y-6">
         <div className="flex justify-center gap-2" onPaste={onPaste}>
           {code.map((d, i) => (
             <input
               key={i}
-              ref={(el) => { refs.current[i] = el; }}
+              ref={(el) => {
+                refs.current[i] = el;
+              }}
               value={d}
               onChange={(e) => onDigit(i, e.target.value)}
               onKeyDown={(e) => onKey(i, e)}
@@ -107,7 +112,9 @@ function VerifyPage() {
       </div>
 
       <p className="mt-4 text-center text-xs text-muted-foreground">
-        <Link to="/login" className="hover:text-foreground">← Back to sign in</Link>
+        <Link to="/login" search={{ redirect: "/dashboard" }} className="hover:text-foreground">
+          ← Back to sign in
+        </Link>
       </p>
     </AuthShell>
   );
