@@ -1,3 +1,8 @@
+import { z } from "zod";
+import { toast } from "sonner";
+import { recentTopupSchema, recentOrderSchema, parseAdminRows } from "@/lib/admin-data";
+import type { ReactNode } from "react";
+import type { LucideIcon } from "lucide-react";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import {
@@ -25,8 +30,8 @@ function AdminOverview() {
     creditsIssued: 0,
     revenue: 0,
   });
-  const [recentTopups, setRecentTopups] = useState<any[]>([]);
-  const [recentOrders, setRecentOrders] = useState<any[]>([]);
+  const [recentTopups, setRecentTopups] = useState<z.infer<typeof recentTopupSchema>[]>([]);
+  const [recentOrders, setRecentOrders] = useState<z.infer<typeof recentOrderSchema>[]>([]);
 
   useEffect(() => {
     (async () => {
@@ -71,11 +76,15 @@ function AdminOverview() {
         totalUsers: users?.length ?? 0,
         totalOrders: totalOrders ?? 0,
         pendingOrders: pendingOrders ?? 0,
-        creditsIssued: (tx ?? []).reduce((a, t: any) => a + Number(t.amount), 0),
-        revenue: (rev ?? []).reduce((a, t: any) => a + Number(t.amount), 0),
+        creditsIssued: (tx ?? []).reduce((a, t) => a + Number(t.amount), 0),
+        revenue: (rev ?? []).reduce((a, t) => a + Number(t.amount), 0),
       });
-      setRecentTopups(rt ?? []);
-      setRecentOrders(ro ?? []);
+      const topups = parseAdminRows(recentTopupSchema, rt);
+      const orders = parseAdminRows(recentOrderSchema, ro);
+      if (!topups.success || !orders.success)
+        toast.error("Invalid admin data returned by the server");
+      setRecentTopups(topups.success ? topups.data : []);
+      setRecentOrders(orders.success ? orders.data : []);
     })();
   }, []);
 
@@ -126,7 +135,7 @@ function AdminOverview() {
             <Empty msg="No pending top-ups" />
           ) : (
             <ul className="divide-y divide-border/30">
-              {recentTopups.map((t: any) => (
+              {recentTopups.map((t) => (
                 <li key={t.id} className="flex items-center justify-between py-3 px-5">
                   <div>
                     <div className="text-sm font-medium">{t.profiles?.display_name ?? "User"}</div>
@@ -150,7 +159,7 @@ function AdminOverview() {
             <Empty msg="No orders yet" />
           ) : (
             <ul className="divide-y divide-border/30">
-              {recentOrders.map((o: any) => (
+              {recentOrders.map((o) => (
                 <li key={o.id} className="flex items-center justify-between py-3 px-5">
                   <div>
                     <div className="text-sm font-medium">{o.services?.name ?? "—"}</div>
@@ -172,7 +181,19 @@ function AdminOverview() {
   );
 }
 
-function Stat({ label, value, icon: Icon, tone, to }: any) {
+function Stat({
+  label,
+  value,
+  icon: Icon,
+  tone,
+  to,
+}: {
+  label: string;
+  value: ReactNode;
+  icon: LucideIcon;
+  tone?: "warn" | "good";
+  to?: string;
+}) {
   const inner = (
     <div className="relative overflow-hidden rounded-2xl glass p-5 glow-on-hover h-full">
       <div className="absolute -right-6 -top-6 h-20 w-20 rounded-full bg-primary/20 blur-2xl" />
@@ -189,7 +210,7 @@ function Stat({ label, value, icon: Icon, tone, to }: any) {
   );
   return to ? <Link to={to}>{inner}</Link> : inner;
 }
-function Panel({ title, link, children }: any) {
+function Panel({ title, link, children }: { title: string; link?: string; children: ReactNode }) {
   return (
     <section className="rounded-2xl glass overflow-hidden">
       <div className="flex items-center justify-between border-b border-border/40 p-5">

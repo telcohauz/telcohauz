@@ -10,7 +10,8 @@
     "preview": "vite preview",
     "lint": "eslint .",
     "format": "prettier --write .",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "test:contracts": "node --test tests/admin-data.test.mjs"
   },
   "dependencies": {
     "@cloudflare/vite-plugin": "1.33.1",

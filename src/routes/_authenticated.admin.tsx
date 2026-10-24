@@ -95,7 +95,7 @@ function AdminLayout() {
 
           <nav className="flex h-[calc(100vh-4rem)] flex-col gap-1 overflow-y-auto p-3 scrollbar-hidden">
             {NAV.map((n) => {
-              const active = isActive(n.to, (n as any).exact);
+              const active = isActive(n.to, "exact" in n && n.exact);
               return (
                 <Link
                   key={n.to}
@@ -137,7 +137,7 @@ function AdminLayout() {
               <div className="text-xs uppercase tracking-[0.2em] text-primary">Admin Console</div>
               <span className="text-muted-foreground">/</span>
               <div className="text-sm font-semibold">
-                {NAV.find((n) => isActive(n.to, (n as any).exact))?.label ?? "Overview"}
+                {NAV.find((n) => isActive(n.to, "exact" in n && n.exact))?.label ?? "Overview"}
               </div>
             </div>
             <div className="flex items-center gap-3">

@@ -1,3 +1,4 @@
+import type { LucideIcon } from "lucide-react";
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useState } from "react";
 import { toast } from "sonner";
@@ -127,7 +128,19 @@ function RegisterPage() {
   );
 }
 
-function RoleOption({ icon: Icon, label, desc, active, onClick }: any) {
+function RoleOption({
+  icon: Icon,
+  label,
+  desc,
+  active,
+  onClick,
+}: {
+  icon: LucideIcon;
+  label: string;
+  desc: string;
+  active: boolean;
+  onClick: () => void;
+}) {
   return (
     <button
       type="button"

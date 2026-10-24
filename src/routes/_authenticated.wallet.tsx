@@ -1,3 +1,5 @@
+import type { ReactNode } from "react";
+import type { LucideIcon } from "lucide-react";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import {
@@ -221,7 +223,7 @@ function WalletPage() {
   );
 }
 
-function Mini({ icon: Icon, label, value }: any) {
+function Mini({ icon: Icon, label, value }: { icon: LucideIcon; label: string; value: ReactNode }) {
   return (
     <div className="rounded-xl border border-border/40 bg-background/40 p-3">
       <div className="flex items-center gap-2 text-xs text-muted-foreground">
@@ -232,7 +234,15 @@ function Mini({ icon: Icon, label, value }: any) {
     </div>
   );
 }
-function TabBtn({ active, onClick, children }: any) {
+function TabBtn({
+  active,
+  onClick,
+  children,
+}: {
+  active: boolean;
+  onClick: () => void;
+  children: ReactNode;
+}) {
   return (
     <button
       onClick={onClick}
@@ -259,7 +269,7 @@ function TypeBadge({ type }: { type: string }) {
   );
 }
 function StatusBadge({ status }: { status: string }) {
-  const map: Record<string, { cls: string; Icon: any }> = {
+  const map: Record<string, { cls: string; Icon: LucideIcon }> = {
     pending: { cls: "bg-[oklch(0.85_0.16_80)]/15 text-[oklch(0.85_0.16_80)]", Icon: Clock },
     approved: {
       cls: "bg-[oklch(0.78_0.16_155)]/15 text-[oklch(0.78_0.16_155)]",

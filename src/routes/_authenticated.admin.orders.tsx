@@ -1,5 +1,8 @@
+import { z } from "zod";
+import { adminOrderSchema, parseAdminRows } from "@/lib/admin-data";
+import type { ReactNode } from "react";
 import { createFileRoute } from "@tanstack/react-router";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { Loader2, Undo2 } from "lucide-react";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
@@ -12,12 +15,12 @@ const STATUSES = ["pending", "processing", "completed", "rejected", "refunded"] 
 type OS = (typeof STATUSES)[number];
 
 function AdminOrders() {
-  const [items, setItems] = useState<any[]>([]);
+  const [items, setItems] = useState<z.infer<typeof adminOrderSchema>[]>([]);
   const [filter, setFilter] = useState<OS | "all">("all");
   const [loading, setLoading] = useState(true);
   const [busy, setBusy] = useState<string | null>(null);
 
-  const load = async () => {
+  const load = useCallback(async () => {
     setLoading(true);
     let q = supabase
       .from("orders")
@@ -25,13 +28,21 @@ function AdminOrders() {
       .order("created_at", { ascending: false })
       .limit(200);
     if (filter !== "all") q = q.eq("status", filter);
-    const { data } = await q;
-    setItems(data ?? []);
+    const { data, error } = await q;
+    if (error) {
+      toast.error(error.message);
+      setItems([]);
+      setLoading(false);
+      return;
+    }
+    const parsed = parseAdminRows(adminOrderSchema, data);
+    if (!parsed.success) toast.error("Invalid order data returned by the server");
+    setItems(parsed.success ? parsed.data : []);
     setLoading(false);
-  };
+  }, [filter]);
   useEffect(() => {
     load();
-  }, [filter]);
+  }, [load]);
 
   const update = async (id: string, status: OS, result?: string | null) => {
     setBusy(id);
@@ -155,7 +166,17 @@ function AdminOrders() {
   );
 }
 
-function FilterBtn({ s, cur, set, children }: any) {
+function FilterBtn({
+  s,
+  cur,
+  set,
+  children,
+}: {
+  s: OS | "all";
+  cur: OS | "all";
+  set: (value: OS | "all") => void;
+  children: ReactNode;
+}) {
   return (
     <button
       onClick={() => set(s)}

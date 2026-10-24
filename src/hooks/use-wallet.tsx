@@ -1,3 +1,4 @@
+import type { Tables } from "@/integrations/supabase/types";
 import { useEffect, useState, useCallback } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/use-auth";
@@ -30,10 +31,10 @@ export function useWallet() {
     if (!user) return;
     const ch = supabase
       .channel(`wallet-${user.id}`)
-      .on(
+      .on<Tables<"wallets">>(
         "postgres_changes",
         { event: "*", schema: "public", table: "wallets", filter: `user_id=eq.${user.id}` },
-        (payload: any) => setBalance(Number(payload.new?.balance ?? 0)),
+        (payload) => setBalance(Number("balance" in payload.new ? payload.new.balance : 0)),
       )
       .subscribe();
     return () => {

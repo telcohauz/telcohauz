@@ -1,3 +1,5 @@
+import { orderNumber } from "@/lib/admin-data";
+import type { LucideIcon } from "lucide-react";
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import {
@@ -30,7 +32,7 @@ interface Service {
   delivery_eta: string | null;
 }
 
-const ICONS: Record<string, any> = {
+const ICONS: Record<string, LucideIcon> = {
   Android: Smartphone,
   iPhone: Apple,
   Network: Network,
@@ -86,7 +88,7 @@ function ServicesPage() {
       }
       return;
     }
-    toast.success(`Order placed! ${(data as any)?.order_number ?? ""}`);
+    toast.success(`Order placed! ${orderNumber(data)}`);
     setActive(null);
     setImei("");
     setNotes("");

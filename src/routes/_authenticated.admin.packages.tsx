@@ -1,3 +1,4 @@
+import type { ReactNode } from "react";
 import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { Plus, Pencil, Trash2, Loader2, Save, X, Sparkles } from "lucide-react";
@@ -215,7 +216,7 @@ function AdminPackages() {
 }
 const inputCls =
   "w-full rounded-lg border border-border bg-input/40 px-3 py-2 text-sm focus:border-primary focus:outline-none";
-function Field({ label, children }: any) {
+function Field({ label, children }: { label: string; children: ReactNode }) {
   return (
     <div>
       <label className="block text-[10px] uppercase tracking-[0.2em] text-muted-foreground mb-1">

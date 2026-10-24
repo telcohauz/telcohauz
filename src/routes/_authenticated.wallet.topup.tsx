@@ -1,3 +1,5 @@
+import { errorMessage } from "@/lib/admin-data";
+import type { LucideIcon } from "lucide-react";
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import {
@@ -29,7 +31,7 @@ interface Pkg {
 }
 type Method = "fpx" | "duitnow" | "manual_bank";
 
-const METHODS: { id: Method; name: string; sub: string; icon: any }[] = [
+const METHODS: { id: Method; name: string; sub: string; icon: LucideIcon }[] = [
   {
     id: "fpx",
     name: "FPX Online Banking",
@@ -111,8 +113,8 @@ function TopUpPage() {
       if (error) throw error;
       toast.success("Top-up request submitted! Awaiting admin approval.");
       nav({ to: "/wallet" });
-    } catch (e: any) {
-      toast.error(e.message ?? "Failed to submit");
+    } catch (e: unknown) {
+      toast.error(errorMessage(e, "Failed to submit"));
     } finally {
       setSubmitting(false);
     }

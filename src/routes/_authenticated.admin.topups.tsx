@@ -1,5 +1,8 @@
+import { z } from "zod";
+import { adminTopupSchema, parseAdminRows } from "@/lib/admin-data";
+import type { LucideIcon } from "lucide-react";
 import { createFileRoute } from "@tanstack/react-router";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { CheckCircle2, XCircle, Loader2, Eye, Clock } from "lucide-react";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
@@ -8,19 +11,7 @@ export const Route = createFileRoute("/_authenticated/admin/topups")({
   component: AdminTopups,
 });
 
-interface TopUp {
-  id: string;
-  user_id: string;
-  amount: number;
-  credits: number;
-  method: string;
-  reference: string | null;
-  proof_url: string | null;
-  status: string;
-  admin_note: string | null;
-  created_at: string;
-  profiles?: { display_name: string | null; phone: string | null };
-}
+type TopUp = z.infer<typeof adminTopupSchema>;
 
 function AdminTopups() {
   const [items, setItems] = useState<TopUp[]>([]);
@@ -29,7 +20,7 @@ function AdminTopups() {
   const [busy, setBusy] = useState<string | null>(null);
   const [proofUrl, setProofUrl] = useState<string | null>(null);
 
-  const load = async () => {
+  const load = useCallback(async () => {
     setLoading(true);
     let q = supabase
       .from("topup_requests")
@@ -37,13 +28,21 @@ function AdminTopups() {
       .order("created_at", { ascending: false })
       .limit(100);
     if (filter !== "all") q = q.eq("status", filter);
-    const { data } = await q;
-    setItems((data ?? []) as any);
+    const { data, error } = await q;
+    if (error) {
+      toast.error(error.message);
+      setItems([]);
+      setLoading(false);
+      return;
+    }
+    const parsed = parseAdminRows(adminTopupSchema, data);
+    if (!parsed.success) toast.error("Invalid top-up data returned by the server");
+    setItems(parsed.success ? parsed.data : []);
     setLoading(false);
-  };
+  }, [filter]);
   useEffect(() => {
     load();
-  }, [filter]);
+  }, [load]);
 
   const viewProof = async (path: string) => {
     const { data } = await supabase.storage.from("payment-proofs").createSignedUrl(path, 300);
@@ -204,7 +203,7 @@ function AdminTopups() {
 }
 
 function StatusPill({ status }: { status: string }) {
-  const map: Record<string, { cls: string; Icon: any }> = {
+  const map: Record<string, { cls: string; Icon: LucideIcon }> = {
     pending: { cls: "bg-[oklch(0.85_0.16_80)]/15 text-[oklch(0.85_0.16_80)]", Icon: Clock },
     approved: {
       cls: "bg-[oklch(0.78_0.16_155)]/15 text-[oklch(0.78_0.16_155)]",

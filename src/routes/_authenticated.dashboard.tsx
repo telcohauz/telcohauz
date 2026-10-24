@@ -1,3 +1,5 @@
+import type { ReactNode } from "react";
+import type { LucideIcon } from "lucide-react";
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useState } from "react";
 import {
@@ -42,7 +44,7 @@ export const Route = createFileRoute("/_authenticated/dashboard")({
   component: Dashboard,
 });
 
-const navItems: { icon: any; label: string; to?: string; active?: boolean }[] = [
+const navItems: { icon: LucideIcon; label: string; to?: string; active?: boolean }[] = [
   { icon: LayoutDashboard, label: "Dashboard", to: "/dashboard", active: true },
   { icon: Smartphone, label: "Android Services", to: "/services" },
   { icon: Apple, label: "iPhone Services", to: "/services" },
@@ -360,7 +362,19 @@ function Dashboard() {
   );
 }
 
-function StatCard({ icon: Icon, label, value, change, tone = "good" }: any) {
+function StatCard({
+  icon: Icon,
+  label,
+  value,
+  change,
+  tone = "good",
+}: {
+  icon: LucideIcon;
+  label: string;
+  value: ReactNode;
+  change: string;
+  tone?: "good" | "warning";
+}) {
   return (
     <div className="relative overflow-hidden rounded-2xl glass p-5 glow-on-hover">
       <div className="absolute -right-6 -top-6 h-20 w-20 rounded-full bg-primary/20 blur-2xl" />
