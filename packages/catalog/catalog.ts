@@ -72,7 +72,9 @@ export function publicProduct(p: MasterProduct, channel: string, now = new Date(
     name: p.name,
     provider: p.provider,
     category: p.category,
-    description: p.details.description,
+    description: available
+      ? p.details.description
+      : "Maklumat, harga dan syarat produk ini sedang disemak. Permohonan belum dibuka.",
     availability: available ? "available" : "pending_verification",
     label: available ? "Tersedia" : "Belum tersedia",
     canApply: available,
