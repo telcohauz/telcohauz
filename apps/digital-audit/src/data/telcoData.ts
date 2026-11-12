@@ -1194,7 +1194,7 @@ const LEGACY_TELCO_PLANS: TelcoPlan[] = [
 // Read the shared approval registry. Historical price claims stay private to review.
 export const TELCO_PLANS: TelcoPlan[] = LEGACY_TELCO_PLANS.map(plan => {
   const projection = masterWebPlan(plan.id);
-  return { ...plan, originalPrice: null,
+  return { ...plan, description: projection?.description || "Maklumat produk sedang disemak.", originalPrice: null,
     priceMonthly: projection?.priceMonthlySen == null ? null : projection.priceMonthlySen / 100,
     priceType: !projection?.canApply ? 'UNAVAILABLE' : projection.priceMonthlySen == null ? 'SUBJECT_TO_CONFIRMATION' : 'FIXED',
     priceNote: projection?.canApply ? plan.priceNote : 'Belum tersedia — menunggu pengesahan',

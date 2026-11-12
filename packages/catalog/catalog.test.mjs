@@ -10,6 +10,9 @@ test('imported records keep unique IDs and provenance and remain on hold', () =>
 });
 test('pending products never expose prices or application permission', () => {
   const p = publicProduct(products[0], 'hero', now); assert.equal(p.priceMonthlySen,null); assert.equal(p.commissionSen,null); assert.equal(p.canApply,false);
+  const claim = publicProduct({...products[0], details: {...products[0].details, description: 'RM999 dan kelulusan dijamin'}}, 'web', now);
+  assert.equal(claim.description.includes('RM999'), false);
+  assert.equal(claim.description.includes('dijamin'), false);
 });
 test('HERO admits only approved EasyApply telco plans with commission', () => {
   assert.equal(canSell(approved(),'hero',now),true);
