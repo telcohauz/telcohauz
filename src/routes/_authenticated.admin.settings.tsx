@@ -49,17 +49,23 @@ function AdminSettings() {
 
   const save = async () => {
     setSaving(true);
-    const { data: { user } } = await supabase.auth.getUser();
-    const { error } = await supabase
-      .from("platform_settings")
-      .upsert({ key: "unlock_api", value: cfg, updated_by: user?.id, updated_at: new Date().toISOString() });
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
+    const { error } = await supabase.from("platform_settings").upsert({
+      key: "unlock_api",
+      value: cfg,
+      updated_by: user?.id,
+      updated_at: new Date().toISOString(),
+    });
     setSaving(false);
     if (error) toast.error(error.message);
     else toast.success("Settings saved");
   };
 
-  const set = (k: keyof UnlockApi) => (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) =>
-    setCfg({ ...cfg, [k]: e.target.value });
+  const set =
+    (k: keyof UnlockApi) => (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) =>
+      setCfg({ ...cfg, [k]: e.target.value });
 
   return (
     <div className="space-y-6 p-4 sm:p-6 lg:p-8 max-w-4xl">
@@ -74,31 +80,74 @@ function AdminSettings() {
           <span className="text-xs uppercase tracking-[0.2em]">Unlock API</span>
         </div>
         <p className="text-sm text-muted-foreground">
-          Store the API endpoints for your unlock provider. The API key itself is stored as a secure server secret separately.
+          Store the API endpoints for your unlock provider. The API key itself is stored as a secure
+          server secret separately.
         </p>
 
         {loading ? (
-          <div className="flex items-center gap-2 text-sm text-muted-foreground"><Loader2 className="h-4 w-4 animate-spin" /> Loading…</div>
+          <div className="flex items-center gap-2 text-sm text-muted-foreground">
+            <Loader2 className="h-4 w-4 animate-spin" /> Loading…
+          </div>
         ) : (
           <div className="grid gap-4">
-            <Field label="Base URL" placeholder="https://api.provider.com/v1" value={cfg.base_url} onChange={set("base_url")} />
+            <Field
+              label="Base URL"
+              placeholder="https://api.provider.com/v1"
+              value={cfg.base_url}
+              onChange={set("base_url")}
+            />
 
             <div className="grid gap-4 sm:grid-cols-2">
-              <Field label="Auth Header Name" placeholder="Authorization" value={cfg.auth_header_name} onChange={set("auth_header_name")} />
-              <Field label="Auth Header Format" placeholder="Bearer {key}" value={cfg.auth_header_format} onChange={set("auth_header_format")} />
+              <Field
+                label="Auth Header Name"
+                placeholder="Authorization"
+                value={cfg.auth_header_name}
+                onChange={set("auth_header_name")}
+              />
+              <Field
+                label="Auth Header Format"
+                placeholder="Bearer {key}"
+                value={cfg.auth_header_format}
+                onChange={set("auth_header_format")}
+              />
             </div>
 
             <div className="grid gap-4 sm:grid-cols-[1fr,140px]">
-              <Field label="List Products Path" placeholder="/products" value={cfg.list_products_path} onChange={set("list_products_path")} />
-              <SelectField label="Method" value={cfg.list_products_method} onChange={set("list_products_method")} options={["GET", "POST"]} />
+              <Field
+                label="List Products Path"
+                placeholder="/products"
+                value={cfg.list_products_path}
+                onChange={set("list_products_path")}
+              />
+              <SelectField
+                label="Method"
+                value={cfg.list_products_method}
+                onChange={set("list_products_method")}
+                options={["GET", "POST"]}
+              />
             </div>
 
             <div className="grid gap-4 sm:grid-cols-[1fr,140px]">
-              <Field label="Place Order Path" placeholder="/orders" value={cfg.place_order_path} onChange={set("place_order_path")} />
-              <SelectField label="Method" value={cfg.place_order_method} onChange={set("place_order_method")} options={["POST", "PUT"]} />
+              <Field
+                label="Place Order Path"
+                placeholder="/orders"
+                value={cfg.place_order_path}
+                onChange={set("place_order_path")}
+              />
+              <SelectField
+                label="Method"
+                value={cfg.place_order_method}
+                onChange={set("place_order_method")}
+                options={["POST", "PUT"]}
+              />
             </div>
 
-            <Field label="Order Status Path (optional)" placeholder="/orders/{id}" value={cfg.order_status_path} onChange={set("order_status_path")} />
+            <Field
+              label="Order Status Path (optional)"
+              placeholder="/orders/{id}"
+              value={cfg.order_status_path}
+              onChange={set("order_status_path")}
+            />
 
             <div className="flex justify-end pt-2">
               <button
@@ -106,7 +155,11 @@ function AdminSettings() {
                 disabled={saving}
                 className="inline-flex items-center gap-2 rounded-xl bg-gradient-to-r from-primary to-[oklch(0.55_0.22_270)] px-5 py-2.5 text-sm font-semibold text-background shadow-[var(--glow-soft)] hover:shadow-[var(--glow-neon)] disabled:opacity-50"
               >
-                {saving ? <Loader2 className="h-4 w-4 animate-spin" /> : <Save className="h-4 w-4" />}
+                {saving ? (
+                  <Loader2 className="h-4 w-4 animate-spin" />
+                ) : (
+                  <Save className="h-4 w-4" />
+                )}
                 Save settings
               </button>
             </div>
@@ -117,10 +170,15 @@ function AdminSettings() {
   );
 }
 
-function Field({ label, ...props }: { label: string } & React.InputHTMLAttributes<HTMLInputElement>) {
+function Field({
+  label,
+  ...props
+}: { label: string } & React.InputHTMLAttributes<HTMLInputElement>) {
   return (
     <label className="block">
-      <span className="mb-1.5 block text-xs font-medium uppercase tracking-wider text-muted-foreground">{label}</span>
+      <span className="mb-1.5 block text-xs font-medium uppercase tracking-wider text-muted-foreground">
+        {label}
+      </span>
       <input
         {...props}
         className="w-full rounded-xl border border-border bg-input/40 px-4 py-2.5 text-sm placeholder:text-muted-foreground focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/20"
@@ -129,15 +187,25 @@ function Field({ label, ...props }: { label: string } & React.InputHTMLAttribute
   );
 }
 
-function SelectField({ label, options, ...props }: { label: string; options: string[] } & React.SelectHTMLAttributes<HTMLSelectElement>) {
+function SelectField({
+  label,
+  options,
+  ...props
+}: { label: string; options: string[] } & React.SelectHTMLAttributes<HTMLSelectElement>) {
   return (
     <label className="block">
-      <span className="mb-1.5 block text-xs font-medium uppercase tracking-wider text-muted-foreground">{label}</span>
+      <span className="mb-1.5 block text-xs font-medium uppercase tracking-wider text-muted-foreground">
+        {label}
+      </span>
       <select
         {...props}
         className="w-full rounded-xl border border-border bg-input/40 px-4 py-2.5 text-sm focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/20"
       >
-        {options.map((o) => <option key={o} value={o}>{o}</option>)}
+        {options.map((o) => (
+          <option key={o} value={o}>
+            {o}
+          </option>
+        ))}
       </select>
     </label>
   );

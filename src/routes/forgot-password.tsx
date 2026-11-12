@@ -36,13 +36,21 @@ function ForgotPage() {
       {sent ? (
         <div className="rounded-xl bg-success/10 border border-success/30 p-4 text-center text-sm">
           <div className="font-semibold text-[oklch(0.78_0.16_155)]">Check your email</div>
-          <div className="mt-1 text-muted-foreground">We sent a reset link to <span className="text-foreground">{email}</span></div>
+          <div className="mt-1 text-muted-foreground">
+            We sent a reset link to <span className="text-foreground">{email}</span>
+          </div>
         </div>
       ) : (
         <form onSubmit={submit} className="space-y-4">
           <div>
             <FieldLabel>Email</FieldLabel>
-            <Input type="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="you@telcohauz.com" required />
+            <Input
+              type="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              placeholder="you@telcohauz.com"
+              required
+            />
           </div>
           <PrimaryButton type="submit" disabled={loading}>
             {loading && <Loader2 className="h-4 w-4 animate-spin" />} Send reset link
@@ -51,7 +59,9 @@ function ForgotPage() {
       )}
 
       <p className="mt-6 text-center text-xs text-muted-foreground">
-        <Link to="/login" className="hover:text-foreground">← Back to sign in</Link>
+        <Link to="/login" search={{ redirect: "/dashboard" }} className="hover:text-foreground">
+          ← Back to sign in
+        </Link>
       </p>
     </AuthShell>
   );

@@ -26,8 +26,15 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   };
 
   useEffect(() => {
+    // Public catalogue works before an operator configures private account access.
+    if (!import.meta.env.VITE_SUPABASE_URL || !import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY) {
+      setLoading(false);
+      return;
+    }
     // Set listener FIRST
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, s) => {
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange((_event, s) => {
       setSession(s);
       if (s?.user) {
         // Defer Supabase calls to avoid deadlocks
@@ -58,7 +65,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   };
 
   return (
-    <Ctx.Provider value={{ session, user: session?.user ?? null, roles, loading, signOut, refreshRoles }}>
+    <Ctx.Provider
+      value={{ session, user: session?.user ?? null, roles, loading, signOut, refreshRoles }}
+    >
       {children}
     </Ctx.Provider>
   );

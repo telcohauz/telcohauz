@@ -1,0 +1,26 @@
+{
+  "name": "boz-pos-expo",
+  "version": "0.1.0",
+  "private": true,
+  "main": "index.ts",
+  "scripts": {
+    "start": "expo start",
+    "typecheck": "tsc --noEmit",
+    "check": "node scripts/validate.mjs",
+    "eas:apk": "eas build -p android --profile preview",
+    "unit": "node --experimental-strip-types --test tests/*.test.mjs"
+  },
+  "dependencies": {
+    "expo": "~57.0.21",
+    "expo-camera": "~57.0.6",
+    "react": "19.2.3",
+    "react-native": "0.86.3",
+    "expo-crypto": "~57.0.3",
+    "expo-print": "~57.0.2",
+    "expo-secure-store": "~57.0.4"
+  },
+  "devDependencies": {
+    "@types/react": "~19.2.0",
+    "typescript": "~6.0.3"
+  }
+}

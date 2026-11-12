@@ -1,0 +1,30 @@
+{
+  "expo": {
+    "name": "BOZ POS by Telcohauz",
+    "slug": "boz-pos",
+    "scheme": "bozpos",
+    "version": "0.1.0",
+    "orientation": "portrait",
+    "userInterfaceStyle": "automatic",
+    "android": {
+      "package": "com.telcohauz.bozpos",
+      "versionCode": 1,
+      "permissions": [
+        "CAMERA"
+      ]
+    },
+    "plugins": [
+      [
+        "expo-camera",
+        {
+          "cameraPermission": "Allow BOZ POS to scan product barcodes and QR codes.",
+          "recordAudioAndroid": false,
+          "barcodeScannerEnabled": true
+        }
+      ]
+    ],
+    "extra": {
+      "apiBaseUrl": ""
+    }
+  }
+}
