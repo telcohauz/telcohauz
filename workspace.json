@@ -1,0 +1,20 @@
+{
+  "name": "Telcohauz BOZ",
+  "version": 1,
+  "modules": [
+    {"id":"web","path":".","role":"Public services and catalogue","identity":"existing Supabase project; reconciliation pending"},
+    {"id":"businesshq","path":"apps/businesshq","role":"Company, invoices, staff, documents","identity":"company_members; company_id"},
+    {"id":"digital-audit","path":"apps/digital-audit","role":"Public catalogue and internal evidence audit","identity":"Firebase organization grant; isolated pending migration"},
+    {"id":"pos","path":"boz-pos-expo","role":"Shop-scoped inventory, repairs and checkout","identity":"pos_memberships; shop_id"},
+    {"id":"catalog","path":"packages/catalog","role":"Canonical product review registry","identity":"public projections; approval through reviewed source changes"},
+    {"id":"ui","path":"packages/ui","role":"Shared React UI components"},
+    {"id":"commerce","path":"services/commerce-sync","role":"Staging-only channel reconciliation"}
+  ],
+  "externalModules": [
+    {"repository":"telcohauz/Telcohauzmap","visibility":"private","role":"Marketplace; retain private boundary"},
+    {"repository":"telcohauz/Agenttelco","role":"Existing Android source; reconcile with current HERO before replacement"},
+    {"repository":"telcohauz/telcohauz.github.io","role":"Static public entry point"}
+  ],
+  "separateProjects": ["drama","malaysia-tv","n8n","EasyappAI","ezbiz","EZBiz2"],
+  "productionReady": false
+}

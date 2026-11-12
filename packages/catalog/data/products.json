@@ -1,0 +1,1056 @@
+[
+  {
+    "id": "telco:time-200",
+    "domain": "telco_plan",
+    "name": "TIME Fibre Home 200Mbps",
+    "provider": "TIME",
+    "category": "Fibre Internet",
+    "slug": "time-fibre-200mbps",
+    "priceMonthlySen": 9900,
+    "commissionSen": null,
+    "availability": "pending_verification",
+    "reviewStatus": "hold",
+    "channels": [
+      "web",
+      "hero"
+    ],
+    "approvedChannels": [],
+    "supplier": "unconfirmed",
+    "verifiedAt": null,
+    "verifiedBy": null,
+    "evidenceUrl": null,
+    "source": {
+      "repository": "telcohauz/telcohauzzzzz",
+      "commit": "52e61bfb49f69dad48697c0b6751fd3e35ba3a04",
+      "path": "src/data/telcoData.ts",
+      "id": "time-200",
+      "declaredStatus": "EA-PUBLIC"
+    },
+    "details": {
+      "contractMonths": 24,
+      "features": [
+        "Kelajuan muat naik & muat turun simetri 200Mbps",
+        "100% rangkaian gentian optik terus ke premis",
+        "Router WiFi 6 percuma disertakan",
+        "Pemasangan standard percuma",
+        "Tiada had kuota (Truly Unlimited)"
+      ],
+      "eligibility": "Sesuai untuk kondominium, apartmen, dan kawasan perumahan bertingkat dengan liputan rangkaian TIME dotCom.",
+      "description": "Internet 100% gentian kaca (Full Fibre) tulen dengan kelajuan muat turun dan muat naik simetri 200Mbps. Paling stabil untuk gaming rendah latensi."
+    }
+  },
+  {
+    "id": "telco:time-600",
+    "domain": "telco_plan",
+    "name": "TIME Fibre Home 600Mbps",
+    "provider": "TIME",
+    "category": "Fibre Internet",
+    "slug": "time-fibre-600mbps",
+    "priceMonthlySen": 13900,
+    "commissionSen": null,
+    "availability": "pending_verification",
+    "reviewStatus": "hold",
+    "channels": [
+      "web",
+      "hero"
+    ],
+    "approvedChannels": [],
+    "supplier": "unconfirmed",
+    "verifiedAt": null,
+    "verifiedBy": null,
+    "evidenceUrl": null,
+    "source": {
+      "repository": "telcohauz/telcohauzzzzz",
+      "commit": "52e61bfb49f69dad48697c0b6751fd3e35ba3a04",
+      "path": "src/data/telcoData.ts",
+      "id": "time-600",
+      "declaredStatus": "EA-PUBLIC"
+    },
+    "details": {
+      "contractMonths": 24,
+      "features": [
+        "Kelajuan muat turun 600Mbps / muat naik 500Mbps",
+        "Latensi serendah 2ms ke pelayan tempatan",
+        "Menyokong lebih 20 peranti serentak tanpa gangguan",
+        "Percuma Router WiFi 6 Premium"
+      ],
+      "eligibility": "Semak kelayakan alamat bangunan bertingkat anda bersama perunding TelcoHauz.",
+      "description": "Pakej paling berbaloi untuk rumah moden dengan pelbagai peranti pintar. Kelajuan 600Mbps memastikan sifar lag ketika permainan atas talian."
+    }
+  },
+  {
+    "id": "telco:unifi-100",
+    "domain": "telco_plan",
+    "name": "Unifi Home Fibre 100Mbps",
+    "provider": "Unifi",
+    "category": "Fibre Internet",
+    "slug": "unifi-home-100mbps",
+    "priceMonthlySen": 8900,
+    "commissionSen": null,
+    "availability": "pending_verification",
+    "reviewStatus": "hold",
+    "channels": [
+      "web",
+      "hero"
+    ],
+    "approvedChannels": [],
+    "supplier": "unconfirmed",
+    "verifiedAt": null,
+    "verifiedBy": null,
+    "evidenceUrl": null,
+    "source": {
+      "repository": "telcohauz/telcohauzzzzz",
+      "commit": "52e61bfb49f69dad48697c0b6751fd3e35ba3a04",
+      "path": "src/data/telcoData.ts",
+      "id": "unifi-100",
+      "declaredStatus": "PROVIDER-OFFICIAL"
+    },
+    "details": {
+      "contractMonths": 24,
+      "features": [
+        "Liputan paling komprehensif dari bandar hingga pinggir bandar",
+        "Router WiFi 6 terkini mengurangkan zon mati isyarat",
+        "Termasuk akses saluran terpilih Unifi TV pada peranti mudah alih",
+        "Pemasangan percuma oleh juruteknik bertauliah TM"
+      ],
+      "eligibility": "Liputan tersedia di lebih 7 juta premis di seluruh Semenanjung, Sabah & Sarawak.",
+      "description": "Pelan gentian optik paling stabil dengan liputan terluas di Malaysia oleh Telekom Malaysia (TM). Pilihan mampu milik untuk seisi rumah."
+    }
+  },
+  {
+    "id": "telco:unifi-300",
+    "domain": "telco_plan",
+    "name": "Unifi Home Fibre 300Mbps",
+    "provider": "Unifi",
+    "category": "Fibre Internet",
+    "slug": "unifi-home-300mbps",
+    "priceMonthlySen": 12900,
+    "commissionSen": null,
+    "availability": "pending_verification",
+    "reviewStatus": "hold",
+    "channels": [
+      "web",
+      "hero"
+    ],
+    "approvedChannels": [],
+    "supplier": "unconfirmed",
+    "verifiedAt": null,
+    "verifiedBy": null,
+    "evidenceUrl": null,
+    "source": {
+      "repository": "telcohauz/telcohauzzzzz",
+      "commit": "52e61bfb49f69dad48697c0b6751fd3e35ba3a04",
+      "path": "src/data/telcoData.ts",
+      "id": "unifi-300",
+      "declaredStatus": "PROVIDER-OFFICIAL"
+    },
+    "details": {
+      "contractMonths": 24,
+      "features": [
+        "Kelajuan 300Mbps muat turun / 100Mbps muat naik",
+        "Percuma WiFi 6 Router dengan sokongan Mesh",
+        "Pakej hiburan striming pilihan seisi keluarga",
+        "Sokongan teknikal 24/7 TM Care"
+      ],
+      "eligibility": "Sesuai untuk semua jenis kediaman landed & bertingkat.",
+      "description": "Kelajuan ideal 300Mbps dengan kapasiti jalur lebar tinggi. Tiada lagi gangguan ketika telesidang atau striming video 4K definisi tinggi."
+    }
+  },
+  {
+    "id": "telco:maxis-300",
+    "domain": "telco_plan",
+    "name": "Maxis Home Fibre 300Mbps",
+    "provider": "Maxis",
+    "category": "Fibre Internet",
+    "slug": "maxis-home-fibre-300mbps",
+    "priceMonthlySen": 13900,
+    "commissionSen": null,
+    "availability": "pending_verification",
+    "reviewStatus": "hold",
+    "channels": [
+      "web",
+      "hero"
+    ],
+    "approvedChannels": [],
+    "supplier": "unconfirmed",
+    "verifiedAt": null,
+    "verifiedBy": null,
+    "evidenceUrl": null,
+    "source": {
+      "repository": "telcohauz/telcohauzzzzz",
+      "commit": "52e61bfb49f69dad48697c0b6751fd3e35ba3a04",
+      "path": "src/data/telcoData.ts",
+      "id": "maxis-300",
+      "declaredStatus": "EA-PUBLIC"
+    },
+    "details": {
+      "contractMonths": 24,
+      "features": [
+        "Pemasangan dan pengoptimuman isyarat oleh juruteknik Maxperts",
+        "Penjimatan kombo jika digabungkan bersama pelan Maxis Postpaid",
+        "Router EasyMesh WiFi 6 berkuasa tinggi percuma",
+        "Jaminan sokongan pembaikan pantas"
+      ],
+      "eligibility": "Semak alamat anda bersama TelcoHauz untuk pengesahan liputan Maxis Fibre.",
+      "description": "Internet rumah pantas daripada Maxis dengan khidmat pemasangan dan talaan WiFi oleh pakar Maxperts untuk liputan optimum di setiap sudut rumah."
+    }
+  },
+  {
+    "id": "telco:celcomdigi-300",
+    "domain": "telco_plan",
+    "name": "CelcomDigi Fibre 300Mbps",
+    "provider": "CelcomDigi",
+    "category": "Fibre Internet",
+    "slug": "celcomdigi-fibre-300mbps",
+    "priceMonthlySen": 11900,
+    "commissionSen": null,
+    "availability": "pending_verification",
+    "reviewStatus": "hold",
+    "channels": [
+      "web",
+      "hero"
+    ],
+    "approvedChannels": [],
+    "supplier": "unconfirmed",
+    "verifiedAt": null,
+    "verifiedBy": null,
+    "evidenceUrl": null,
+    "source": {
+      "repository": "telcohauz/telcohauzzzzz",
+      "commit": "52e61bfb49f69dad48697c0b6751fd3e35ba3a04",
+      "path": "src/data/telcoData.ts",
+      "id": "celcomdigi-300",
+      "declaredStatus": "EA-PUBLIC"
+    },
+    "details": {
+      "contractMonths": 24,
+      "features": [
+        "Harga istimewa untuk pelanggan talian CelcomDigi sedia ada",
+        "Kelajuan muat turun 300Mbps stabil sepanjang masa",
+        "Router WiFi 6 terkini mengurangkan kesesakan sambungan",
+        "Pengurusan bil mudah dalam aplikasi"
+      ],
+      "eligibility": "Tersedia di seluruh kawasan liputan gentian optik CelcomDigi di Semenanjung & Malaysia Timur.",
+      "description": "Gabungan kuasa dua gergasi telekomunikasi Malaysia. Nikmati harga istimewa serendah RM119/bulan (atau RM99/bulan dengan talian pascabayar CelcomDigi terpilih)."
+    }
+  },
+  {
+    "id": "telco:allo-100",
+    "domain": "telco_plan",
+    "name": "ALLO CityFibre Home 100Mbps",
+    "provider": "ALLO",
+    "category": "Fibre Internet",
+    "slug": "allo-cityfibre-100mbps",
+    "priceMonthlySen": 9900,
+    "commissionSen": null,
+    "availability": "pending_verification",
+    "reviewStatus": "hold",
+    "channels": [
+      "web",
+      "hero"
+    ],
+    "approvedChannels": [],
+    "supplier": "unconfirmed",
+    "verifiedAt": null,
+    "verifiedBy": null,
+    "evidenceUrl": null,
+    "source": {
+      "repository": "telcohauz/telcohauzzzzz",
+      "commit": "52e61bfb49f69dad48697c0b6751fd3e35ba3a04",
+      "path": "src/data/telcoData.ts",
+      "id": "allo-100",
+      "declaredStatus": "PROVIDER-OFFICIAL"
+    },
+    "details": {
+      "contractMonths": 24,
+      "features": [
+        "Menggunakan gentian optik ALLO di talian elektrik TNB yang terlindung",
+        "Pakej stabil tanpa kekangan kuota FUP",
+        "Disertakan router WiFi 6 standard gigabit",
+        "Pemasangan percuma oleh pasukan juruteknik ALLO"
+      ],
+      "eligibility": "Tersedia di kawasan liputan ALLO CityFibre terpilih. Semak alamat anda bersama TelcoHauz.",
+      "description": "Internet gentian optik berkelajuan tinggi yang dibangunkan melalui infrastruktur grid Tenaga Nasional Berhad (TNB) merentasi kawasan bandar dan luar bandar."
+    }
+  },
+  {
+    "id": "telco:unifi-biz-100",
+    "domain": "telco_plan",
+    "name": "Unifi Business Fibre 100Mbps",
+    "provider": "Unifi",
+    "category": "Business Fibre",
+    "slug": "unifi-business-fibre-100mbps",
+    "priceMonthlySen": 13900,
+    "commissionSen": null,
+    "availability": "pending_verification",
+    "reviewStatus": "hold",
+    "channels": [
+      "web",
+      "hero"
+    ],
+    "approvedChannels": [],
+    "supplier": "unconfirmed",
+    "verifiedAt": null,
+    "verifiedBy": null,
+    "evidenceUrl": null,
+    "source": {
+      "repository": "telcohauz/telcohauzzzzz",
+      "commit": "52e61bfb49f69dad48697c0b6751fd3e35ba3a04",
+      "path": "src/data/telcoData.ts",
+      "id": "unifi-biz-100",
+      "declaredStatus": "PROVIDER-OFFICIAL"
+    },
+    "details": {
+      "contractMonths": 24,
+      "features": [
+        "Jaminan sokongan teknikal pemulihan pantas (Business SLA)",
+        "Sokongan peranti transaksi POS dan terminal bayaran tanpa gangguan",
+        "Boleh didaftarkan atas nama syarikat SSM (Enterprise / Sdn Bhd)",
+        "Invois rasmi e-Invois LHDN mematuhi cukai perniagaan"
+      ],
+      "eligibility": "Pendaftaran memerlukan nombor pendaftaran syarikat SSM yang sah. Disemak oleh TelcoHauz.",
+      "description": "Pelan internet perniagaan rasmi daripada Telekom Malaysia dengan jaminan SLA pemulihan kerosakan pantas dan sokongan talian sokongan perniagaan berdedikasi."
+    }
+  },
+  {
+    "id": "telco:time-biz-100",
+    "domain": "telco_plan",
+    "name": "TIME Business Fibre 100Mbps Simetri",
+    "provider": "TIME",
+    "category": "Business Fibre",
+    "slug": "time-business-fibre-100mbps",
+    "priceMonthlySen": 13800,
+    "commissionSen": null,
+    "availability": "pending_verification",
+    "reviewStatus": "hold",
+    "channels": [
+      "web",
+      "hero"
+    ],
+    "approvedChannels": [],
+    "supplier": "unconfirmed",
+    "verifiedAt": null,
+    "verifiedBy": null,
+    "evidenceUrl": null,
+    "source": {
+      "repository": "telcohauz/telcohauzzzzz",
+      "commit": "52e61bfb49f69dad48697c0b6751fd3e35ba3a04",
+      "path": "src/data/telcoData.ts",
+      "id": "time-biz-100",
+      "declaredStatus": "EA-PUBLIC"
+    },
+    "details": {
+      "contractMonths": 24,
+      "features": [
+        "Kelajuan simetri 100Mbps muat naik & muat turun sama laju",
+        "Komitmen jaminan kebolehsediaan rangkaian 99.9% uptime",
+        "Sokongan teknikal pelanggan perniagaan 24/7",
+        "Pemasangan kabel gentian optik profesional percuma"
+      ],
+      "eligibility": "Tersedia di bangunan komersial berliputan TIME. Semak alamat premis perniagaan anda.",
+      "description": "Sambungan gentian optik simetri 100Mbps muat naik dan muat turun. Sangat pantas untuk muat naik video ke awan (cloud backup), telesidang HD dan pelayan data dalaman."
+    }
+  },
+  {
+    "id": "telco:maxis-biz-100",
+    "domain": "telco_plan",
+    "name": "Maxis Business Fibre 100Mbps + 4G Backup",
+    "provider": "Maxis",
+    "category": "Business Fibre",
+    "slug": "maxis-business-fibre-100mbps",
+    "priceMonthlySen": 13900,
+    "commissionSen": null,
+    "availability": "pending_verification",
+    "reviewStatus": "hold",
+    "channels": [
+      "web",
+      "hero"
+    ],
+    "approvedChannels": [],
+    "supplier": "unconfirmed",
+    "verifiedAt": null,
+    "verifiedBy": null,
+    "evidenceUrl": null,
+    "source": {
+      "repository": "telcohauz/telcohauzzzzz",
+      "commit": "52e61bfb49f69dad48697c0b6751fd3e35ba3a04",
+      "path": "src/data/telcoData.ts",
+      "id": "maxis-biz-100",
+      "declaredStatus": "EA-PUBLIC"
+    },
+    "details": {
+      "contractMonths": 24,
+      "features": [
+        "Sistem sandaran 4G automatik menjamin perniagaan sentiasa terhubung",
+        "Khidmat pemasangan dan sokongan perniagaan oleh Maxperts",
+        "Sokongan pendaftaran pendaftaran SSM Enterprise & Sdn Bhd",
+        "Pakej talian suara pejabat disertakan"
+      ],
+      "eligibility": "Semak kelayakan liputan bangunan pejabat anda bersama TelcoHauz.",
+      "description": "Internet gentian optik perniagaan dengan ciri keselamatan sandaran automatik 4G (Failover). Sekiranya talian kabel terputus, router akan bertukar ke rangkaian 4G secara automatik."
+    }
+  },
+  {
+    "id": "telco:yes-5g-wireless",
+    "domain": "telco_plan",
+    "name": "Yes 5G Wireless Home Broadband",
+    "provider": "YES",
+    "category": "5G / Wireless Broadband",
+    "slug": "yes-5g-wireless-broadband",
+    "priceMonthlySen": 5800,
+    "commissionSen": null,
+    "availability": "pending_verification",
+    "reviewStatus": "hold",
+    "channels": [
+      "web",
+      "hero"
+    ],
+    "approvedChannels": [],
+    "supplier": "unconfirmed",
+    "verifiedAt": null,
+    "verifiedBy": null,
+    "evidenceUrl": null,
+    "source": {
+      "repository": "telcohauz/telcohauzzzzz",
+      "commit": "52e61bfb49f69dad48697c0b6751fd3e35ba3a04",
+      "path": "src/data/telcoData.ts",
+      "id": "yes-5g-wireless",
+      "declaredStatus": "EA-PUBLIC"
+    },
+    "details": {
+      "contractMonths": 24,
+      "features": [
+        "Penyelesaian Plug-and-Play: tiada kerja pemasangan kabel di dinding",
+        "Data 5G tanpa had kelajuan dan tanpa had kuota FUP tersembunyi",
+        "Router 5G mudah alih: boleh dibawa berpindah rumah dengan mudah",
+        "Harga bulanan serendah RM58/bulan"
+      ],
+      "eligibility": "Memerlukan isyarat rangkaian 5G Digital Nasional Berhad (DNB) di kawasan anda.",
+      "description": "Internet rumah tanpa wayar 5G tanpa perlu menunggu tebuk dinding atau tarik wayar. Cuma pasang kad SIM ke router, pasang palam elektrik dan terus nikmati WiFi pantas."
+    }
+  },
+  {
+    "id": "telco:umobile-5g-home",
+    "domain": "telco_plan",
+    "name": "U Mobile U Home 5G Broadband",
+    "provider": "U Mobile",
+    "category": "5G / Wireless Broadband",
+    "slug": "u-home-5g-broadband",
+    "priceMonthlySen": 6800,
+    "commissionSen": null,
+    "availability": "pending_verification",
+    "reviewStatus": "hold",
+    "channels": [
+      "web",
+      "hero"
+    ],
+    "approvedChannels": [],
+    "supplier": "unconfirmed",
+    "verifiedAt": null,
+    "verifiedBy": null,
+    "evidenceUrl": null,
+    "source": {
+      "repository": "telcohauz/telcohauzzzzz",
+      "commit": "52e61bfb49f69dad48697c0b6751fd3e35ba3a04",
+      "path": "src/data/telcoData.ts",
+      "id": "umobile-5g-home",
+      "declaredStatus": "EA-PUBLIC"
+    },
+    "details": {
+      "contractMonths": 0,
+      "features": [
+        "Pilihan fleksibel tanpa kontrak 24 bulan",
+        "Kuota 1,000GB (1TB) sangat luas untuk striming seisi rumah",
+        "Sokongan rangkaian 5G pantas dan meluas",
+        "Boleh digunakan dengan mana-mana modem/router 5G yang disokong"
+      ],
+      "eligibility": "Semak kekuatan isyarat U Mobile 5G di premis anda bersama pasukan TelcoHauz.",
+      "description": "Pelan internet rumah 5G paling fleksibel. Disediakan dengan 1,000GB kuota kelajuan tinggi tanpa kontrak ikatan wajib jika memilih pelan kad SIM sahaja."
+    }
+  },
+  {
+    "id": "telco:celcomdigi-5g-home",
+    "domain": "telco_plan",
+    "name": "CelcomDigi 5G Home WiFi",
+    "provider": "CelcomDigi",
+    "category": "5G / Wireless Broadband",
+    "slug": "celcomdigi-5g-home-wifi",
+    "priceMonthlySen": 6900,
+    "commissionSen": null,
+    "availability": "pending_verification",
+    "reviewStatus": "hold",
+    "channels": [
+      "web",
+      "hero"
+    ],
+    "approvedChannels": [],
+    "supplier": "unconfirmed",
+    "verifiedAt": null,
+    "verifiedBy": null,
+    "evidenceUrl": null,
+    "source": {
+      "repository": "telcohauz/telcohauzzzzz",
+      "commit": "52e61bfb49f69dad48697c0b6751fd3e35ba3a04",
+      "path": "src/data/telcoData.ts",
+      "id": "celcomdigi-5g-home",
+      "declaredStatus": "PROVIDER-OFFICIAL"
+    },
+    "details": {
+      "contractMonths": 24,
+      "features": [
+        "Router 5G WiFi 6 bernilai RM1,499 diberikan secara percuma",
+        "Data 1,000GB sebulan meliputi rangkaian 5G & 4G",
+        "Harga istimewa serendah RM69/bulan untuk pelanggan talian pascabayar terpilih",
+        "Pemasangan mudah sendiri dalam tempoh 5 minit"
+      ],
+      "eligibility": "Semak liputan rangkaian 5G CelcomDigi di lokasi kediaman anda.",
+      "description": "Penyelesaian WiFi rumah 5G berkelajuan tinggi daripada CelcomDigi dengan Router 5G WiFi 6 berkuasa tinggi disertakan secara percuma atas kontrak 24 bulan."
+    }
+  },
+  {
+    "id": "telco:celcomdigi-postpaid-80",
+    "domain": "telco_plan",
+    "name": "CelcomDigi Postpaid 5G 80",
+    "provider": "CelcomDigi",
+    "category": "Mobile",
+    "slug": "celcomdigi-postpaid-5g-80",
+    "priceMonthlySen": 8000,
+    "commissionSen": null,
+    "availability": "pending_verification",
+    "reviewStatus": "hold",
+    "channels": [
+      "web",
+      "hero"
+    ],
+    "approvedChannels": [],
+    "supplier": "unconfirmed",
+    "verifiedAt": null,
+    "verifiedBy": null,
+    "evidenceUrl": null,
+    "source": {
+      "repository": "telcohauz/telcohauzzzzz",
+      "commit": "52e61bfb49f69dad48697c0b6751fd3e35ba3a04",
+      "path": "src/data/telcoData.ts",
+      "id": "celcomdigi-postpaid-80",
+      "declaredStatus": "EA-PUBLIC"
+    },
+    "details": {
+      "contractMonths": 12,
+      "features": [
+        "Kuota 150GB + 50GB data 5G/4G kelajuan tanpa had",
+        "Panggilan tanpa had ke semua rangkaian talian tetap & bimbit",
+        "Hotspot internet berkongsi kuota utama sepenuhnya",
+        "Rebat bil RM10-RM20/bulan apabila dipadankan dengan CelcomDigi Fibre"
+      ],
+      "eligibility": "Boleh daftar nombor baharu atau kekalkan nombor sedia ada (MNP) secara percuma.",
+      "description": "Pelan pascabayar 5G paling stabil di Malaysia dengan kuota gabungan besar sehingga 200GB, panggilan tanpa had, dan penjimatan diskaun kombo jika pasang fibre."
+    }
+  },
+  {
+    "id": "telco:umobile-postpaid-68",
+    "domain": "telco_plan",
+    "name": "U Mobile U Postpaid 68",
+    "provider": "U Mobile",
+    "category": "Mobile",
+    "slug": "u-mobile-u-postpaid-68",
+    "priceMonthlySen": 6800,
+    "commissionSen": null,
+    "availability": "pending_verification",
+    "reviewStatus": "hold",
+    "channels": [
+      "web",
+      "hero"
+    ],
+    "approvedChannels": [],
+    "supplier": "unconfirmed",
+    "verifiedAt": null,
+    "verifiedBy": null,
+    "evidenceUrl": null,
+    "source": {
+      "repository": "telcohauz/telcohauzzzzz",
+      "commit": "52e61bfb49f69dad48697c0b6751fd3e35ba3a04",
+      "path": "src/data/telcoData.ts",
+      "id": "umobile-postpaid-68",
+      "declaredStatus": "EA-PUBLIC"
+    },
+    "details": {
+      "contractMonths": 0,
+      "features": [
+        "300GB data 5G & 4G kelajuan tinggi tanpa sekatan waktu",
+        "15GB data roaming percuma setiap bulan di 63 negara destinasi popular",
+        "Panggilan percuma tanpa had ke semua nombor domestik",
+        "Harga kekal RM68/bulan tanpa caj tersembunyi"
+      ],
+      "eligibility": "Pendaftaran pantas dalam 15 minit bersama wakil TelcoHauz.",
+      "description": "Pelan pascabayar paling berbaloi dengan 300GB data berkelajuan penuh dan 15GB perayauan data (data roaming) percuma di 63 negara termasuk Singapura, Thailand dan Indonesia."
+    }
+  },
+  {
+    "id": "telco:yes-infinite-postpaid",
+    "domain": "telco_plan",
+    "name": "YES 5G Infinite Postpaid Basic",
+    "provider": "YES",
+    "category": "Mobile",
+    "slug": "yes-5g-infinite-basic",
+    "priceMonthlySen": 5800,
+    "commissionSen": null,
+    "availability": "pending_verification",
+    "reviewStatus": "hold",
+    "channels": [
+      "web",
+      "hero"
+    ],
+    "approvedChannels": [],
+    "supplier": "unconfirmed",
+    "verifiedAt": null,
+    "verifiedBy": null,
+    "evidenceUrl": null,
+    "source": {
+      "repository": "telcohauz/telcohauzzzzz",
+      "commit": "52e61bfb49f69dad48697c0b6751fd3e35ba3a04",
+      "path": "src/data/telcoData.ts",
+      "id": "yes-infinite-postpaid",
+      "declaredStatus": "PROVIDER-OFFICIAL"
+    },
+    "details": {
+      "contractMonths": 0,
+      "features": [
+        "Data 5G tanpa had sebenar tanpa dasar FUP tersembunyi",
+        "Panggilan tanpa had ke semua rangkaian di Malaysia",
+        "Peruntukan 20GB hotspot internet berkelajuan tinggi",
+        "Pilihan fleksibel tanpa sebarang ikatan kontrak"
+      ],
+      "eligibility": "Memerlukan peranti telefon pintar yang menyokong rangkaian 5G DNB.",
+      "description": "Pelan pascabayar 5G tanpa had kuota dan tanpa had kelajuan (uncapped speed). Nikmati kelajuan 5G tulen tanpa sebarang sekatan waktu puncak."
+    }
+  },
+  {
+    "id": "telco:astro-fibre-100-pack",
+    "domain": "telco_plan",
+    "name": "Astro Fibre 100Mbps + Primary Pack Kombo",
+    "provider": "Astro",
+    "category": "Astro / Entertainment",
+    "slug": "astro-fibre-100mbps-primary-pack",
+    "priceMonthlySen": 12900,
+    "commissionSen": null,
+    "availability": "pending_verification",
+    "reviewStatus": "hold",
+    "channels": [
+      "web",
+      "hero"
+    ],
+    "approvedChannels": [],
+    "supplier": "unconfirmed",
+    "verifiedAt": null,
+    "verifiedBy": null,
+    "evidenceUrl": null,
+    "source": {
+      "repository": "telcohauz/telcohauzzzzz",
+      "commit": "52e61bfb49f69dad48697c0b6751fd3e35ba3a04",
+      "path": "src/data/telcoData.ts",
+      "id": "astro-fibre-100-pack",
+      "declaredStatus": "EA-PUBLIC"
+    },
+    "details": {
+      "contractMonths": 24,
+      "features": [
+        "Gabungan internet fibre 100Mbps + 80+ saluran televisyen Astro",
+        "Dekoder Astro Ulti Box dengan fungsi rakaman Cloud dan tonton semula (Catch-Up)",
+        "Boleh tonton di telefon pintar melalui aplikasi Astro GO percuma",
+        "Satu bil bersepadu memudahkan pengurusan kewangan rumah"
+      ],
+      "eligibility": "Boleh dipasang di kediaman bertingkat dan teres tanpa perlu tebuk piring satelit luaran (beroperasi melalui internet sepenuhnya).",
+      "description": "Pakej kombo hiburan terbaik: nikmati sambungan internet pantas 100Mbps bersama dekoder pintar Astro Ulti Box. Boleh tonton rancangan TV kegemaran dan striming secara serentak."
+    }
+  },
+  {
+    "id": "telco:astro-fibre-500-sports",
+    "domain": "telco_plan",
+    "name": "Astro Fibre 500Mbps + Sports & Movies Pack",
+    "provider": "Astro",
+    "category": "Astro / Entertainment",
+    "slug": "astro-fibre-500mbps-sports-pack",
+    "priceMonthlySen": 18900,
+    "commissionSen": null,
+    "availability": "pending_verification",
+    "reviewStatus": "hold",
+    "channels": [
+      "web",
+      "hero"
+    ],
+    "approvedChannels": [],
+    "supplier": "unconfirmed",
+    "verifiedAt": null,
+    "verifiedBy": null,
+    "evidenceUrl": null,
+    "source": {
+      "repository": "telcohauz/telcohauzzzzz",
+      "commit": "52e61bfb49f69dad48697c0b6751fd3e35ba3a04",
+      "path": "src/data/telcoData.ts",
+      "id": "astro-fibre-500-sports",
+      "declaredStatus": "PROVIDER-OFFICIAL"
+    },
+    "details": {
+      "contractMonths": 24,
+      "features": [
+        "Kelajuan internet gentian optik 500Mbps stabil",
+        "Saluran sukan penuh: Premier League, La Liga, BWF Badminton, F1, NBA",
+        "Saluran filem blockbuster Hollywood dan tempatan terkini",
+        "Dekoder Ultra Box resolusi 4K UHD disertakan percuma"
+      ],
+      "eligibility": "Memerlukan televisyen resolusi 4K untuk menikmati kualiti paparan maksimum.",
+      "description": "Kombo premium kelajuan tinggi 500Mbps dipadankan dengan dekoder Ultra Box 4K UHD. Tonton perlawanan Liga Perdana Inggeris secara siaran langsung dalam definisi ultra tinggi."
+    }
+  },
+  {
+    "id": "telco:cuckoo-king-top-2",
+    "domain": "telco_plan",
+    "name": "Cuckoo King Top 2 Penapis Air Beralkali Ringan",
+    "provider": "Cuckoo",
+    "category": "Water Purifiers",
+    "slug": "cuckoo-king-top-2-water-purifier",
+    "priceMonthlySen": 6000,
+    "commissionSen": null,
+    "availability": "pending_verification",
+    "reviewStatus": "hold",
+    "channels": [
+      "web",
+      "hero"
+    ],
+    "approvedChannels": [],
+    "supplier": "unconfirmed",
+    "verifiedAt": null,
+    "verifiedBy": null,
+    "evidenceUrl": null,
+    "source": {
+      "repository": "telcohauz/telcohauzzzzz",
+      "commit": "52e61bfb49f69dad48697c0b6751fd3e35ba3a04",
+      "path": "src/data/telcoData.ts",
+      "id": "cuckoo-king-top-2",
+      "declaredStatus": "EA-PUBLIC"
+    },
+    "details": {
+      "contractMonths": 36,
+      "features": [
+        "3 Tetapan Suhu Segera: Panas (Child-lock), Sejuk, Suhu Bilik",
+        "Teknologi penapisan Nano Positive singkirkan 99.9% bakteria berbahaya",
+        "Servis berkala Cuckoo Natural Doctress setiap 4 bulan percuma",
+        "Tangki simpanan keluli tahan karat antibakteria"
+      ],
+      "eligibility": "Permohonan mudah tanpa slip gaji rumit. Cuma perlukan kad pengenalan dan penyata bank/kad debit.",
+      "description": "Penapis air sewa-beli paling popular di Malaysia. Membekalkan air mineral beralkali ringan (pH 7.5 - 7.9) dengan 3 tetapan suhu: Panas, Sejuk, dan Suhu Bilik secara berterusan."
+    }
+  },
+  {
+    "id": "telco:coway-neo-plus",
+    "domain": "telco_plan",
+    "name": "Coway Neo Plus Penapis Air 3 Suhu",
+    "provider": "Coway",
+    "category": "Water Purifiers",
+    "slug": "coway-neo-plus-water-purifier",
+    "priceMonthlySen": 6500,
+    "commissionSen": null,
+    "availability": "pending_verification",
+    "reviewStatus": "hold",
+    "channels": [
+      "web",
+      "hero"
+    ],
+    "approvedChannels": [],
+    "supplier": "unconfirmed",
+    "verifiedAt": null,
+    "verifiedBy": null,
+    "evidenceUrl": null,
+    "source": {
+      "repository": "telcohauz/telcohauzzzzz",
+      "commit": "52e61bfb49f69dad48697c0b6751fd3e35ba3a04",
+      "path": "src/data/telcoData.ts",
+      "id": "coway-neo-plus",
+      "declaredStatus": "EA-PUBLIC"
+    },
+    "details": {
+      "contractMonths": 36,
+      "features": [
+        "Penapisan Coway RO Membrane singkirkan klorin, logam berat dan zarah mikro",
+        "Servis pembersihan & pensterilan setiap 2 bulan oleh juruteknik Cody",
+        "Mod penjimatan tenaga Eco Sensor secara automatik",
+        "Tuil mesra pengguna dengan kawalan suhu mudah"
+      ],
+      "eligibility": "Boleh dipasang di rumah dan pejabat. Permohonan dibantu sepenuhnya oleh TelcoHauz.",
+      "description": "Penapis air paling dipercayai dengan servis pembersihan sanitasi setiap 2 bulan oleh Cody Coway. Reka bentuk ramping dan elegan menjimatkan ruang dapur."
+    }
+  },
+  {
+    "id": "telco:lg-puricare-tankless",
+    "domain": "telco_plan",
+    "name": "LG PuriCare 4-WARD Penapis Air Tanpa Tangki",
+    "provider": "LG PuriCare",
+    "category": "Water Purifiers",
+    "slug": "lg-puricare-tankless-water-purifier",
+    "priceMonthlySen": null,
+    "commissionSen": null,
+    "availability": "pending_verification",
+    "reviewStatus": "hold",
+    "channels": [
+      "web",
+      "hero"
+    ],
+    "approvedChannels": [],
+    "supplier": "unconfirmed",
+    "verifiedAt": null,
+    "verifiedBy": null,
+    "evidenceUrl": null,
+    "source": {
+      "repository": "telcohauz/telcohauzzzzz",
+      "commit": "52e61bfb49f69dad48697c0b6751fd3e35ba3a04",
+      "path": "src/data/telcoData.ts",
+      "id": "lg-puricare-tankless",
+      "declaredStatus": "PROVIDER-OFFICIAL"
+    },
+    "details": {
+      "contractMonths": 36,
+      "features": [
+        "Aliran terus tanpa tangki: tiada risiko air bertakung lama",
+        "Teknologi pensterilan UV Nano membunuh kuman secara automatik",
+        "Corong air bergerak 4 arah (4-WARD) memudahkan pelbagai saiz cawan dan cerek",
+        "Sambungan aplikasi LG ThinQ untuk pemantauan kualiti air dari telefon"
+      ],
+      "eligibility": "Pemasangan ke seluruh Semenanjung Malaysia. Semak pakej promosi terkini bersama TelcoHauz.",
+      "description": "Teknologi penapisan air terus tanpa tangki (tankless) yang mencegah pembentukan kulat atau bakteria di dalam tangki simpanan. Air ditapis dan disejukkan/dipanaskan secara serta-merta."
+    }
+  },
+  {
+    "id": "telco:khind-washer-dryer",
+    "domain": "telco_plan",
+    "name": "Khind 2-in-1 Mesin Basuh & Pengering Pakaian",
+    "provider": "Khind",
+    "category": "Home Appliances",
+    "slug": "khind-2-in-1-washer-dryer",
+    "priceMonthlySen": null,
+    "commissionSen": null,
+    "availability": "pending_verification",
+    "reviewStatus": "hold",
+    "channels": [
+      "web",
+      "hero"
+    ],
+    "approvedChannels": [],
+    "supplier": "unconfirmed",
+    "verifiedAt": null,
+    "verifiedBy": null,
+    "evidenceUrl": null,
+    "source": {
+      "repository": "telcohauz/telcohauzzzzz",
+      "commit": "52e61bfb49f69dad48697c0b6751fd3e35ba3a04",
+      "path": "src/data/telcoData.ts",
+      "id": "khind-washer-dryer",
+      "declaredStatus": "EA-PUBLIC"
+    },
+    "details": {
+      "contractMonths": 36,
+      "features": [
+        "Kapasiti basuhan 10kg dan pengeringan 7kg dalam satu kitaran automatik",
+        "Motor Inverter BLDC senyap dan menjimatkan penggunaan elektrik",
+        "Program basuhan wap (Steam Wash) membunuh 99.9% hama habuk dan alergen",
+        "Pelan sewa-beli mampu milik dengan pakej servis percuma"
+      ],
+      "eligibility": "Harga pakej sewa-beli tertakluk kepada promosi bulanan pembekal. Semak dengan TelcoHauz.",
+      "description": "Gabungan mesin basuh dan pengering pintar keluaran jenama terkemuka tempatan Khind. Jimatkan masa tanpa perlu memindahkan pakaian basah ke mesin pengering berasingan."
+    }
+  },
+  {
+    "id": "telco:lg-puricare-air",
+    "domain": "telco_plan",
+    "name": "LG PuriCare 360° Penapis Udara HEPA",
+    "provider": "LG PuriCare",
+    "category": "Home Appliances",
+    "slug": "lg-puricare-360-air-purifier",
+    "priceMonthlySen": null,
+    "commissionSen": null,
+    "availability": "pending_verification",
+    "reviewStatus": "hold",
+    "channels": [
+      "web",
+      "hero"
+    ],
+    "approvedChannels": [],
+    "supplier": "unconfirmed",
+    "verifiedAt": null,
+    "verifiedBy": null,
+    "evidenceUrl": null,
+    "source": {
+      "repository": "telcohauz/telcohauzzzzz",
+      "commit": "52e61bfb49f69dad48697c0b6751fd3e35ba3a04",
+      "path": "src/data/telcoData.ts",
+      "id": "lg-puricare-air",
+      "declaredStatus": "PROVIDER-OFFICIAL"
+    },
+    "details": {
+      "contractMonths": 36,
+      "features": [
+        "Penapisan 360 darjah menyerap habuk halus dari semua arah serentak",
+        "Clean Booster menaikkan dan memutarkan kipas untuk aliran udara maksimum",
+        "Penapis SafePlus menyerap bakteria, virus, habuk halus PM1.0 dan bau masakan",
+        "Sensor pintar PM1.0 dengan lampu indikator kualiti udara 4 warna"
+      ],
+      "eligibility": "Pakej sewa-beli berdaftar dengan semakan kelayakan pantas bersama perunding TelcoHauz.",
+      "description": "Penapis udara komprehensif dengan kipas Clean Booster yang menolak udara bersih sehingga 7.5 meter ke segenap pelosok bilik. Dilengkapi penapis gred HEPA tulen."
+    }
+  },
+  {
+    "id": "telco:verdant-solar-home",
+    "domain": "telco_plan",
+    "name": "Verdant Solar Pakej Tenaga Suria Bumbung Rumah",
+    "provider": "Verdant Solar",
+    "category": "Solar",
+    "slug": "verdant-solar-rooftop-package",
+    "priceMonthlySen": null,
+    "commissionSen": null,
+    "availability": "pending_verification",
+    "reviewStatus": "hold",
+    "channels": [
+      "web",
+      "hero"
+    ],
+    "approvedChannels": [],
+    "supplier": "unconfirmed",
+    "verifiedAt": null,
+    "verifiedBy": null,
+    "evidenceUrl": null,
+    "source": {
+      "repository": "telcohauz/telcohauzzzzz",
+      "commit": "52e61bfb49f69dad48697c0b6751fd3e35ba3a04",
+      "path": "src/data/telcoData.ts",
+      "id": "verdant-solar-home",
+      "declaredStatus": "EA-PUBLIC"
+    },
+    "details": {
+      "contractMonths": 60,
+      "features": [
+        "Jimat bil elektrik TNB sehingga 80% setiap bulan",
+        "Panel suria Tier-1 berkualiti tinggi dengan waranti prestasi 25 tahun",
+        "Pelan ansuran pembiayaan hijau (Green Financing) tersedia",
+        "Permohonan permit SEDA dan meter dua hala TNB diuruskan sepenuhnya"
+      ],
+      "eligibility": "Terbuka kepada pemilik rumah berstatus landed (hak milik individu) di Semenanjung Malaysia. Kajian bumbung percuma.",
+      "description": "Tukar sinaran matahari menjadi penjimatan wang bulanan. Jana elektrik sendiri di atas bumbung rumah anda dan jual lebihan elektrik kepada TNB melalui skim Net Energy Metering (NEM)."
+    }
+  },
+  {
+    "id": "telco:ksit-sme-cloud",
+    "domain": "telco_plan",
+    "name": "KSIT Digital SME Cloud & Networking Solution",
+    "provider": "KSIT",
+    "category": "Digital Services",
+    "slug": "ksit-digital-sme-infrastructure",
+    "priceMonthlySen": null,
+    "commissionSen": null,
+    "availability": "pending_verification",
+    "reviewStatus": "hold",
+    "channels": [
+      "web",
+      "hero"
+    ],
+    "approvedChannels": [],
+    "supplier": "unconfirmed",
+    "verifiedAt": null,
+    "verifiedBy": null,
+    "evidenceUrl": null,
+    "source": {
+      "repository": "telcohauz/telcohauzzzzz",
+      "commit": "52e61bfb49f69dad48697c0b6751fd3e35ba3a04",
+      "path": "src/data/telcoData.ts",
+      "id": "ksit-sme-cloud",
+      "declaredStatus": "UNVERIFIED"
+    },
+    "details": {
+      "contractMonths": 12,
+      "features": [
+        "Pemasangan perkakasan rangkaian suis (switch), router perniagaan dan titik capaian (AP)",
+        "Integrasi sistem keselamatan peranti dan penyimpanan awan sandaran",
+        "Pelan penyelenggaraan berkala bagi mengurangkan downtime perniagaan",
+        "Khidmat sokongan teknikal oleh jurutera sistem berpengalaman"
+      ],
+      "eligibility": "Hubungi TelcoHauz untuk semakan harga terkini dan jadual perundingan di premis anda.",
+      "description": "Perkhidmatan perundingan dan integrasi teknologi maklumat (IT) serta sambungan rangkaian berpusat untuk perusahaan kecil dan sederhana (PKS)."
+    }
+  },
+  {
+    "id": "telco:eastel-device-care",
+    "domain": "telco_plan",
+    "name": "Eastel Device Care & Connectivity Support",
+    "provider": "Eastel",
+    "category": "Digital Services",
+    "slug": "eastel-device-care-connectivity",
+    "priceMonthlySen": null,
+    "commissionSen": null,
+    "availability": "pending_verification",
+    "reviewStatus": "hold",
+    "channels": [
+      "web",
+      "hero"
+    ],
+    "approvedChannels": [],
+    "supplier": "unconfirmed",
+    "verifiedAt": null,
+    "verifiedBy": null,
+    "evidenceUrl": null,
+    "source": {
+      "repository": "telcohauz/telcohauzzzzz",
+      "commit": "52e61bfb49f69dad48697c0b6751fd3e35ba3a04",
+      "path": "src/data/telcoData.ts",
+      "id": "eastel-device-care",
+      "declaredStatus": "EA-PUBLIC"
+    },
+    "details": {
+      "contractMonths": 0,
+      "features": [
+        "Bantuan konfigurasi profil eSIM pelbagai rangkaian telco tempatan",
+        "Diagnostik prestasi peranti pintar dan sambungan isyarat selular",
+        "Pemindahan data kenalan dan dokumen selamat antara peranti lama ke baharu",
+        "Konsultasi pengurusan perkakasan telekomunikasi"
+      ],
+      "eligibility": "Hubungi TelcoHauz untuk semakan harga terkini mengikut model peranti dan keperluan servis.",
+      "description": "Perkhidmatan sokongan teknikal untuk peranti komunikasi mudah alih, diagnostik perkakasan, sokongan eSIM dan pengurusan talian mudah alih."
+    }
+  },
+  {
+    "id": "telco:innet-structured-cabling",
+    "domain": "telco_plan",
+    "name": "InNET Broadband Infrastructure & Cabling Verification",
+    "provider": "InNET",
+    "category": "Digital Services",
+    "slug": "innet-broadband-cabling-audit",
+    "priceMonthlySen": null,
+    "commissionSen": null,
+    "availability": "pending_verification",
+    "reviewStatus": "hold",
+    "channels": [
+      "web",
+      "hero"
+    ],
+    "approvedChannels": [],
+    "supplier": "unconfirmed",
+    "verifiedAt": null,
+    "verifiedBy": null,
+    "evidenceUrl": null,
+    "source": {
+      "repository": "telcohauz/telcohauzzzzz",
+      "commit": "52e61bfb49f69dad48697c0b6751fd3e35ba3a04",
+      "path": "src/data/telcoData.ts",
+      "id": "innet-structured-cabling",
+      "declaredStatus": "UNVERIFIED"
+    },
+    "details": {
+      "contractMonths": 0,
+      "features": [
+        "Pemeriksaan port gentian optik dan pengukuran tahap redaman optik (dB loss)",
+        "Khidmat menarik kabel rangkaian Cat6 gred gigabit tersembunyi",
+        "Penyelesaian masalah laluan kabel gentian optik tersumbat di premis kediaman",
+        "Pengesahan kesiapsiagaan premis sebelum kedatangan juruteknik telco"
+      ],
+      "eligibility": "Hubungi TelcoHauz untuk semakan harga terkini bagi penetapan tarikh lawatan tapak.",
+      "description": "Pemeriksaan teknikal dan audit laluan pendawaian kabel internet dalaman premis bagi menyelesaikan masalah kabel gentian optik patah atau paip konduit tersumbat sebelum pendaftaran telco."
+    }
+  }
+]

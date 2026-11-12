@@ -1,8 +1,21 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { motion } from "framer-motion";
 import {
-  Smartphone, Apple, Network, Cpu, Wrench, Coins, Shield, Zap, Clock,
-  CheckCircle2, ArrowRight, Sparkles, Globe, HeadphonesIcon, ChevronDown
+  Smartphone,
+  Apple,
+  Network,
+  Cpu,
+  Wrench,
+  Coins,
+  Shield,
+  Zap,
+  Clock,
+  CheckCircle2,
+  ArrowRight,
+  Sparkles,
+  Globe,
+  HeadphonesIcon,
+  ChevronDown,
 } from "lucide-react";
 import { SiteHeader } from "@/components/SiteHeader";
 import { WhatsAppButton } from "@/components/WhatsAppButton";
@@ -14,21 +27,59 @@ export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
       { title: "TELCOHAUZ Digital Service Hub — Unlock & Mobile Services" },
-      { name: "description", content: "Professional unlock, FRP, iCloud bypass, flashing & telecom digital services. Fast processing, secure transactions, reseller-ready." },
+      {
+        name: "description",
+        content:
+          "Professional unlock, FRP, iCloud bypass, flashing & telecom digital services. Fast processing, secure transactions, reseller-ready.",
+      },
       { property: "og:title", content: "TELCOHAUZ Digital Service Hub" },
-      { property: "og:description", content: "All In One Digital Service Platform — premium unlock marketplace for resellers." },
+      {
+        property: "og:description",
+        content: "All In One Digital Service Platform — premium unlock marketplace for resellers.",
+      },
     ],
   }),
   component: Landing,
 });
 
 const popularServices = [
-  { icon: Smartphone, brand: "Samsung", title: "FRP Unlock — All Models", time: "5-30 min", price: "RM 25" },
-  { icon: Apple, brand: "Apple", title: "iCloud Bypass — Premium", time: "1-24 hrs", price: "RM 180" },
-  { icon: Network, brand: "Carrier", title: "Network Unlock — Worldwide", time: "1-3 days", price: "RM 65" },
+  {
+    icon: Smartphone,
+    brand: "Samsung",
+    title: "FRP Unlock — All Models",
+    time: "5-30 min",
+    price: "RM 25",
+  },
+  {
+    icon: Apple,
+    brand: "Apple",
+    title: "iCloud Bypass — Premium",
+    time: "1-24 hrs",
+    price: "RM 180",
+  },
+  {
+    icon: Network,
+    brand: "Carrier",
+    title: "Network Unlock — Worldwide",
+    time: "1-3 days",
+    price: "RM 65",
+  },
   { icon: Cpu, brand: "Xiaomi", title: "Mi Account Remove", time: "10-60 min", price: "RM 80" },
-  { icon: Wrench, brand: "Huawei", title: "Bootloader / FRP / ID", time: "1-6 hrs", price: "RM 45" },
-  { icon: Smartphone, brand: "Oppo / Vivo", title: "Pattern & FRP Remove", time: "Instant", price: "RM 20", status: "busy" as const },
+  {
+    icon: Wrench,
+    brand: "Huawei",
+    title: "Bootloader / FRP / ID",
+    time: "1-6 hrs",
+    price: "RM 45",
+  },
+  {
+    icon: Smartphone,
+    brand: "Oppo / Vivo",
+    title: "Pattern & FRP Remove",
+    time: "Instant",
+    price: "RM 20",
+    status: "busy" as const,
+  },
   { icon: Apple, brand: "Apple", title: "iPhone IMEI Check", time: "Instant", price: "RM 5" },
   { icon: Cpu, brand: "Software", title: "Firmware Flash Service", time: "30 min", price: "RM 35" },
 ];
@@ -43,17 +94,45 @@ const categories = [
 ];
 
 const reasons = [
-  { icon: Zap, title: "Fast Processing", desc: "Most services complete in minutes. Automated where possible." },
-  { icon: Shield, title: "Secure & Trusted", desc: "Encrypted transactions, vetted suppliers, full refund policy." },
-  { icon: Globe, title: "Worldwide Coverage", desc: "Carriers and devices across 50+ countries supported." },
-  { icon: HeadphonesIcon, title: "24/7 Support", desc: "WhatsApp, ticket and Telegram support around the clock." },
+  {
+    icon: Zap,
+    title: "Fast Processing",
+    desc: "Most services complete in minutes. Automated where possible.",
+  },
+  {
+    icon: Shield,
+    title: "Secure & Trusted",
+    desc: "Encrypted transactions, vetted suppliers, full refund policy.",
+  },
+  {
+    icon: Globe,
+    title: "Worldwide Coverage",
+    desc: "Carriers and devices across 50+ countries supported.",
+  },
+  {
+    icon: HeadphonesIcon,
+    title: "24/7 Support",
+    desc: "WhatsApp, ticket and Telegram support around the clock.",
+  },
 ];
 
 const faqs = [
-  { q: "How long do unlock services take?", a: "Most instant services complete in 5–30 minutes. Premium iCloud and IMEI services may take 1–24 hours." },
-  { q: "What payment methods do you accept?", a: "FPX, DuitNow, manual bank transfer, and crypto (USDT) for international resellers." },
-  { q: "Do you offer reseller pricing?", a: "Yes — register as a reseller to unlock wholesale pricing, API access, and white-label tools." },
-  { q: "What if my service fails?", a: "Failed orders are automatically refunded to your wallet within minutes. No questions asked." },
+  {
+    q: "How long do unlock services take?",
+    a: "Most instant services complete in 5–30 minutes. Premium iCloud and IMEI services may take 1–24 hours.",
+  },
+  {
+    q: "What payment methods do you accept?",
+    a: "FPX, DuitNow, manual bank transfer, and crypto (USDT) for international resellers.",
+  },
+  {
+    q: "Do you offer reseller pricing?",
+    a: "Yes — register as a reseller to unlock wholesale pricing, API access, and white-label tools.",
+  },
+  {
+    q: "What if my service fails?",
+    a: "Failed orders are automatically refunded to your wallet within minutes. No questions asked.",
+  },
 ];
 
 function Landing() {
@@ -97,8 +176,8 @@ function Hero() {
           </h1>
 
           <p className="mx-auto mt-6 max-w-2xl text-base text-muted-foreground sm:text-lg">
-            Fast processing, secure transactions, reseller-ready platform.
-            Powering thousands of unlock shops across Southeast Asia.
+            Fast processing, secure transactions, reseller-ready platform. Powering thousands of
+            unlock shops across Southeast Asia.
           </p>
 
           <div className="mt-10 flex flex-wrap items-center justify-center gap-3">
@@ -123,9 +202,16 @@ function Hero() {
           </div>
 
           <div className="mt-10 flex flex-wrap items-center justify-center gap-x-8 gap-y-2 text-xs text-muted-foreground">
-            <span className="flex items-center gap-1.5"><CheckCircle2 className="h-3.5 w-3.5 text-[oklch(0.78_0.16_155)]" /> 99.4% Success Rate</span>
-            <span className="flex items-center gap-1.5"><Clock className="h-3.5 w-3.5 text-primary" /> Instant Auto Processing</span>
-            <span className="flex items-center gap-1.5"><Shield className="h-3.5 w-3.5 text-primary" /> Auto-Refund on Failure</span>
+            <span className="flex items-center gap-1.5">
+              <CheckCircle2 className="h-3.5 w-3.5 text-[oklch(0.78_0.16_155)]" /> 99.4% Success
+              Rate
+            </span>
+            <span className="flex items-center gap-1.5">
+              <Clock className="h-3.5 w-3.5 text-primary" /> Instant Auto Processing
+            </span>
+            <span className="flex items-center gap-1.5">
+              <Shield className="h-3.5 w-3.5 text-primary" /> Auto-Refund on Failure
+            </span>
           </div>
         </motion.div>
 
@@ -145,7 +231,10 @@ function Hero() {
                   { l: "Active Services", v: "412", s: "Live" },
                   { l: "Avg. Process Time", v: "8m 42s", s: "-3.1%" },
                 ].map((s) => (
-                  <div key={s.l} className="rounded-xl border border-border/50 bg-background/40 p-4">
+                  <div
+                    key={s.l}
+                    className="rounded-xl border border-border/50 bg-background/40 p-4"
+                  >
                     <div className="text-xs text-muted-foreground">{s.l}</div>
                     <div className="mt-1 font-display text-2xl font-bold neon-text">{s.v}</div>
                     <div className="mt-1 text-[10px] text-[oklch(0.78_0.16_155)]">{s.s}</div>
@@ -173,7 +262,9 @@ function Categories() {
             transition={{ delay: i * 0.05 }}
             className={`group relative overflow-hidden rounded-2xl glass p-5 text-left glow-on-hover`}
           >
-            <div className={`absolute -right-6 -top-6 h-24 w-24 rounded-full bg-gradient-to-br ${c.color} blur-2xl opacity-60`} />
+            <div
+              className={`absolute -right-6 -top-6 h-24 w-24 rounded-full bg-gradient-to-br ${c.color} blur-2xl opacity-60`}
+            />
             <c.icon className="relative h-6 w-6 text-primary" />
             <div className="relative mt-3 text-sm font-semibold">{c.label}</div>
             <div className="relative text-xs text-muted-foreground">{c.count} services</div>
@@ -192,7 +283,10 @@ function PopularServices() {
           <div className="text-xs uppercase tracking-[0.2em] text-primary">Most Ordered</div>
           <h2 className="mt-2 font-display text-3xl font-bold sm:text-4xl">Popular Services</h2>
         </div>
-        <Link to="/dashboard" className="hidden text-sm text-muted-foreground hover:text-foreground sm:inline-flex items-center gap-1">
+        <Link
+          to="/dashboard"
+          className="hidden text-sm text-muted-foreground hover:text-foreground sm:inline-flex items-center gap-1"
+        >
           View all <ArrowRight className="h-3.5 w-3.5" />
         </Link>
       </div>
@@ -243,8 +337,12 @@ function WhyUs() {
     <section id="why" className="mx-auto max-w-7xl px-4 py-20 sm:px-6">
       <div className="mx-auto max-w-2xl text-center">
         <div className="text-xs uppercase tracking-[0.2em] text-primary">Why TELCOHAUZ</div>
-        <h2 className="mt-2 font-display text-3xl font-bold sm:text-4xl">Built for Professional Resellers</h2>
-        <p className="mt-3 text-muted-foreground">Everything you need to run a serious unlock & digital service business.</p>
+        <h2 className="mt-2 font-display text-3xl font-bold sm:text-4xl">
+          Built for Professional Resellers
+        </h2>
+        <p className="mt-3 text-muted-foreground">
+          Everything you need to run a serious unlock & digital service business.
+        </p>
       </div>
 
       <div className="mt-12 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
@@ -286,11 +384,11 @@ function FAQ() {
           >
             <div className="flex items-center justify-between gap-4">
               <span className="font-medium">{f.q}</span>
-              <ChevronDown className={`h-4 w-4 text-primary transition ${open === i ? "rotate-180" : ""}`} />
+              <ChevronDown
+                className={`h-4 w-4 text-primary transition ${open === i ? "rotate-180" : ""}`}
+              />
             </div>
-            {open === i && (
-              <p className="mt-3 text-sm text-muted-foreground">{f.a}</p>
-            )}
+            {open === i && <p className="mt-3 text-sm text-muted-foreground">{f.a}</p>}
           </button>
         ))}
       </div>
@@ -313,7 +411,10 @@ function Footer() {
             All In One Digital Service Platform for unlock professionals & resellers.
           </p>
         </div>
-        <FooterCol title="Services" links={["Android Unlock", "iPhone Services", "Network Unlock", "Flashing"]} />
+        <FooterCol
+          title="Services"
+          links={["Android Unlock", "iPhone Services", "Network Unlock", "Flashing"]}
+        />
         <FooterCol title="Company" links={["About", "Resellers", "API Docs", "Contact"]} />
         <FooterCol title="Support" links={["Help Center", "Open Ticket", "WhatsApp", "Telegram"]} />
       </div>
@@ -332,7 +433,13 @@ function FooterCol({ title, links }: { title: string; links: string[] }) {
     <div>
       <div className="text-sm font-semibold">{title}</div>
       <ul className="mt-3 space-y-2 text-sm text-muted-foreground">
-        {links.map((l) => <li key={l}><a href="#" className="hover:text-foreground">{l}</a></li>)}
+        {links.map((l) => (
+          <li key={l}>
+            <a href="#" className="hover:text-foreground">
+              {l}
+            </a>
+          </li>
+        ))}
       </ul>
     </div>
   );

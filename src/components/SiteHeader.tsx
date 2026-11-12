@@ -11,34 +11,50 @@ export function SiteHeader() {
           </div>
           <div className="leading-tight">
             <div className="font-display text-sm font-bold tracking-tight">TELCOHAUZ</div>
-            <div className="text-[10px] uppercase tracking-[0.2em] text-muted-foreground">Digital Hub</div>
+            <div className="text-[10px] uppercase tracking-[0.2em] text-muted-foreground">
+              Digital Hub
+            </div>
           </div>
         </Link>
 
         <nav className="hidden items-center gap-8 text-sm md:flex">
-          <a href="#services" className="text-muted-foreground transition hover:text-foreground">Services</a>
-          <a href="#stats" className="text-muted-foreground transition hover:text-foreground">Stats</a>
-          <a href="#why" className="text-muted-foreground transition hover:text-foreground">Why Us</a>
-          <a href="#faq" className="text-muted-foreground transition hover:text-foreground">FAQ</a>
+          <Link to="/catalog" className="text-muted-foreground transition hover:text-foreground">
+            Katalog Produk
+          </Link>
+          <a href="#services" className="text-muted-foreground transition hover:text-foreground">
+            Services
+          </a>
+          <a href="#stats" className="text-muted-foreground transition hover:text-foreground">
+            Stats
+          </a>
+          <a href="#why" className="text-muted-foreground transition hover:text-foreground">
+            Why Us
+          </a>
+          <a href="#faq" className="text-muted-foreground transition hover:text-foreground">
+            FAQ
+          </a>
         </nav>
 
         <div className="flex items-center gap-2">
           <Link
-            to="/login"
-            search={{ redirect: "/admin" }}
+            to="/master-products"
             className="hidden items-center gap-1.5 rounded-lg border border-primary/30 bg-primary/10 px-3 py-2 text-xs font-semibold uppercase tracking-wider text-primary transition hover:bg-primary/20 hover:shadow-[var(--glow-soft)] sm:inline-flex"
             title="Admin login"
           >
             <Shield className="h-3.5 w-3.5" /> Admin
           </Link>
-          <Link to="/login" className="hidden rounded-lg px-4 py-2 text-sm font-medium text-foreground/80 transition hover:text-foreground sm:inline-block">
+          <Link
+            to="/login"
+            search={{ redirect: "/dashboard" }}
+            className="hidden rounded-lg px-4 py-2 text-sm font-medium text-foreground/80 transition hover:text-foreground sm:inline-block"
+          >
             Sign in
           </Link>
           <Link
-            to="/dashboard"
+            to="/workspace"
             className="rounded-lg bg-gradient-to-r from-primary to-[oklch(0.55_0.22_270)] px-4 py-2 text-sm font-semibold text-background shadow-[var(--glow-soft)] transition hover:shadow-[var(--glow-neon)]"
           >
-            Open Dashboard
+            Ruang Kerja
           </Link>
         </div>
       </div>

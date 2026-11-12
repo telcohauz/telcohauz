@@ -1,6 +1,14 @@
 import { useEffect, useState } from "react";
 
-export function Counter({ end, suffix = "", duration = 1800 }: { end: number; suffix?: string; duration?: number }) {
+export function Counter({
+  end,
+  suffix = "",
+  duration = 1800,
+}: {
+  end: number;
+  suffix?: string;
+  duration?: number;
+}) {
   const [n, setN] = useState(0);
   useEffect(() => {
     const start = performance.now();
@@ -13,5 +21,10 @@ export function Counter({ end, suffix = "", duration = 1800 }: { end: number; su
     raf = requestAnimationFrame(tick);
     return () => cancelAnimationFrame(raf);
   }, [end, duration]);
-  return <span>{n.toLocaleString()}{suffix}</span>;
+  return (
+    <span>
+      {n.toLocaleString()}
+      {suffix}
+    </span>
+  );
 }

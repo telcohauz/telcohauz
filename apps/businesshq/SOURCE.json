@@ -1,0 +1,7 @@
+{
+  "repository": "telcohauz/cashbizz",
+  "sourceCommit": "57341c85229bb0bf5b8284082b6b0ef2aea9d721",
+  "importedAt": "2026-11-12",
+  "environmentFilesExcluded": true,
+  "status": "source-consolidated; live identity/database migration pending"
+}

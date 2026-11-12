@@ -1,0 +1,58 @@
+name: BOZ workspace validation
+on: [push, pull_request]
+permissions:
+  contents: read
+jobs:
+  browser:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+          cache: npm
+      - run: npm ci --ignore-scripts --no-audit --no-fund
+      - run: npx playwright install --with-deps chromium
+      - run: npm run test:browser
+  shared-contracts:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - run: npm run test:catalog
+      - run: npm run catalog:build
+      - run: npm run test:commerce
+      - run: npm run test:pos
+      - run: node scripts/check-tracked-env.mjs
+  modules:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        module: [businesshq, digital-audit]
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+          cache: npm
+      # Shared React components resolve their peer types/dependencies from root.
+      - run: npm ci --ignore-scripts --no-audit --no-fund
+      - run: npm ci --ignore-scripts --no-audit --no-fund
+        working-directory: apps/${{ matrix.module }}
+      - if: matrix.module == 'businesshq'
+        run: npm run typecheck
+        working-directory: apps/businesshq
+      - if: matrix.module == 'digital-audit'
+        run: npm test && npm run lint
+        working-directory: apps/digital-audit
+      - run: npm run build
+        working-directory: apps/${{ matrix.module }}
