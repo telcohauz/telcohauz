@@ -51,10 +51,19 @@ jobs:
           else
             python engine.py --slot auto --out output --demo
           fi
+      - name: Smoke-test official feeds (no posting; advisory)
+        if: github.event_name != 'schedule'
+        continue-on-error: true
+        working-directory: apps/ai-news
+        env:
+          AI_NEWS_ALLOW_PUBLISH: 'false'
+        run: python engine.py --slot midday --out output-real --no-video
       - uses: actions/upload-artifact@v4
         if: always()
         with:
           name: ai-news-safe-drafts-${{ github.run_id }}
-          path: apps/ai-news/output/
+          path: |
+            apps/ai-news/output/
+            apps/ai-news/output-real/
           retention-days: 3
           if-no-files-found: warn
