@@ -16,6 +16,7 @@ try {
   page.on('pageerror',e=>errors.push(e.message));
   await page.goto('http://127.0.0.1:3030/catalog');
   await page.getByRole('heading',{name:'Pilihan produk, di satu tempat.'}).waitFor();
+  await page.locator('main[data-ready="true"]').waitFor();
   await page.getByLabel('Cari produk').fill('unifi');
   await page.waitForTimeout(200);
   assert.ok((await page.locator('article').count())>0);
@@ -23,7 +24,7 @@ try {
   await page.getByLabel('Saluran').selectOption('hero');
   assert.equal(await page.getByRole('button',{name:/Mohon/}).count(),0);
   await page.getByLabel('Cari produk').fill('no-such-product');
-  await page.getByText('Tiada produk sepadan.').waitFor();
+  await page.getByText(/Tiada produk sepadan/).waitFor();
   await page.goto('http://127.0.0.1:3030/master-products');
   await page.getByRole('button',{name:'Log masuk BOZ',exact:true}).waitFor();
   assert.equal(await page.locator('tbody tr').count(),0,'private master records absent before login');
