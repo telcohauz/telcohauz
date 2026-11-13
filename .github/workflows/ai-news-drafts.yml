@@ -51,6 +51,9 @@ jobs:
           else
             python engine.py --slot auto --out output --demo
           fi
+      - name: Produce intercut HOST + DEMO teleprompter draft
+        working-directory: apps/ai-news
+        run: python teleprompter.py --input output/candidate.json --out output/teleprompter
       - name: Smoke-test official feeds (no posting; advisory)
         if: github.event_name != 'schedule'
         continue-on-error: true
