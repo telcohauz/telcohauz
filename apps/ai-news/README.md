@@ -34,6 +34,18 @@ python engine.py --slot midday --out output  # real official feeds, needs networ
 
 Needs Python >=3.11, FFmpeg and DejaVuSans-Bold.
 
+
+## Host + visual intercut video format (teleprompter tool)
+
+`teleprompter.py` accepts `output/candidate.json` or an editor-checked JSON story and emits:
+- `storyboard.json`: BRAND INTRO -> HOST -> B-ROLL -> HOST -> RIGHTS-CLEARED DEMO -> HOST -> OUTRO.
+- `teleprompter.md`: Malay-language presenter cues, narration and source references.
+- `subtitles.srt`: editable subtitles and timeline.
+
+Usage: `python teleprompter.py --input output/candidate.json --out output/teleprompter`
+
+An RSS headline alone is **never** enough for an actual news video. Unless sourced claims, footage rights and owner approval are present, the generator marks it `BLOCKED_REVIEW`, inserts a prominent review banner and labels unverified video as **illustration**. It cannot render an actual talking lip-synced news presenter without a separate, authorized voice/avatar renderer. The owner-facing proof-of-concept MP4 in the conversation uses original visuals and offline synthetic narration; it is not a live news report.
+
 ## Required next integrations (NOT complete)
 
 - Persistent private queue and dedupe state across cloud runs.
