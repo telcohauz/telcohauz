@@ -1,5 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { CatalogScreen } from "@/components/CatalogScreen";
+import { MARKET_DEPOSIT_PERCENT, MARKET_DEPOSIT_TERMS_MS } from "../../packages/platform/market-deposit";
 import { TELCOHAUZ_MARKET_REFERENCE } from "../../packages/platform/config";
 export const Route = createFileRoute("/market")({
   head: () => ({ meta: [{ title: "Telcohauz Market — Katalog" }] }),
@@ -23,6 +24,12 @@ function Market() {
             className="mt-4 inline-flex rounded-lg border px-4 py-2 text-sm text-primary"
           >Buka laman Market yang dipilih</a>
         </div>
+        <section className="mt-5 rounded-2xl border border-amber-500/30 p-5" aria-label="Syarat bayaran tempahan">
+          <h2 className="text-xl font-bold">Syarat Tempahan — Deposit {MARKET_DEPOSIT_PERCENT}%</h2>
+          <p className="mt-2 text-sm text-muted-foreground">{MARKET_DEPOSIT_TERMS_MS}</p>
+          <p className="mt-3 text-sm font-semibold">Deposit 40% + baki 60%. Tiada tempahan disahkan sebelum pembayaran deposit disahkan.</p>
+          <p className="mt-2 text-xs text-muted-foreground">Checkout Market dan pengesahan pembayaran automatik masih belum diaktifkan. Penghantaran bukti bayaran bukan bukti pembayaran berjaya.</p>
+        </section>
       </div>
       <CatalogScreen />
     </div>
