@@ -3,6 +3,7 @@ import { useMemo, useRef, useState } from "react";
 import { BozSupabaseApi } from "../../boz-pos-expo/src/supabaseMobile";
 import type { MobileSession } from "../../boz-pos-expo/src/mobileApi";
 import type { Item, Job } from "../../boz-pos-expo/src/demo";
+import { BOZ_SUPABASE_URL, BOZ_PUBLISHABLE_KEY, moneyMYR } from "../../packages/platform/config";
 
 export const Route = createFileRoute("/pos")({
   ssr: false,
@@ -10,9 +11,7 @@ export const Route = createFileRoute("/pos")({
   component: PosScreen,
 });
 
-const BOZ_URL = "https://ocqcmdigylxasxsuxaxt.supabase.co";
-const BOZ_KEY = "sb_publishable_u_aD74cd37LsurSVrwngXQ_hWnjnIug";
-const money = (sen: number) => "RM " + (sen / 100).toFixed(2);
+const money = moneyMYR;
 const PENDING_KEY = "telcohauz_pos_web_pending_v1";
 type PendingCheckout = { key: string; shopId: string; userId: string; items: { productId: string; quantity: number }[] };
 function recoverPending(): PendingCheckout | null {
@@ -36,7 +35,7 @@ const roleCanCheckout = (role: string) => ["OWNER", "ADMIN", "CASHIER"].includes
 const checkoutEnabled = import.meta.env.VITE_BOZ_POS_CHECKOUT_ENABLED === "true";
 
 function PosScreen() {
-  const api = useMemo(() => new BozSupabaseApi(BOZ_URL, BOZ_KEY), []);
+  const api = useMemo(() => new BozSupabaseApi(BOZ_SUPABASE_URL, BOZ_PUBLISHABLE_KEY), []);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [session, setSession] = useState<MobileSession | null>(null);
