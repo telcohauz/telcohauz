@@ -1,6 +1,6 @@
 {
   "name": "Telcohauz BOZ",
-  "version": 2,
+  "version": 3,
   "modules": [
     {
       "id": "web",
@@ -53,6 +53,12 @@
       "path": "packages/platform",
       "role": "Shared public endpoints, paths and MYR formatting",
       "identity": "No privileged credentials"
+    },
+    {
+      "id": "service-pricing",
+      "path": "packages/platform/service-pricing.ts",
+      "role": "Cost and verified-market based AI-ready service price recommendation, admin approval mandatory",
+      "identity": "Pure decision support; no POS write access"
     }
   ],
   "externalModules": [
