@@ -13,6 +13,24 @@ export const Route = createFileRoute("/pos")({
 const BOZ_URL = "https://ocqcmdigylxasxsuxaxt.supabase.co";
 const BOZ_KEY = "sb_publishable_u_aD74cd37LsurSVrwngXQ_hWnjnIug";
 const money = (sen: number) => "RM " + (sen / 100).toFixed(2);
+const PENDING_KEY = "telcohauz_pos_web_pending_v1";
+type PendingCheckout = { key: string; shopId: string; userId: string; items: { productId: string; quantity: number }[] };
+function recoverPending(): PendingCheckout | null {
+  try {
+    const raw = window.localStorage.getItem(PENDING_KEY);
+    if (!raw) return null;
+    const v: unknown = JSON.parse(raw);
+    if (!v || typeof v !== "object" || Array.isArray(v)) throw Error("Invalid pending checkout");
+    const row = v as Record<string, unknown>;
+    if (typeof row.key !== "string" || !/^[0-9a-f-]{36}$/i.test(row.key) ||
+        typeof row.shopId !== "string" || typeof row.userId !== "string" ||
+        !Array.isArray(row.items) || row.items.length === 0) throw Error("Invalid pending checkout");
+    const items = row.items as { productId: string; quantity: number }[];
+    if (!items.every(i => typeof i.productId === "string" &&
+      Number.isSafeInteger(i.quantity) && i.quantity > 0)) throw Error("Invalid pending sale items");
+    return { key: row.key, shopId: row.shopId, userId: row.userId, items };
+  } catch { throw Error("A previous sale has invalid local state. Stop checkout and reconcile with BOZ Admin."); }
+}
 const roleCanCheckout = (role: string) => ["OWNER", "ADMIN", "CASHIER"].includes(role);
 
 function PosScreen() {
@@ -27,7 +45,7 @@ function PosScreen() {
   const [message, setMessage] = useState("Log masuk menggunakan akaun staf BOZ POS yang dibenarkan.");
   const [busy, setBusy] = useState(false);
   const checkoutLock = useRef(false);
-  const [pending, setPending] = useState<{ key: string; shopId: string; userId: string; items: { productId: string; quantity: number }[] } | null>(null);
+  const [pending, setPending] = useState<PendingCheckout | null>(null);
   const [receipt, setReceipt] = useState<{ saleId: string; totalCents: number } | null>(null);
   const [cashReceived, setCashReceived] = useState(false);
 
@@ -45,9 +63,14 @@ function PosScreen() {
     setBusy(true); setMessage("Mengesahkan akses staf...");
     try {
       const s = await api.signIn(email, password);
+      const unresolved = recoverPending();
+      if (unresolved && (unresolved.userId !== s.userId || !s.shops.some(x => x.id === unresolved.shopId)))
+        throw Error("Ada transaksi tertangguh milik staf/kedai lain. Sahkan melalui BOZ Admin dahulu.");
       setPassword("");
-      setSession(s); setShopId(s.shops[0].id); setCart({}); setReceipt(null);
-      await refresh(s, s.shops[0].id);
+      setPending(unresolved);
+      setSession(s); setShopId(unresolved?.shopId || s.shops[0].id); setCart({}); setReceipt(null);
+      await refresh(s, unresolved?.shopId || s.shops[0].id);
+      if (unresolved) setMessage("Transaksi tertangguh ditemui. Sahkan rekod BOZ atau ulang dengan kunci transaksi yang sama.");
     } catch (error) {
       setMessage(error instanceof Error ? error.message : "Tidak dapat mengesahkan akses.");
     } finally { setBusy(false); }
@@ -85,8 +108,11 @@ function PosScreen() {
       };
       if (!sale.items.length || sale.shopId !== shopId || sale.userId !== session.userId) throw Error("Transaksi tidak sah.");
       // Keep the exact key on failed/uncertain responses to prevent duplicate stock deductions.
+      // Persist BEFORE network request, including page reloads/browser restarts.
+      window.localStorage.setItem(PENDING_KEY, JSON.stringify(sale));
       setPending(sale);
       const result = await api.submitCashSale(session, shopId, sale.key, sale.items);
+      window.localStorage.removeItem(PENDING_KEY);
       setPending(null); setCashReceived(false); setCart({});
       setReceipt({ saleId: result.saleId, totalCents: result.totalCents });
       await refresh(session, shopId);
@@ -153,7 +179,7 @@ function PosScreen() {
                 {pending ? "Sahkan semula jualan tertangguh" : "Rekod jualan tunai"}
               </button>
               {!canCheckout && <p className="mt-3 text-sm text-muted-foreground">Peranan anda tidak dibenarkan membuat checkout.</p>}
-              {pending && <p className="mt-3 text-sm text-amber-500">Transaksi tertangguh: kunci dikekalkan sepanjang sesi ini. Jangan refresh halaman sebelum semak status jualan.</p>}
+              {pending && <p className="mt-3 text-sm text-amber-500">Transaksi tertangguh disimpan pada peranti ini supaya kunci sama boleh digunakan selepas refresh. Semak dahulu rekod BOZ; jangan buat transaksi baharu.</p>}
               {receipt && <div className="mt-5 rounded-lg border p-3 text-sm"><b>Jualan disahkan</b><p>ID: {receipt.saleId}</p><p>Jumlah: {money(receipt.totalCents)}</p><p>Bukan invois cukai. Cetakan rasmi belum diaktifkan.</p></div>}
             </aside>
           </div>
