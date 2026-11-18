@@ -165,7 +165,7 @@ function phoneDescription(x){
  return t('Skrin '+display+', cip '+esc(x.chip)+' dan kamera belakang '+camera+'.',''+display+' display, '+esc(x.chip)+' chip and '+camera+' rear camera system.');
 }
 const modelName=key=>{const x=phoneCatalog.find(item=>modelKey(item)===key);return x?x.brand+' '+x.model:key;};
-let activeQuotes=[];
+
 async function loadSharedListings(){
  if(!marketBackend.configured)return;
  try{
@@ -210,13 +210,13 @@ async function priceOffers(target){
    marketBackend.read('market_purchase_orders','select=id,request_id,amount_myr,status&order=created_at.desc')
   ]);
   if(!panel.isConnected)return;
-  activeQuotes=quotes;
+
   panel.innerHTML='<h3>'+t('Permintaan saya','My requests')+'</h3><div class="grid">'+requests.map(r=>{
    const order=orders.find(o=>o.request_id===r.id);
    const replies=quotes.filter(q=>q.request_id===r.id&&Date.parse(q.expires_at)>Date.now());
    return '<article class="card"><h3>'+esc(modelName(r.model_key))+'</h3>'+
     (order?'<p>'+t('Pesanan','Order')+' '+esc(order.id)+' · '+rm(order.amount_myr)+' · '+esc(order.status)+'</p>':
-     replies.map(q=>'<p>'+t('Tawaran harga','Price offer')+' · '+rm(q.amount_myr)+' · '+esc(q.terms)+'</p>'+act('accept-price:'+q.id,t('Terima harga','Accept price'),'primary')).join('')||
+     replies.map(q=>'<p>'+t('Tawaran harga','Price offer')+' · '+rm(q.amount_myr)+' · '+esc(q.terms)+'</p>'+ '<small>'+t('Pembelian dalam talian belum dibuka.','Online checkout is not open yet.')+'</small>').join('')||
      '<p>'+t('Menunggu tawaran kedai','Awaiting shop offers')+'</p>')+'</article>';
   }).join('')+'</div>'+(role==='partner'?'<h3>'+t('Peti masuk kedai','Shop inbox')+'</h3><div class="grid">'+inbox.map(r=>'<article class="card"><h3>'+esc(modelName(r.model_key))+'</h3>'+act('quote-price:'+r.request_id,t('Balas dengan tawaran','Reply with offer'))+'</article>').join('')+'</div>':'');
  }catch(e){if(panel.isConnected)panel.textContent=e.message;}
@@ -446,7 +446,7 @@ document.addEventListener('click',e=>{
   const decision=b==='approved'?t('Luluskan permohonan ini','Approve this application'):t('Tolak permohonan ini','Reject this application');
   openForm(decision,'<p>'+decision+'?</p>',t('Sahkan','Confirm'),()=>marketBackend.rpc('market_admin_decide',{p_shop_id:a,p_status:b}),false);
  }
- if(action==='market-logout'){marketBackend.logout();activeQuotes=[];render();}
+ if(action==='market-logout'){marketBackend.logout();render();}
  if(action==='cloud-shop')openForm(t('Daftar kedai','Register shop'),field(t('Nama kedai','Shop name'),'title','text','required maxlength="90"')+stateField()+field(t('Bandar','Town'),'city','text','required maxlength="70"')+select(t('Perkhidmatan','Service'),'mode',[['buyback','Buyback'],['trade_in','Trade-in'],['both','Buyback + Trade-in']])+notes(),t('Hantar permohonan','Send application'),async v=>{
   await marketBackend.insert('market_shops',{owner_id:marketBackend.user().id,display_name:v.title,state:v.state,city:v.city,buyer_mode:v.mode,terms:v.description});
   return t('Permohonan menunggu kelulusan.','Application pending approval.');
@@ -459,10 +459,7 @@ document.addEventListener('click',e=>{
   await loadSharedListings();
  },false);
  if(action==='quote-price')openForm(t('Balas tawaran','Reply with offer'),priceField(t('Harga akhir (RM)','Offer price (RM)'))+notes(t('Syarat dan cara serahan','Terms and handover')),t('Hantar tawaran','Send offer'),v=>marketBackend.rpc('market_quote_price',{p_request_id:a,p_amount_myr:Number(v.price),p_terms:v.description}),false);
- if(action==='accept-price'){
-  const quote=activeQuotes.find(q=>q.id===a);
-  if(quote)openForm(t('Sahkan pesanan','Confirm order'),'<p>'+rm(quote.amount_myr)+'</p><p>'+esc(quote.terms)+'</p>',t('Terima dan buka pesanan','Accept and open order'),()=>marketBackend.rpc('market_accept_price',{p_quote_id:quote.id,p_expected_amount:quote.amount_myr,p_expected_terms:quote.terms}),false);
- }
+
 
  if(action==='listing')listing(a);
  if(action==='item'){const item=all().find(x=>x.id===a);if(item)booking(item);}
