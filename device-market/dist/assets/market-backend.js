@@ -1,7 +1,7 @@
 'use strict';
 
 // Set the project URL and the publishable key once a dedicated project is provisioned.
-const marketBackendConfig={url:'',publishableKey:''};
+const marketBackendConfig={url:'https://rkxcioziaxrbqqpduunq.supabase.co',publishableKey:'sb_publishable_HXUsM7CAout7NUvpyT_z4g_O0uHs7HN'};
 const marketBackend=(()=>{
  const {url,publishableKey}=marketBackendConfig;
  const configured=/^https:\/\/[a-z0-9]+\.supabase\.co$/.test(url)&&Boolean(publishableKey);
