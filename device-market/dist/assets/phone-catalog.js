@@ -118,13 +118,9 @@ const phoneCatalog = [
   'https://fdn2.gsmarena.com/vv/bigpic/'+slug.replace(/-\d+$/,'').replaceAll('_','-')+(model==='Galaxy S23'?'-5g':'')+'.jpg'
 }));
 
-const mobileMartFx = {
- rate:3.1884, date:'2026-11-18', session:'12:00 MYT',
- source:'https://www.bnm.gov.my/latest-rates'
-};
-const mobileMartBuyback = [
- ['iPhone 11',603,'https://mobilemart.io/BuyBack?bid=1&mid=634'],
- ['iPhone 16',1070,'https://mobilemart.io/BuyBack?bid=1&mid=1696'],
- ['iPhone 17',1380,'https://mobilemart.io/BuyBack?bid=1&mid=1824'],
- ['Galaxy S23',250,'https://mobilemart.io/phone/galaxy-s23']
-].map(([model,sgd,source])=>({model,sgd,source}));
+const publicReferencePrices = [
+ {model:'iPhone 11',myr:1922.61},
+ {model:'iPhone 16',myr:3411.59},
+ {model:'iPhone 17',myr:4399.99},
+ {model:'Galaxy S23',myr:797.10}
+];
