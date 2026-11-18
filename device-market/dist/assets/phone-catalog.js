@@ -123,7 +123,8 @@ const mobileMartFx = {
  source:'https://www.bnm.gov.my/latest-rates'
 };
 const mobileMartBuyback = [
- ['iPhone 12',150],['iPhone 13 Pro',500],['iPhone 13 Pro Max',550],
- ['iPhone 14',420],['iPhone 15',550],['iPhone 16',1070],['iPhone 17',1380],
+ ['iPhone 11',603,'https://mobilemart.io/BuyBack?bid=1&mid=634'],
+ ['iPhone 16',1070,'https://mobilemart.io/BuyBack?bid=1&mid=1696'],
+ ['iPhone 17',1380,'https://mobilemart.io/BuyBack?bid=1&mid=1824'],
  ['Galaxy S23',250,'https://mobilemart.io/phone/galaxy-s23']
-].map(([model,sgd,source='https://mobilemart.io/highest-buyback/apple'])=>({model,sgd,source}));
+].map(([model,sgd,source])=>({model,sgd,source}));
