@@ -32,6 +32,8 @@ function recoverPending(): PendingCheckout | null {
   } catch { throw Error("A previous sale has invalid local state. Stop checkout and reconcile with BOZ Admin."); }
 }
 const roleCanCheckout = (role: string) => ["OWNER", "ADMIN", "CASHIER"].includes(role);
+// Read-only by default until shop, payment reconciliation, and browser QA are signed off.
+const checkoutEnabled = import.meta.env.VITE_BOZ_POS_CHECKOUT_ENABLED === "true";
 
 function PosScreen() {
   const api = useMemo(() => new BozSupabaseApi(BOZ_URL, BOZ_KEY), []);
@@ -96,7 +98,7 @@ function PosScreen() {
   const selected = inventory.filter(p => (cart[p.id] || 0) > 0);
   const total = selected.reduce((sum, p) => sum + p.price * cart[p.id], 0);
   const role = session?.shops.find(s => s.id === shopId)?.role || "";
-  const canCheckout = roleCanCheckout(role);
+  const canCheckout = checkoutEnabled && roleCanCheckout(role);
 
   async function checkout() {
     if (!session || !shopId || !canCheckout || busy || checkoutLock.current || !cashReceived) return;
@@ -178,7 +180,8 @@ function PosScreen() {
               <button disabled={!canCheckout || !cashReceived || busy || (!selected.length && !pending)} onClick={() => void checkout()} className="mt-4 w-full rounded-lg bg-primary px-4 py-3 font-semibold text-primary-foreground disabled:opacity-40">
                 {pending ? "Sahkan semula jualan tertangguh" : "Rekod jualan tunai"}
               </button>
-              {!canCheckout && <p className="mt-3 text-sm text-muted-foreground">Peranan anda tidak dibenarkan membuat checkout.</p>}
+              {!checkoutEnabled && <p className="mt-3 text-sm text-amber-500">Checkout belum diaktifkan untuk deployment ini sehingga ujian transaksi dan rekonsiliasi diluluskan.</p>}
+              {checkoutEnabled && !canCheckout && <p className="mt-3 text-sm text-muted-foreground">Peranan anda tidak dibenarkan membuat checkout.</p>}
               {pending && <p className="mt-3 text-sm text-amber-500">Transaksi tertangguh disimpan pada peranti ini supaya kunci sama boleh digunakan selepas refresh. Semak dahulu rekod BOZ; jangan buat transaksi baharu.</p>}
               {receipt && <div className="mt-5 rounded-lg border p-3 text-sm"><b>Jualan disahkan</b><p>ID: {receipt.saleId}</p><p>Jumlah: {money(receipt.totalCents)}</p><p>Bukan invois cukai. Cetakan rasmi belum diaktifkan.</p></div>}
             </aside>
