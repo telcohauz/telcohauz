@@ -41,6 +41,20 @@ function Workspace() {
         Pilih urusan yang ingin dilakukan. Akses dalaman memerlukan akaun dan peranan yang sah.
       </p>
       <div className="mt-10 grid gap-5 sm:grid-cols-2">
+        <section className="rounded-2xl border border-primary/30 p-7">
+          <h2 className="text-xl font-semibold">Telcohauz POS Kedai</h2>
+          <p className="my-4 text-muted-foreground">
+            Log masuk sebagai staf kedai BOZ untuk melihat inventori, repair dan checkout tunai.
+          </p>
+          <Link to="/pos" className="text-primary">Buka POS Kedai →</Link>
+        </section>
+        <section className="rounded-2xl border border-primary/30 p-7">
+          <h2 className="text-xl font-semibold">Telcohauz Market</h2>
+          <p className="my-4 text-muted-foreground">
+            Katalog BOZ dan pautan ke laman Market yang dipilih. Jualan silang saluran belum diaktifkan.
+          </p>
+          <Link to="/market" className="text-primary">Buka Telcohauz Market →</Link>
+        </section>
         <section className="rounded-2xl border p-7">
           <h2 className="text-xl font-semibold">Katalog Produk</h2>
           <p className="my-4 text-muted-foreground">
