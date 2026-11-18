@@ -22,6 +22,7 @@ button.primary{background:linear-gradient(145deg,#c2dcff,#88b8ff);color:#10254b}
 <dialog id="modal"><header><h2 id="modalTitle"></h2><button type="button" id="close" aria-label="Tutup / Close">×</button></header><div id="modalBody"></div></dialog>
 <script src="assets/phone-catalog.js"></script>
 <script src="assets/market-backend.js"></script>
+<script src="assets/digital-products.js"></script>
 <script>
 'use strict';
 const $ = id => document.getElementById(id);
@@ -33,7 +34,7 @@ const icons = ['▯','▣','◉','▱','✚'];
 const featuredModels=['iPhone 13','iPhone 13 mini','iPhone 13 Pro','iPhone 15','Galaxy S23','X9d'];
 const plans = [['CelcomDigi','https://www.celcomdigi.com/'],['Maxis','https://www.maxis.com.my/'],['Hotlink','https://www.hotlink.com.my/'],['U Mobile','https://www.u.com.my/'],['Yes','https://www.yes.my/'],['Unifi Mobile','https://unifi.com.my/'],['redONE','https://www.redonemobile.com.my/']];
 const services = [['repair','Baiki','Repair'],['setup','Persediaan','Setup'],['lesson','Latihan','Lessons'],['recovery','Pemulihan data','Data recovery'],['custom','Penyesuaian','Customization']];
-const pages = {market:['Beli peranti','Buy devices'],sell:['Iklan jualan','List a device'],buyback:['Buyback','Buyback'],broken:['Baiki & peranti rosak','Repair & damaged'],rent:['Sewa','Rent'],trade:['Trade-in & tukar','Trade-in & swap'],wanted:['Iklan pembeli','Wanted ads'],experts:['Juruteknik','Experts'],plans:['Pelan telco','Mobile plans'],alerts:['Amaran harga','Price alerts'],green:['Guna semula','Reuse leaderboard'],activity:['Aktiviti saya','My activity'],partners:['Rakan niaga','Partners'],buyers:['Jadi Buyer Partner','Become a Buyer Partner'],knowledge:['Katalog Telefon','Phone Catalogue'],virtualshop:['Pilihan Telefon','Featured Phones'],benchmark:['Nilai Rujukan RM','RM Price Reference'],offers:['Akaun & Tawaran','Account & Offers']};
+const pages = {market:['Beli peranti','Buy devices'],sell:['Iklan jualan','List a device'],buyback:['Buyback','Buyback'],broken:['Baiki & peranti rosak','Repair & damaged'],rent:['Sewa','Rent'],trade:['Trade-in & tukar','Trade-in & swap'],wanted:['Iklan pembeli','Wanted ads'],experts:['Juruteknik','Experts'],plans:['Pelan telco','Mobile plans'],alerts:['Amaran harga','Price alerts'],green:['Guna semula','Reuse leaderboard'],activity:['Aktiviti saya','My activity'],partners:['Rakan niaga','Partners'],buyers:['Jadi Buyer Partner','Become a Buyer Partner'],knowledge:['Katalog Telefon','Phone Catalogue'],virtualshop:['Pilihan Telefon','Featured Phones'],benchmark:['Nilai Rujukan RM','RM Price Reference'],offers:['Akaun & Tawaran','Account & Offers'],digital:['Produk Digital','Digital Products']};
 const clean = {listings:[],requests:[],alerts:[],partners:[],plans:[],lang:'ms'};
 let data;
 let pendingQuery='';
@@ -160,8 +161,8 @@ function browse(type){
  $('view').querySelectorAll('input,select').forEach(el=>el.addEventListener('input',filter));filter();
 }
 function buyback(){
- $('view').innerHTML=section('Buyback',act('show:benchmark',t('Nilai rujukan MobileMart','MobileMart price reference'))+' '+act('quote-custom',t('Sediakan permintaan sebut harga','Prepare a quote request'),'primary'))+
-  '<p>'+t('Semak penanda aras MobileMart atau sediakan permintaan buyback untuk model anda. Permintaan disimpan dalam pelayar sementara sambungan pembeli disediakan.','Check the MobileMart benchmark or prepare a buyback request for your model. Requests are saved in your browser while buyer integration is pending.')+'</p>';
+ $('view').innerHTML=section('Buyback',act('show:benchmark',t('Nilai rujukan RM','RM price reference'))+' '+act('quote-custom',t('Sediakan permintaan sebut harga','Prepare a quote request'),'primary'))+
+  '<p>'+t('Semak nilai rujukan atau sediakan permintaan buyback untuk model anda. Permintaan disimpan dalam pelayar sementara sambungan pembeli disediakan.','Check the reference values or prepare a buyback request for your model. Requests are saved in your browser while buyer integration is pending.')+'</p>';
 }
 const modelKey=x=>(x.brand+' '+x.model).toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/-$/,'');
 const askPriceButton=x=>act('ask-price:'+modelKey(x),'Ask Price','primary');
@@ -171,8 +172,8 @@ function suggestedProducts(brand=''){
  return '<div class="wide"><h3>'+t('Cadangan telefon','Suggested phones')+'</h3><p class="sub">'+t('Model rujukan · Minta harga untuk semak tawaran kedai.','Reference models · Ask for a price to check retailer offers.')+'</p></div>'+models.map(x=>'<article class="card">'+modelPhoto(x.model)+'<h3>'+esc(x.brand+' '+x.model)+'</h3><p>'+phoneDescription(x)+'</p>'+referencePrice(x.model)+askPriceButton(x)+'</article>').join('');
 }
 function referencePrice(model){
- const row=mobileMartBuyback.find(x=>x.model===model);
- return row?'<p class="reference-price">'+t('Rujukan buyback hingga ','Buyback reference up to ')+rm(row.sgd*mobileMartFx.rate)+' · <a href="'+esc(row.source)+'" target="_blank" rel="noopener">MobileMart ↗</a></p>':'';
+ const row=publicReferencePrices.find(x=>x.model===model);
+ return row?'<p class="reference-price">'+t('Rujukan buyback hingga ','Buyback reference up to ')+rm(row.myr)+'</p>':'';
 }
 function phoneDescription(x){
  const display=esc(x.display)+' '+esc(x.screen), camera=x.camera.join(' + ')+' MP';
@@ -210,9 +211,14 @@ async function priceOffers(target){
   if(!panel.isConnected)return;
   actions.innerHTML='<span class="pill">'+(role==='admin'?'Admin':role==='partner'?'Partner':t('Pengguna biasa','Customer'))+'</span>'+act('market-logout',t('Log keluar','Sign out'));
   if(role==='admin'){
-   const applications=await marketBackend.rpc('market_admin_applications',{});
+   const [applications,references]=await Promise.all([
+    marketBackend.rpc('market_admin_applications',{}),
+    marketBackend.read('market_price_reference_sources','select=model,amount_myr,original_amount,original_currency,conversion_rate,source_name,source_url,rate_source_url,checked_on&order=model').catch(()=>null)
+   ]);
    if(!panel.isConnected)return;
    panel.innerHTML='<h3>'+t('Permohonan kedai','Shop applications')+'</h3><div class="grid">'+applications.map(app=>'<article class="card"><h3>'+esc(app.display_name)+'</h3><p>'+esc(app.city)+', '+esc(app.state)+' · '+esc(app.status)+'</p><p>'+esc(app.terms)+'</p>'+(app.status==='pending'?act('admin-decision:'+app.id+':approved',t('Luluskan','Approve'))+' '+act('admin-decision:'+app.id+':rejected',t('Tolak','Reject')):'')+'</article>').join('')+'</div>';
+   panel.insertAdjacentHTML('beforeend','<h3>'+t('Sumber rujukan harga','Price reference sources')+'</h3>'+
+    (references?'<div class="grid">'+references.map(x=>'<article class="card"><h3>'+esc(x.model)+'</h3><p>'+rm(x.amount_myr)+' · '+esc(x.original_currency)+' '+esc(x.original_amount)+' × '+esc(x.conversion_rate)+'</p><p>'+esc(x.checked_on)+'</p><a href="'+esc(x.source_url)+'" target="_blank" rel="noopener">'+esc(x.source_name)+' ↗</a> · <a href="'+esc(x.rate_source_url)+'" target="_blank" rel="noopener">'+t('Kadar tukaran','Exchange rate')+' ↗</a></article>').join('')+'</div>':'<p>'+t('Sumber tidak dapat dimuatkan.','Sources could not be loaded.')+'</p>'));
    return;
   }
   actions.insertAdjacentHTML('beforeend',role==='partner'?act('cloud-list',t('Senaraikan model untuk dijual','List model for sale')):act('cloud-shop',t('Mohon jadi Partner','Apply as Partner')));
@@ -236,14 +242,53 @@ async function priceOffers(target){
  }catch(e){if(panel.isConnected)panel.textContent=e.message;}
 }
 
+function digitalCatalogue(target){
+ target.innerHTML=section(label(pages.digital))+'<div id="digitalNotice" class="notice" role="status"></div><div id="digitalCards" class="grid"></div><div id="digitalPaging" class="sectionhead"></div>';
+ const status=$('digitalNotice'),cards=$('digitalCards'),paging=$('digitalPaging');
+ const safeUrl=value=>{try{const url=new URL(value);return url.protocol==='https:'?url.href:'';}catch{return '';}};
+ async function load(after=null){
+  status.hidden=false;
+  status.textContent=t('Memuatkan produk digital…','Loading digital products…');
+  paging.replaceChildren();
+  try{
+   const result=await fetchDigitalProducts(after);
+   if(!status.isConnected)return;
+   if(!result?.nodes?.length&&!after){
+    status.textContent=t('Belum ada produk digital diterbitkan.','No digital products have been published yet.');
+    return;
+   }
+   status.hidden=true;
+   cards.insertAdjacentHTML('beforeend',(result?.nodes||[]).map(product=>{
+    const image=safeUrl(product.featuredImage?.url),link=safeUrl(product.onlineStoreUrl);
+    const price=product.priceRange.minVariantPrice;
+    const priceLabel=price.currencyCode==='MYR'?rm(price.amount):t('Semak harga di Shopify','Check price on Shopify');
+    return '<article class="card">'+(image?'<img class="model-photo" src="'+esc(image)+'" loading="lazy" alt="'+esc(product.featuredImage.altText||product.title)+'">':'')+'<h3>'+esc(product.title)+'</h3><p>'+esc(product.description)+'</p>'+(product.availableForSale?'<p class="price">'+priceLabel+'</p>':'<p>'+t('Belum tersedia','Currently unavailable')+'</p>')+(link?'<a href="'+esc(link)+'" target="_blank" rel="noopener">'+t('Lihat di Shopify','View on Shopify')+' ↗</a>':'')+'</article>';
+   }).join(''));
+   if(result?.pageInfo.hasNextPage){
+    const more=document.createElement('button');
+    more.textContent=t('Lihat lagi','Show more');
+    more.onclick=()=>void load(result.pageInfo.endCursor);
+    paging.append(more);
+   }
+  }catch{
+   if(!status.isConnected)return;
+   status.textContent=t('Katalog Shopify belum dapat diakses.','The Shopify catalogue is currently unavailable.');
+   const retry=document.createElement('button');
+   retry.textContent=t('Cuba lagi','Try again');
+   retry.onclick=()=>void load(after);
+   paging.append(retry);
+  }
+ }
+ void load();
+}
+
 function extras(p){
  const target=$('view');
+ if(p==='digital'){digitalCatalogue(target);return;}
  if(p==='offers'){void priceOffers(target);return;}
  if(p==='benchmark'){
-  target.innerHTML=section(label(pages.benchmark))+'<p>'+t('Tawaran buyback tertinggi yang dipaparkan MobileMart Singapura pada 18 Nov 2026. Harga akhir bergantung pada varian, keadaan dan pemeriksaan.','Highest buyback figures displayed by MobileMart Singapore on 18 Nov 2026. Final offers depend on variant, condition and inspection.')+'</p>'+
-   '<p class="notice">'+t('Nilai ditukar mengikut kadar pertengahan','Values converted using the middle rate')+' · <a href="'+mobileMartFx.source+'" target="_blank" rel="noopener">Bank Negara Malaysia</a> · '+mobileMartFx.date+' '+mobileMartFx.session+' · '+t('Kadar pertengahan','Middle rate')+'</p>'+
-   '<div class="grid">'+mobileMartBuyback.map(x=>'<article class="card"><h3>'+esc(x.model)+'</h3><div class="price">'+rm(x.sgd*mobileMartFx.rate)+'</div><p>'+t('Nilai rujukan buyback','Buyback reference value')+'</p><a href="'+x.source+'" target="_blank" rel="noopener">MobileMart ↗</a></article>').join('')+'</div>'+
-   '<p class="sub">'+t('Tukaran mata wang ini ialah penanda aras Singapura. Tawaran kedai Malaysia dan kadar tukaran selepas tarikh semakan boleh berbeza.','This conversion is a Singapore benchmark. Malaysian shop offers and exchange rates after the check date may differ.')+'</p>';
+  target.innerHTML=section(label(pages.benchmark))+'<p>'+t('Harga rujukan buyback. Tawaran akhir bergantung pada varian, keadaan dan pemeriksaan peranti.','Buyback reference values. Final offers depend on variant, condition and device inspection.')+'</p>'+
+   '<div class="grid">'+publicReferencePrices.map(x=>'<article class="card"><h3>'+esc(x.model)+'</h3><div class="price">'+rm(x.myr)+'</div><p>'+t('Nilai rujukan buyback','Buyback reference value')+'</p></article>').join('')+'</div>';
   return;
  }
  if(p==='virtualshop'){
@@ -409,8 +454,8 @@ function render(){
  document.documentElement.lang=data.lang;
  $('language').textContent=t('EN','BM');
  $('notice').textContent=t('Pratonton Malaysia · Rekod transaksi dan iklan baharu disimpan dalam pelayar ini.','Malaysia preview · Transactions and new listings are stored in this browser.');
- $('nav').innerHTML=nav(['market','knowledge','virtualshop','wanted','alerts','activity','offers','buyers']);
- $('moreServices').innerHTML=nav(['benchmark','experts','plans','green']);
+ $('nav').innerHTML=nav(['market','digital','knowledge','virtualshop','wanted','alerts','activity','offers','buyers']);
+ $('moreServices').innerHTML=nav(['digital','benchmark','experts','plans','green']);
  $('footer').innerHTML='<strong>Telcohauz Device Market</strong><p>'+t('Platform peranti untuk Malaysia. Semak spesifikasi telefon, minta harga melalui Telcohauz atau cari perkhidmatan untuk peranti anda.','A device platform for Malaysia. Check phone specifications, request a price through Telcohauz or find device services.')+'</p><p class="sub">'+t('Data lokasi','Location data')+' © <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> · <a href="https://www.geoboundaries.org/">geoBoundaries</a> · <a href="https://opendatacommons.org/licenses/odbl/1-0/">ODbL 1.0</a></p>';
  $('hero').innerHTML='<div><small>DEVICE MARKET · MALAYSIA</small><h1>'+t('Teknologi.<br>Guna semula.','Good tech.<br>Second life.')+'</h1><p>'+t('Cari peranti, banding tawaran buyback atau pilih servis yang anda perlukan.','Find a device, compare buyback offers or choose the service you need.')+'</p>'+
   '<form id="heroSearch" role="search"><input id="heroQuery" name="search" type="search" autocomplete="off" required maxlength="90" role="combobox" aria-autocomplete="list" aria-expanded="false" aria-controls="suggestions" aria-label="'+t('Cari model peranti','Search device model')+'" placeholder="'+t('Cari iPhone, Samsung, HONOR…','Search iPhone, Samsung, HONOR…')+'"><button class="primary">'+t('Cari','Search')+'</button><ul id="suggestions" role="listbox" hidden></ul></form>'+
