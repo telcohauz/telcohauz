@@ -34,7 +34,7 @@ jobs:
       - name: Check types
         run: npm run typecheck
       - name: Unit and security boundary tests
-        run: npm run test:contracts && npm run test:catalog && npm run test:commerce && npm run test:pos
+        run: npm run test:contracts && npm run test:catalog && npm run test:commerce && npm run test:pos && node --experimental-strip-types --test packages/platform/*.test.mjs
       - name: Compile production web bundle
         run: npm run build
       - name: Install browser
