@@ -28,11 +28,21 @@ try {
   await page.goto('http://127.0.0.1:3030/master-products');
   await page.getByRole('button',{name:'Log masuk BOZ',exact:true}).waitFor();
   assert.equal(await page.locator('tbody tr').count(),0,'private master records absent before login');
+  await page.goto('http://127.0.0.1:3030/workspace');
+  await page.getByRole('link',{name:/Buka POS Kedai/}).waitFor();
+  await page.getByRole('link',{name:/Buka Telcohauz Market/}).waitFor();
+  await page.goto('http://127.0.0.1:3030/pos');
+  await page.getByRole('heading',{name:'Point of Sale Kedai'}).waitFor();
+  await page.getByRole('button',{name:'Log masuk POS'}).waitFor();
+  assert.equal(await page.getByRole('button',{name:'Rekod jualan tunai'}).count(),0,'anonymous user cannot checkout');
+  await page.goto('http://127.0.0.1:3030/market');
+  await page.getByRole('heading',{name:'Marketplace Telcohauz'}).waitFor();
+  await page.getByRole('link',{name:'Buka laman Market yang dipilih'}).waitFor();
   await page.setViewportSize({width:390,height:844});
   await page.goto('http://127.0.0.1:3030/catalog');
   await page.getByLabel('Cari produk').waitFor();
   assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth>window.innerWidth),false,'mobile page fits viewport');
   assert.deepEqual(errors,[]);
-  console.log('PASS: catalogue search, HERO hold, empty state, private login, mobile width and no page errors.');
+  console.log('PASS: catalog, HERO hold, private login, unified workspace, anonymous POS checkout restriction, market route, mobile width and no page errors.');
 } catch (error) { console.error(error); console.error(log.slice(-2500)); process.exitCode=1; }
 finally { await browser?.close(); server.kill(); }
