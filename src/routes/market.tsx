@@ -1,5 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { CatalogScreen } from "@/components/CatalogScreen";
+import { TELCOHAUZ_MARKET_REFERENCE } from "../../packages/platform/config";
 export const Route = createFileRoute("/market")({
   head: () => ({ meta: [{ title: "Telcohauz Market — Katalog" }] }),
   component: Market,
@@ -17,7 +18,7 @@ function Market() {
             Data stok fizikal POS belum diterbitkan kepada Market sehingga peraturan penyiaran dan pesanan disahkan.
           </p>
           <a
-            href="https://telcohauz-device-market.telcohauzphonetrd.chatgpt.site"
+            href={TELCOHAUZ_MARKET_REFERENCE}
             target="_blank" rel="noopener noreferrer"
             className="mt-4 inline-flex rounded-lg border px-4 py-2 text-sm text-primary"
           >Buka laman Market yang dipilih</a>
