@@ -1,20 +1,86 @@
 {
   "name": "Telcohauz BOZ",
-  "version": 1,
+  "version": 2,
   "modules": [
-    {"id":"web","path":".","role":"Public services and catalogue","identity":"existing Supabase project; reconciliation pending"},
-    {"id":"businesshq","path":"apps/businesshq","role":"Company, invoices, staff, documents","identity":"company_members; company_id"},
-    {"id":"digital-audit","path":"apps/digital-audit","role":"Public catalogue and internal evidence audit","identity":"Firebase organization grant; isolated pending migration"},
-    {"id":"pos","path":"boz-pos-expo","role":"Shop-scoped inventory, repairs and checkout","identity":"pos_memberships; shop_id"},
-    {"id":"catalog","path":"packages/catalog","role":"Canonical product review registry","identity":"public projections; approval through reviewed source changes"},
-    {"id":"ui","path":"packages/ui","role":"Shared React UI components"},
-    {"id":"commerce","path":"services/commerce-sync","role":"Staging-only channel reconciliation"}
+    {
+      "id": "web",
+      "path": ".",
+      "role": "Unified BOZ web entry; workspace, POS, Market and reviewed catalog",
+      "identity": "existing Supabase project; reconciliation pending"
+    },
+    {
+      "id": "businesshq",
+      "path": "apps/businesshq",
+      "role": "Company, invoices, staff, documents",
+      "identity": "company_members; company_id"
+    },
+    {
+      "id": "digital-audit",
+      "path": "apps/digital-audit",
+      "role": "Public catalogue and internal evidence audit",
+      "identity": "Firebase organization grant; isolated pending migration"
+    },
+    {
+      "id": "pos",
+      "path": "boz-pos-expo + src/routes/pos.tsx",
+      "role": "Android and web shop POS; one BOZ RLS inventory ledger",
+      "identity": "pos_memberships; shop_id"
+    },
+    {
+      "id": "catalog",
+      "path": "packages/catalog",
+      "role": "Canonical product review registry",
+      "identity": "public projections; approval through reviewed source changes"
+    },
+    {
+      "id": "ui",
+      "path": "packages/ui",
+      "role": "Shared React UI components"
+    },
+    {
+      "id": "commerce",
+      "path": "services/commerce-sync",
+      "role": "Pending Market checkout and inventory reservation integration; staging only"
+    },
+    {
+      "id": "market",
+      "path": "src/routes/market.tsx",
+      "role": "Public Market web entry and selected hosted reference; physical stock order bridge pending",
+      "identity": "public approved listings only; no direct ledger writes"
+    },
+    {
+      "id": "platform",
+      "path": "packages/platform",
+      "role": "Shared public endpoints, paths and MYR formatting",
+      "identity": "No privileged credentials"
+    }
   ],
   "externalModules": [
-    {"repository":"telcohauz/Telcohauzmap","visibility":"private","role":"Marketplace; retain private boundary"},
-    {"repository":"telcohauz/Agenttelco","role":"Existing Android source; reconcile with current HERO before replacement"},
-    {"repository":"telcohauz/telcohauz.github.io","role":"Static public entry point"}
+    {
+      "repository": "telcohauz/Telcohauzmap",
+      "visibility": "private",
+      "role": "Marketplace; retain private boundary"
+    },
+    {
+      "repository": "telcohauz/Agenttelco",
+      "role": "Existing Android source; reconcile with current HERO before replacement"
+    },
+    {
+      "repository": "telcohauz/telcohauz.github.io",
+      "role": "Static public entry point"
+    },
+    {
+      "url": "https://telcohauz-device-market.telcohauzphonetrd.chatgpt.site",
+      "role": "Owner-selected hosted Market storefront; source connector and integration not yet verified"
+    }
   ],
-  "separateProjects": ["drama","malaysia-tv","n8n","EasyappAI","ezbiz","EZBiz2"],
+  "separateProjects": [
+    "drama",
+    "malaysia-tv",
+    "n8n",
+    "EasyappAI",
+    "ezbiz",
+    "EZBiz2"
+  ],
   "productionReady": false
 }
