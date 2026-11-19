@@ -94,6 +94,26 @@ export class BozSupabaseApi{
     issue:str(x.issue,'issue'),status:str(x.status,'status')};
   });
  }
+ /** Owner-only finance read. Figures are cash sales booked in POS, NOT net profit or bank balance. */
+ async ownerFinance(session:MobileSession,shopId:string):Promise<{
+  totalSalesSen:number;transactionCount:number;lastSaleAt:string|null;
+ }> {
+  const id=this.check(session,shopId);
+  const role=session.shops.find(s=>s.id===shopId)?.role;
+  if(role!=='OWNER')throw Error('OWNER membership required to view shop financial reports');
+  const rows=arr(await this.call('/rest/v1/pos_sales?select=shop_id,total_cents,created_at&shop_id=eq.'+id+
+    '&order=created_at.desc&limit=1000',session.accessToken),'POS sales');
+  if(rows.length===1000)throw Error('More than 1000 sales: use a verified server summary endpoint for complete totals');
+  let totalSalesSen=0;
+  for(const row of rows){
+   if(row.shop_id!==shopId)throw Error('Cross-shop sales returned');
+   totalSalesSen+=nonnegative(row.total_cents,'sale total');
+   if(!Number.isSafeInteger(totalSalesSen))throw Error('Sale total overflow');
+  }
+  const last=rows[0]?.created_at;
+  if(last!==undefined && typeof last!=='string')throw Error('Invalid sale date');
+  return {totalSalesSen,transactionCount:rows.length,lastSaleAt:(last as string|undefined)||null};
+ }
  async adFreeEntitlement(session:MobileSession,shopId:string):Promise<boolean>{
   const id=this.check(session,shopId);
   const rows=arr(await this.call('/rest/v1/pos_shop_entitlements?select=shop_id,ad_free&shop_id=eq.'+id,session.accessToken),'shop entitlements');
