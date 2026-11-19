@@ -54,3 +54,17 @@ test('server RPC receives authenticated token and no client-authoritative prices
  const x=await api.submitCashSale(user,A,P,[{productId:P,quantity:1}]);
  assert.equal(x.totalCents,1280);
 });
+
+test('only OWNER may view shop finance and all sales are shop scoped', async()=>{
+ const api=new BozSupabaseApi(root,key,fake({
+  ['/rest/v1/pos_sales?select=shop_id,total_cents,created_at&shop_id=eq.'+A+'&order=created_at.desc&limit=1000']:
+   [{shop_id:A,total_cents:2500,created_at:'2026-11-19T00:00:00Z'},{shop_id:A,total_cents:1000,created_at:'2026-11-18T00:00:00Z'}]
+ }));
+ await assert.rejects(api.ownerFinance(user,A),/OWNER membership required/);
+ const owner={...user,shops:[{id:A,name:'A',role:'OWNER'}]};
+ const result=await api.ownerFinance(owner,A);
+ assert.equal(result.totalSalesSen,3500);
+ assert.equal(result.transactionCount,2);
+ assert.equal(result.lastSaleAt,'2026-11-19T00:00:00Z');
+ await assert.rejects(api.ownerFinance(owner,B),/not authorized/);
+});
