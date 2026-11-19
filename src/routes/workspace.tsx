@@ -40,6 +40,7 @@ function Workspace() {
       <p className="mt-4 text-muted-foreground">
         Pilih urusan yang ingin dilakukan. Akses dalaman memerlukan akaun dan peranan yang sah.
       </p>
+      <p className="mt-3 text-sm text-muted-foreground">One BOZ entry — separate module readiness. Modul dalam BOZ tidak bermakna semua pangkalan data telah digabungkan.</p>
       <div className="mt-10 grid gap-5 sm:grid-cols-2">
         <section className="rounded-2xl border border-primary/30 p-7">
           <h2 className="text-xl font-semibold">Telcohauz POS Kedai</h2>
@@ -72,6 +73,26 @@ function Workspace() {
           <Link to="/master-products" className="text-primary">
             Log masuk pentadbir →
           </Link>
+        </section>
+        <section className="rounded-2xl border border-amber-500/40 p-7" aria-label="Owner Insights integration status">
+          <p className="text-xs font-semibold uppercase tracking-wider text-amber-400">F01 · Belum disatukan</p>
+          <h2 className="mt-2 text-xl font-semibold">Owner Insights</h2>
+          <p className="my-4 text-muted-foreground">
+            Dashboard pengurusan sudah wujud sebagai projek Lovable berasingan.
+            Jangan gabungkan laporan kewangan sehingga identiti owner, sumber transaksi
+            dan sekatan akses dua kedai disahkan.
+          </p>
+          <p className="text-sm text-muted-foreground">Akses bersepadu belum diaktifkan.</p>
+        </section>
+        <section className="rounded-2xl border border-amber-500/40 p-7" aria-label="Shop and eligibility integration status">
+          <p className="text-xs font-semibold uppercase tracking-wider text-amber-400">F04 · Belum disatukan</p>
+          <h2 className="mt-2 text-xl font-semibold">Shop &amp; Eligibility</h2>
+          <p className="my-4 text-muted-foreground">
+            Katalog pelanggan dan semakan kelayakan mempunyai kod Lovable berasingan.
+            Integrasi API produk, persetujuan pelanggan dan penyimpanan permohonan
+            mesti diuji sebelum diaktifkan dalam BOZ.
+          </p>
+          <p className="text-sm text-muted-foreground">Tiada produk atau kelulusan pelanggan direka-reka.</p>
         </section>
         {external.map((module) => (
           <section key={module.name} className="rounded-2xl border p-7">
