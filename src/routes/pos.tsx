@@ -49,14 +49,21 @@ function PosScreen() {
   const [pending, setPending] = useState<PendingCheckout | null>(null);
   const [receipt, setReceipt] = useState<{ saleId: string; totalCents: number } | null>(null);
   const [cashReceived, setCashReceived] = useState(false);
+  const [ownerFinance, setOwnerFinance] = useState<{totalSalesSen:number;transactionCount:number;lastSaleAt:string|null}|null>(null);
 
   async function refresh(s: MobileSession, id: string) {
     setInventory([]);
     setRepairs([]);
+    setOwnerFinance(null);
     const [items, jobs] = await Promise.all([api.inventory(s, id), api.repairs(s, id)]);
     setInventory(items);
     setRepairs(jobs);
-    setMessage("Data stok dan repair kedai berjaya dibaca daripada BOZ.");
+    const owner = s.shops.find(shop => shop.id === id)?.role === "OWNER";
+    if (owner) {
+      try { setOwnerFinance(await api.ownerFinance(s, id)); }
+      catch(e) { setMessage("Stok tersedia, tetapi laporan kewangan gagal: " + String(e)); return; }
+    }
+    setMessage("Data stok, repair dan ringkasan kedai dimuatkan daripada BOZ.");
   }
 
   async function login() {
@@ -126,7 +133,7 @@ function PosScreen() {
   function logout() {
     if (pending) { setMessage("Selesaikan dan sahkan status transaksi tertangguh sebelum log keluar."); return; }
     setSession(null); setShopId(""); setInventory([]); setRepairs([]); setCart({});
-    setReceipt(null); setCashReceived(false); setPassword(""); setMessage("Log keluar.");
+    setReceipt(null); setOwnerFinance(null); setCashReceived(false); setPassword(""); setMessage("Log keluar.");
   }
 
   return (
@@ -151,6 +158,18 @@ function PosScreen() {
             <button disabled={busy} onClick={() => void refresh(session, shopId).catch(e => setMessage(String(e)))} className="rounded-lg border p-3">Segar semula stok</button>
             <button onClick={logout} className="rounded-lg border p-3">Log keluar</button>
           </div>
+          {role === "OWNER" && (
+            <section aria-label="Ringkasan Owner" className="mt-7 rounded-xl border border-primary/30 p-5">
+              <h2 className="text-xl font-semibold">Owner Dashboard — Stok & Kewangan</h2>
+              <p className="mt-2 text-sm text-muted-foreground">Akses khas OWNER bagi kedai dipilih. Data berdasarkan transaksi POS, bukan akaun bank atau keuntungan bersih.</p>
+              <div className="mt-4 grid gap-3 sm:grid-cols-3">
+                <div className="rounded-lg border p-4"><p className="text-xs text-muted-foreground">Jumlah unit stok tersedia</p><p className="text-2xl font-bold">{inventory.reduce((sum,p)=>sum+p.qty,0)}</p></div>
+                <div className="rounded-lg border p-4"><p className="text-xs text-muted-foreground">Jualan tunai POS direkodkan</p><p className="text-2xl font-bold">{ownerFinance?money(ownerFinance.totalSalesSen):"Belum dapat dibaca"}</p></div>
+                <div className="rounded-lg border p-4"><p className="text-xs text-muted-foreground">Bilangan transaksi POS</p><p className="text-2xl font-bold">{ownerFinance?.transactionCount ?? "—"}</p></div>
+              </div>
+              <p className="mt-3 text-xs text-muted-foreground">Angka jualan tidak termasuk pengesahan bank, kos pembelian, belanja operasi, refund dan untung rugi. Memerlukan rekonsiliasi sebelum laporan kewangan rasmi.</p>
+            </section>
+          )}
           <div className="mt-8 grid gap-5 lg:grid-cols-[1fr_320px]">
             <section className="rounded-xl border p-5">
               <h2 className="text-xl font-semibold">Inventori kedai ({inventory.length})</h2>
