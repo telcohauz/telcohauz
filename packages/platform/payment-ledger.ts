@@ -4,7 +4,7 @@
  * reference, amount, currency, order mapping and webhook freshness server-side
  * BEFORE calling acceptVerifiedPayment. Client UI cannot call this directly.
  */
-import { marketDepositBreakdown } from "./market-deposit";
+import { marketDepositBreakdown } from "./market-deposit.ts";
 
 export type OrderPaymentState = "AWAITING_DEPOSIT" | "AWAITING_BALANCE" | "PAID_IN_FULL";
 export type PaymentPurpose = "DEPOSIT" | "BALANCE";
